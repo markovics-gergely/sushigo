@@ -59,7 +59,8 @@ export class UserService {
     );
     let body = new URLSearchParams();
 
-    body.set('refresh_token', this.tokenService.refreshToken);
+    const token = this.tokenService.refreshToken1;
+    body.set('refresh_token', token);
     body.set('grant_type', 'refresh_token');
     body.set('client_id', environment.client_id);
     body.set('client_secret', environment.client_secret);

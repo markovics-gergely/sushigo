@@ -3,9 +3,9 @@ using System.Security.Claims;
 
 namespace user.bll.Infrastructure.Commands
 {
-    public class ClaimPartyCommand : IRequest<bool>
+    public class ClaimPartyCommand : IRequest
     {
-        public ClaimsPrincipal? User { get; set; }
+        public ClaimsPrincipal? User { get; }
 
         public ClaimPartyCommand(ClaimsPrincipal? user = null)
         {

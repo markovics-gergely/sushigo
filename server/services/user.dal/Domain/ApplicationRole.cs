@@ -7,6 +7,6 @@ namespace user.dal.Domain
     /// </summary>
     public class ApplicationRole : IdentityRole<Guid>
     {
-        public string Description { get; set; } = string.Empty;
+        public required string Description { get; set; }
     }
 }

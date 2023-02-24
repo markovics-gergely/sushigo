@@ -10,6 +10,11 @@ namespace user.bll.Extensions
             return claimsPrincipal.Claims.First(x => x.Type == "sub").Value;
         }
 
+        public static string GetUserNameFromJwt(this ClaimsPrincipal claimsPrincipal)
+        {
+            return claimsPrincipal.Claims.First(x => x.Type == "name").Value;
+        }
+
         public static int GetUserExpFromJwt(this ClaimsPrincipal claimsPrincipal)
         {
             return int.Parse(claimsPrincipal.Claims.First(x => x.Type == RoleTypes.ExpClaim).Value);

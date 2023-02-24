@@ -3,6 +3,8 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using user.api.Extensions;
+using user.api.Hubs;
+using user.bll.Settings;
 using user.dal;
 using user.dal.Domain;
 
@@ -25,10 +27,18 @@ builder.Services.AddIdentityExtensions(configuration);
 builder.Services.AddAuthenticationExtensions(configuration);
 
 builder.Services.AddServiceExtensions();
+builder.Services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
 builder.Services.AddSwaggerExtension(configuration);
 
+builder.Services.AddSignalR();
 builder.Services.AddMediatR(typeof(Program).Assembly);
 builder.Services.AddControllers();
+
+builder.Services.AddMemoryCache();
+builder.Services.AddStackExchangeRedisCache(options => {
+    options.Configuration = configuration.GetConnectionString("Redis");
+    options.InstanceName = "localRedis_";
+});
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -66,5 +76,8 @@ app.UseIdentityServer();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<FriendEventsHub>("/friend-request");
+app.MapHub<FriendEventsHub>("/friend-remove");
 
 app.Run();

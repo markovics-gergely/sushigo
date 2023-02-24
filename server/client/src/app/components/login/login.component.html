@@ -1,0 +1,38 @@
+<div class="container">
+  <div class="card" *ngIf="loginForm">
+    <div class="title-space">
+      <span class="title" i18n>Log in</span>
+      <p class="sign-up" i18n>
+        Don't have an account? <a routerLink="/register">Sign up</a>
+      </p>
+    </div>
+    <form
+      method="post"
+      class="form-table"
+      [formGroup]="loginForm"
+      (ngSubmit)="login()"
+    >
+      <label for="userName" i18n>Username or e-mail</label>
+      <input
+        id="userName"
+        type="email"
+        placeholder="Username or e-mail"
+        formControlName="userName"
+        required
+        minlength="4"
+      />
+      <label for="password" i18n>Password</label>
+      <input
+        id="password"
+        type="password"
+        placeholder="Password"
+        formControlName="password"
+        required
+        minlength="7"
+      />
+      <button class="button" type="submit" [disabled]="!loginForm.valid" i18n>
+        Log in
+      </button>
+    </form>
+  </div>
+</div>

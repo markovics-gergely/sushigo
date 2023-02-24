@@ -14,14 +14,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerForOcelot(builder.Configuration, options => {
     options.GenerateDocsDocsForGatewayItSelf(opt =>
     {
-        opt.AddSecurityDefinition(configuration.GetValue<string>("Authentication:SecurityScheme"), new OpenApiSecurityScheme
+        opt.AddSecurityDefinition(configuration.GetValue<string>("IdentityServer:SecurityScheme"), new OpenApiSecurityScheme
         {
             Type = SecuritySchemeType.OAuth2,
             Flows = new OpenApiOAuthFlows
             {
                 Password = new OpenApiOAuthFlow()
                 {
-                    TokenUrl = new Uri(configuration.GetValue<string>("Authentication:Authority") + "/connect/token"),
+                    TokenUrl = new Uri(configuration.GetValue<string>("IdentityServer:Authority") + "/connect/token"),
                     Scopes = new Dictionary<string, string> {
                         { configuration.GetValue<string>("IdentityServer:Name"),
                                     configuration.GetValue<string>("IdentityServer:Description") }
@@ -39,7 +39,7 @@ builder.Services.AddSwaggerForOcelot(builder.Configuration, options => {
                         {
                             Reference = new OpenApiReference()
                             {
-                                Id = configuration.GetValue<string>("Authentication:SecurityScheme"),
+                                Id = configuration.GetValue<string>("IdentityServer:SecurityScheme"),
                                 Type = ReferenceType.SecurityScheme
                             }
                         },
@@ -83,6 +83,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapSwagger();
 
 app.UseOcelot().Wait();
 

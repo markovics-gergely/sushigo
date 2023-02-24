@@ -1,0 +1,81 @@
+<div class="container">
+  <div class="card" *ngIf="registerForm">
+    <div class="title-space">
+      <span class="title" i18n>Register</span>
+      <p class="sign-up" i18n>
+        Already have an account? <a routerLink="/login">Log in</a>
+      </p>
+    </div>
+    <form
+      method="post"
+      class="form-table"
+      [formGroup]="registerForm"
+      (ngSubmit)="register()"
+    >
+      <label for="userName" i18n>Username</label>
+      <input
+        id="userName"
+        type="email"
+        placeholder="Username"
+        formControlName="userName"
+        required
+        minlength="4"
+      />
+
+      <div class="name-row">
+        <div>
+          <label for="firstName" i18n>First name</label>
+          <input
+            id="firstName"
+            type="text"
+            placeholder="First name"
+            formControlName="firstName"
+            required
+            minlength="4"
+          />
+        </div>
+        <div>
+          <label for="lastName" i18n>Last name</label>
+          <input
+            id="lastName"
+            type="text"
+            placeholder="Last name"
+            formControlName="lastName"
+            required
+            minlength="4"
+          />
+        </div>
+      </div>
+      <label for="email" i18n>E-mail</label>
+      <input
+        id="email"
+        type="email"
+        placeholder="E-mail"
+        formControlName="email"
+        required
+        minlength="4"
+      />
+      <label for="pw" i18n>Password</label>
+      <input
+        id="pw"
+        type="password"
+        placeholder="Password"
+        formControlName="pw"
+        required
+        minlength="7"
+      />
+      <label for="pwc" i18n>Confirm password</label>
+      <input
+        id="pwc"
+        type="password"
+        placeholder="Confirm password"
+        formControlName="pwc"
+        required
+        minlength="7"
+      />
+      <button class="button" type="submit" [disabled]="!registerForm.valid" i18n>
+        Register
+      </button>
+    </form>
+  </div>
+</div>

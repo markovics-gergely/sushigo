@@ -47,7 +47,6 @@ namespace user.api.Controllers
         /// <summary>
         /// Get a user data
         /// </summary>
-        /// <param name="userid">Id of the user</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Values of the user</returns>
         [HttpGet]

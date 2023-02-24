@@ -19,6 +19,9 @@ namespace user.dal.Domain
         public virtual ICollection<IdentityUserToken<Guid>> Tokens { get; set; } = new List<IdentityUserToken<Guid>>();
         public virtual ICollection<IdentityUserRole<Guid>> UserRoles { get; set; } = new List<IdentityUserRole<Guid>>();
 
+        public virtual ICollection<Friend> FriendRequested { get; set; } = new List<Friend>();
+        public virtual ICollection<Friend> FriendReceived { get; set; } = new List<Friend>();
+
         public string GetFullName()
         {
             return $"{FirstName} {LastName}";

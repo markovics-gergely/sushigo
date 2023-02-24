@@ -6,8 +6,8 @@ namespace user.bll.Infrastructure.Commands
 {
     public class EditUserCommand : IRequest<bool>
     {
-        public EditUserDTO DTO { get; set; }
-        public ClaimsPrincipal? User { get; set; }
+        public EditUserDTO DTO { get; }
+        public ClaimsPrincipal? User { get; }
 
         public EditUserCommand(EditUserDTO dto, ClaimsPrincipal? user = null)
         {

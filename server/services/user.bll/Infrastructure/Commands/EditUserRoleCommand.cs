@@ -5,7 +5,7 @@ namespace user.bll.Infrastructure.Commands
 {
     public class EditUserRoleCommand : IRequest
     {
-        public EditUserRoleDTO DTO { get; set; }
+        public EditUserRoleDTO DTO { get; }
 
         public EditUserRoleCommand(EditUserRoleDTO dto)
         {

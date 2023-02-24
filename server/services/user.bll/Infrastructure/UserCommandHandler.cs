@@ -8,13 +8,15 @@ using user.bll.Validators.Interfaces;
 using user.bll.Validators.Implementations;
 using user.bll.Exceptions;
 using user.bll.Extensions;
+using user.dal.Types;
 
 namespace user.bll.Infrastructure
 {
     public class UserCommandHandler :
         IRequestHandler<CreateUserCommand, bool>,
         IRequestHandler<EditUserCommand, bool>,
-        IRequestHandler<ClaimPartyCommand, bool>,
+        IRequestHandler<ClaimPartyCommand, Unit>,
+        IRequestHandler<ClaimGameCommand, Unit>,
         IRequestHandler<EditUserRoleCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -55,6 +57,14 @@ namespace user.bll.Infrastructure
             if (result.Errors.Any())
             {
                 throw new InvalidParameterException(string.Join('\n', result.Errors.Select(e => e.Description).ToList()));
+            }
+            if (result.Succeeded)
+            {
+                var roleResult = await _userManager.AddToRoleAsync(user, RoleTypes.Classic);
+                if (roleResult.Errors.Any())
+                {
+                    throw new InvalidParameterException(string.Join('\n', result.Errors.Select(e => e.Description).ToList()));
+                }
             }
             return result.Succeeded;
         }
@@ -101,9 +111,59 @@ namespace user.bll.Infrastructure
             return Unit.Value;
         }
 
-        public Task<bool> Handle(ClaimPartyCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ClaimPartyCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            _validator = new ClaimValidator(RoleTypes.PartyExp, request.User?.GetUserExpFromJwt() ?? 0);
+            if (!_validator.Validate())
+            {
+                throw new ValidationErrorException("Not enough experience");
+            }
+            if (request.User == null)
+            {
+                throw new EntityNotFoundException("User not found");
+            }
+            var userEntity = _unitOfWork.UserRepository.Get(filter: x => x.Id.ToString() == request.User.GetUserIdFromJwt()).FirstOrDefault();
+            if (userEntity == null)
+            {
+                throw new EntityNotFoundException("User not found");
+            }
+            var added = await _userManager.AddToRoleAsync(userEntity, RoleTypes.Party);
+            if (added.Errors.Any())
+            {
+                throw new InvalidParameterException(string.Join('\n', added.Errors.Select(e => e.Description).ToList()));
+            }
+            userEntity.Experience -= RoleTypes.PartyExp;
+            _unitOfWork.UserRepository.Update(userEntity);
+            await _unitOfWork.Save();
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(ClaimGameCommand request, CancellationToken cancellationToken)
+        {
+            _validator = new ClaimValidator(RoleTypes.GameExp, request.User?.GetUserExpFromJwt() ?? 0);
+            if (!_validator.Validate())
+            {
+                throw new ValidationErrorException("Not enough experience");
+            }
+            if (request.User == null)
+            {
+                throw new EntityNotFoundException("User not found");
+            }
+            var userEntity = _unitOfWork.UserRepository.Get(filter: x => x.Id.ToString() == request.User.GetUserIdFromJwt()).FirstOrDefault();
+            if (userEntity == null)
+            {
+                throw new EntityNotFoundException("User not found");
+            }
+            _validator = new ClaimGameValidator(userEntity.GameClaims, request.GameType);
+            if (!_validator.Validate())
+            {
+                throw new ValidationErrorException("User already has the game");
+            }
+            userEntity.GameClaims.Add(request.GameType);
+            userEntity.Experience -= RoleTypes.GameExp;
+            _unitOfWork.UserRepository.Update(userEntity);
+            await _unitOfWork.Save();
+            return Unit.Value;
         }
     }
 }

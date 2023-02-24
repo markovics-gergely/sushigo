@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using user.bll.Infrastructure;
 using user.bll.Infrastructure.Commands;
+using user.bll.Infrastructure.Pipelines;
 using user.bll.Infrastructure.Queries;
 using user.bll.Infrastructure.ViewModels;
+using user.bll.Settings;
 using user.dal.Repository.Implementations;
 using user.dal.Repository.Interfaces;
 using user.dal.UnitOfWork.Implementations;
@@ -24,13 +26,21 @@ namespace user.api.Extensions
             services.AddHttpClient();
             services.AddTransient<IRequestHandler<CreateUserCommand, bool>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<EditUserCommand, bool>, UserCommandHandler>();
+            services.AddTransient<IRequestHandler<ClaimPartyCommand, Unit>, UserCommandHandler>();
+            services.AddTransient<IRequestHandler<ClaimGameCommand, Unit>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<EditUserRoleCommand, Unit>, UserCommandHandler>();
+
+            services.AddTransient<IRequestHandler<AddFriendCommand, Unit>, FriendCommandHandler>();
 
             services.AddTransient<IRequestHandler<GetUserQuery, UserViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>, UserQueryHandler>();
 
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
+
+            services.AddDistributedMemoryCache();
         }
     }
 }

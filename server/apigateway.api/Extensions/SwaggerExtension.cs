@@ -15,14 +15,14 @@ namespace apigateway.api.Extensions
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = configuration.GetValue<string>("IdentityServer:Description"), Version = "v1" });
 
-                options.AddSecurityDefinition(configuration.GetValue<string>("Authentication:SecurityScheme"), new OpenApiSecurityScheme
+                options.AddSecurityDefinition(configuration.GetValue<string>("IdentityServer:SecurityScheme"), new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.OAuth2,
                     Flows = new OpenApiOAuthFlows
                     {
                         Password = new OpenApiOAuthFlow()
                         {
-                            TokenUrl = new Uri(configuration.GetValue<string>("Authentication:Authority") + "/connect/token"),
+                            TokenUrl = new Uri(configuration.GetValue<string>("IdentityServer:Authority") + "/connect/token"),
                             Scopes = new Dictionary<string, string> {
                                 { configuration.GetValue<string>("IdentityServer:Name"),
                                     configuration.GetValue<string>("IdentityServer:Description") }
@@ -40,7 +40,7 @@ namespace apigateway.api.Extensions
                         {
                             Reference = new OpenApiReference()
                             {
-                                Id = configuration.GetValue<string>("Authentication:SecurityScheme"),
+                                Id = configuration.GetValue<string>("IdentityServer:SecurityScheme"),
                                 Type = ReferenceType.SecurityScheme
                             }
                         },

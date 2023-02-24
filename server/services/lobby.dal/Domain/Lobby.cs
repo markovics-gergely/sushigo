@@ -7,7 +7,6 @@
         public required string Password { get; set; }
         public required Guid CreatorId { get; set; }
         public required DateTime Created { get; set; }
-        public required int Bet { get; set; } = 0;
         public ICollection<Player> Players { get; set; } = new List<Player>();
     }
 }

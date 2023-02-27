@@ -1,1 +1,399 @@
-/* You can add global styles to this file, and also import other style files */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+@import url("https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+:root {
+  --primary-color: #1aa750;
+  --secondary-color: #ffffff;
+  --secondary-color-dark: #dddddd;
+  --secondary-color-light: #f6f5ff;
+  --accent-color-light: #15f56b;
+  --accent-color-dark: #0d582a;
+  --body-color: #dafdda;
+  --text-color: #707070;
+  --link-text-color: #ffdd19;
+  --ok-color: #1ac41a;
+  --warning-color: #970e10;
+  --file-color: #008080;
+  --side-bar-is-open: true;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+button {
+  cursor: pointer;
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+    filter: brightness(80%);
+  }
+}
+
+img {
+  object-fit: contain;
+  width: auto;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  min-height: 100vh;
+  background-color: var(--body-color);
+  transition: all 0.3s ease;
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    transition: all 0.3s ease;
+
+    .main-container {
+      height: calc(100% - 20px);
+      width: 100%;
+      max-width: 60%;
+      min-width: 440px;
+      transition: all 0.3s ease;
+      padding-bottom: 20px;
+
+      .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        transition: 0.3s;
+        min-height: 100px;
+        min-width: 400px;
+        border-radius: 10px;
+        margin: 20px;
+        padding: 20px;
+        background-color: var(--secondary-color);
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-direction: column;
+        margin-bottom: 30px;
+
+        &:hover {
+          box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .card-item {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: stretch;
+          width: 100%;
+          height: 100%;
+
+          &.list {
+            justify-content: flex-start;
+            button {
+              margin-right: 20px;
+            }
+          }
+
+          .main-title {
+            font-size: 42px;
+            font-weight: 600;
+            color: var(--text-color);
+          }
+
+          .title {
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 20px;
+            margin-right: 10px;
+            font-size: 16px;
+            font-weight: 400;
+            word-wrap: break-word;
+            min-width: 50px;
+            width: 150px;
+            color: var(--secondary-color);
+            background-color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .value {
+            display: inline;
+            border-radius: 10px;
+            padding: 10px;
+            padding-left: 20px;
+            margin-top: 20px;
+            margin-left: 10px;
+            font-size: 16px;
+            word-wrap: break-word;
+            font-weight: 400;
+            min-width: 100px;
+            width: calc(100% - 10px);
+            color: var(--primary-color);
+            background-color: var(--secondary-color);
+            border-width: 1px;
+            border-style: solid;
+            border-color: var(--primary-color);
+            vertical-align: middle;
+          }
+
+          .footer-text {
+            display: inline;
+            word-wrap: break-word;
+            font-size: 16px;
+            font-weight: 400;
+            width: 100%;
+            color: var(--text-color);
+            margin-top: 10px;
+            opacity: 0.5;
+          }
+
+          button {
+            width: auto;
+            height: auto;
+            color: var(--text-color);
+            border: 0;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            transition: 0.3s all ease;
+            background-color: rgba(0, 0, 0, 0.1);
+            &:hover {
+              box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+              background-color: rgba(0, 0, 0, 0.15);
+            }
+            &:active {
+              background-color: rgba(0, 0, 0, 0.25);
+            }
+            i {
+              transform: translateY(3px);
+            }
+
+            &.mat-icon-button {
+              margin-top: 0;
+            }
+          }
+        }
+      }
+
+      .sub-title {
+        display: inline;
+        word-wrap: break-word;
+        font-size: 42px;
+        font-weight: 600;
+        width: 100%;
+        color: var(--text-color);
+        margin: 20px;
+      }
+    }
+  }
+}
+
+.mat-date-range-input-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  input {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--secondary-color);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--primary-color);
+    border-radius: 10px;
+    padding-left: 20px;
+  }
+  .mat-date-range-input-separator {
+    width: 0;
+  }
+
+  .mat-date-range-input-start-wrapper,
+  .mat-date-range-input-end-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+::selection {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+select,
+.dialog-input {
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  padding-left: 10px;
+  font-size: 18px;
+  color: var(--primary-color);
+  background-color: var(--secondary-color);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--primary-color);
+
+  &:focus,
+  &:active {
+    outline: none !important;
+    box-shadow: 0 0 10px var(--accent-color-dark);
+    border-color: var(--accent-color-dark) !important;
+  }
+
+  &.between {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+.dialog-container {
+  mat-dialog-container {
+    background-color: var(--secondary-color) !important;
+    border-radius: 10px;
+
+    .title-space {
+      width: 100%;
+      height: 70px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--primary-color);
+      border-radius: 10px;
+      padding: 10px;
+      color: var(--secondary-color);
+      text-decoration: none;
+
+      .title {
+        font-size: 36px;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+::-webkit-input-placeholder {
+  color: var(--text-color);
+  font-style: italic;
+  margin-left: 20px;
+}
+::-moz-placeholder {
+  color: var(--text-color);
+  font-style: italic;
+  margin-left: 20px;
+}
+::-ms-placeholder {
+  color: var(--text-color);
+  font-style: italic;
+  margin-left: 20px;
+}
+::placeholder {
+  color: var(--text-color);
+  font-style: italic;
+  margin-left: 20px;
+}
+
+input[type="number"] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+mat-datepicker-content {
+  background-color: var(--secondary-color) !important;
+  color: var(--primary-color);
+
+  mat-calendar-header,
+  .mat-calendar-content,
+  .mat-calendar-table-header,
+  .mat-calendar-body-label,
+  .mat-calendar-body-cell-content,
+  button {
+    color: var(--primary-color) !important;
+  }
+  .mat-calendar-body-today {
+    border-color: var(--primary-color) !important;
+  }
+  .mat-calendar-body-selected {
+    background-color: var(--primary-color) !important;
+    &.mat-calendar-body-cell-content {
+      color: var(--secondary-color) !important;
+    }
+  }
+
+  .mat-calendar-body-in-range {
+    &::before {
+      background-color: var(--accent-color-light) !important;
+    }
+    .mat-calendar-body-cell-content {
+      color: var(--secondary-color) !important;
+    }
+  }
+}
+
+.date-toggle {
+  button.mat-focus-indicator.mat-icon-button.mat-button-base {
+    width: auto;
+    min-width: 50px;
+    height: auto;
+    color: var(--text-color) !important;
+    background-color: rgba(0, 0, 0, 0.1);
+    border: 0;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 400;
+    padding: 10px;
+    margin-right: 0;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+
+    &:hover {
+      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+.snack-class {
+  color: var(--secondary-color) !important;
+  background-color: var(--primary-color) !important;
+  .mat-simple-snackbar-action {
+    color: var(--secondary-color) !important;
+  }
+}
+
+.dialog-bottom-buttons {
+  align-self: stretch;
+  margin-top: auto;
+
+  .button-list {
+    .list-button {
+      margin-right: 10px;
+    }
+  }
+}
+
+.mat-checkbox-ripple .mat-ripple-element,
+.mat-checkbox-checked.mat-accent .mat-checkbox-background {
+  background-color: var(--primary-color) !important;
+}

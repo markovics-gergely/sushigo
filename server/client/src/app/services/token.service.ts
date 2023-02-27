@@ -43,6 +43,10 @@ export class TokenService {
     return jwt_decode(this.token);
   }
 
+  public get userId(): string {
+    return this.user.sub;
+  }
+
   public clearCookies() {
     this.cookieService.delete(this.cookieName);
     this.cookieService.delete(this.rCookieName);

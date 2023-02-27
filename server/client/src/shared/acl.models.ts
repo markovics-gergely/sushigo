@@ -11,6 +11,5 @@ interface AclType {
  * ACL Value.
  */
 export const ACL: AclType = {
-    home: ['*'],
-    post: ['*'],
+    home: ['Classic'],
 };

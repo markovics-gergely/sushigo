@@ -23,7 +23,7 @@
         /// <summary>
         /// Name of the claim for experience
         /// </summary>
-        public const string ExpClaim = "exp";
+        public const string ExpClaim = "experience";
 
         /// <summary>
         /// Name of the claim for game types

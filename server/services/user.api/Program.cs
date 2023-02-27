@@ -72,12 +72,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 app.UseCors("CorsPolicy");
+app.Use(AuthenticationExtension.AuthQueryStringToHeader);
 app.UseIdentityServer();
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<FriendEventsHub>("/friend-request");
-app.MapHub<FriendEventsHub>("/friend-remove");
+app.MapHub<FriendEventsHub>("/friend-hub").RequireCors("CorsPolicy");
 
 app.Run();

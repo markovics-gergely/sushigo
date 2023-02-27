@@ -42,7 +42,7 @@ export class UserService {
     body.set('client_secret', environment.client_secret);
 
     return this.client.post(
-      `${environment.baseUrl}/connect/token`,
+      `${this.baseUrl}/login`,
       body.toString(),
       { headers: headers }
     );

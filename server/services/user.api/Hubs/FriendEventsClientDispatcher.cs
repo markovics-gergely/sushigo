@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using user.api.Hubs.Interfaces;
 using user.bll.Infrastructure.Events;
 
 namespace user.api.Hubs
@@ -30,7 +31,7 @@ namespace user.api.Hubs
         /// <returns></returns>
         public Task Handle(AddFriendEvent notification, CancellationToken cancellationToken)
         {
-            return _context.Clients.Group(notification.ReceiverId.ToString()).SendAsync("friend-request", notification.SenderUser, cancellationToken);
+            return _context.Clients.Group(notification.ReceiverId.ToString()).SendAsync("FriendRequest", notification.SenderUser, cancellationToken);
         }
 
         /// <summary>
@@ -41,7 +42,7 @@ namespace user.api.Hubs
         /// <returns></returns>
         public Task Handle(RemoveFriendEvent notification, CancellationToken cancellationToken)
         {
-            return _context.Clients.Group(notification.ReceiverId.ToString()).SendAsync("friend-remove", new { Sender = notification.SenderId }, cancellationToken);
+            return _context.Clients.Group(notification.ReceiverId.ToString()).SendAsync("FriendRemove", new { Sender = notification.SenderId }, cancellationToken);
         }
     }
 }

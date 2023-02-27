@@ -6,7 +6,7 @@ using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
-
+builder.Services.AddSignalR();
 builder.Services.AddOcelot(builder.Configuration);
 builder.Services.AddAuthenticationExtensions(builder.Configuration);
 
@@ -69,10 +69,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerForOcelotUI(opt =>
     {
         opt.PathToSwaggerGenerator = "/swagger/docs";
-        //opt.OAuthClientId(configuration.GetValue<string>("IdentityServer:ClientId"));
-        //opt.OAuthClientSecret(configuration.GetValue<string>("IdentityServer:ClientSecret"));
-        //opt.OAuthAppName(configuration.GetValue<string>("IdentityServer:Name"));
-        //opt.OAuthUsePkce();
+    }, opt =>
+    {
+        opt.OAuthClientId(configuration.GetValue<string>("IdentityServer:ClientId"));
+        opt.OAuthClientSecret(configuration.GetValue<string>("IdentityServer:ClientSecret"));
+        opt.OAuthAppName(configuration.GetValue<string>("IdentityServer:Name"));
+        opt.OAuthUsePkce();
     });
 }
 
@@ -84,6 +86,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapSwagger();
+app.UseWebSockets();
 
 app.UseOcelot().Wait();
 

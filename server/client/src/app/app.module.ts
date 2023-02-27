@@ -18,6 +18,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { HomeComponent } from './components/home/home.component';
+import { FriendComponent } from './components/overlay/friend/friend.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,9 @@ import { CommonModule } from '@angular/common';
     LoginComponent,
     RegisterComponent,
     CanDirective,
-    LoadingComponent
+    LoadingComponent,
+    HomeComponent,
+    FriendComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +50,12 @@ import { CommonModule } from '@angular/common';
     })
   ],
   providers: [
-    CookieService
+    CookieService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

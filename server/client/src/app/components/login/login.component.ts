@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FriendService } from 'src/app/services/friend.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { SnackService } from 'src/app/services/snack.service';
 import { TokenService } from 'src/app/services/token.service';

@@ -62,6 +62,16 @@
         }
 
         /// <summary>
+        /// Get Group exists
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool Exists(T key)
+        {
+            return _connections.ContainsKey(key);
+        }
+
+        /// <summary>
         /// Remove connection from key
         /// </summary>
         /// <param name="key"></param>

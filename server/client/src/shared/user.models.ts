@@ -9,9 +9,10 @@ export interface IUser {
 }
 
 export interface IUserViewModel {
-    roles: Array<AppRole>;
-    exp: number;
-    games: Array<GameType>;
+    sub: string;
+    role?: Array<AppRole> | AppRole;
+    experience: number;
+    games?: Array<GameType>;
 }
 
 export interface ILoginUserDTO {
@@ -30,4 +31,10 @@ export interface IRegisterUserDTO {
     email: string;
     password: string;
     confirmedPassword: string;
+}
+
+export interface IUserNameViewModel {
+    id: string;
+    userName: string;
+    status?: boolean;
 }

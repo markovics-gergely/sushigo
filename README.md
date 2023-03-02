@@ -48,14 +48,17 @@
 
 - Mikroszolgáltatások
   - Ocelot
+    - Közös swagger dev felület
   - Docker-compose
   - .NET 7
   - user, lobby, store felosztás
 - Adatbázis
-  - MSSQL
-  - Redis
+  - MSSQL (EntityFramework)
+  - Redis (lekérdezés cache-elés)
 - IdentityServer
   - Jwt aktív felparaméterezése
+- AutoMapper
+- ProblemDetails
 - SignalR
   - Chat, barátok, meghívók
 - Mediatr

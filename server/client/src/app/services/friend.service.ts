@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import * as signalR from '@microsoft/signalr';
 import { environment } from 'src/environments/environment';
 import { IFriendListViewModel, IFriendStatusViewModel } from 'src/shared/friend.models';
 import { IUserNameViewModel } from 'src/shared/user.models';
@@ -18,7 +17,7 @@ export class FriendService {
   public loadFriends(): void {
     this.client
       .get<IFriendListViewModel>(this.baseUrl)
-      .subscribe((friends) => (this._friends = friends));
+      .subscribe((friends: IFriendListViewModel) => (this._friends = friends));
   }
 
   public get friends(): IFriendListViewModel | undefined {

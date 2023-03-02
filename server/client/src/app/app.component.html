@@ -2,5 +2,6 @@
   <div style="display: flex; height: 100%;">
     <router-outlet></router-outlet>
     <app-loading></app-loading>
+    <app-friend *ngIf="loggedIn"></app-friend>
   </div>
 </body>

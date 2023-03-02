@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { HttpClient } from '@microsoft/signalr';
 import { environment } from 'src/environments/environment';
-import { IFriendStatusViewModel } from 'src/shared/friend.models';
 import { FriendService } from './friend.service';
 import { TokenService } from './token.service';
 
@@ -12,10 +10,12 @@ import { TokenService } from './token.service';
 export class FriendHubService {
   private readonly baseUrl: string = `${environment.baseUrl}/friend-hub`;
   private _hubConnection: signalR.HubConnection | undefined;
+  private _connected: boolean = false;
 
-  constructor(private tokenService: TokenService, private friendService: FriendService) {}
+  constructor(private tokenService: TokenService, private friendService: FriendService) { }
 
   public startConnection(): void {
+    if (this._connected) return;
     this._hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${this.baseUrl}?token=${this.tokenService.token}`, {
         skipNegotiation: true,
@@ -26,7 +26,10 @@ export class FriendHubService {
       .build();
     this._hubConnection
       .start()
-      .then(() => console.log('Connection started'))
+      .then(() => {
+        this._connected = true;
+        this.addListeners();
+      })
       .catch((err) => console.log('Error while starting connection: ' + err));
   }
 
@@ -39,5 +42,9 @@ export class FriendHubService {
     });
     this._hubConnection?.on('FriendStatuses', this.friendService.loadStatuses);
     this._hubConnection?.on('FriendStatus', this.friendService.loadStatus);
+  }
+
+  public get connected(): boolean {
+    return this._connected;
   }
 }

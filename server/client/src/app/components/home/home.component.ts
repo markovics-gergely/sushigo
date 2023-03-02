@@ -11,7 +11,6 @@ export class HomeComponent implements OnInit {
   constructor(private friendService: FriendService) { }
 
   ngOnInit(): void {
-    this.friendService.startConnection();
-    this.friendService.addListeners();
+    
   }
 }

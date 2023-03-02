@@ -80,6 +80,9 @@
 - Overlayek
   - Töltés alatt
   - Barátkezelés
+- Reszponzív felület
+  - Mobilon és kisebb képernyőn is használható
+- dotenv (secret kezelés)
 
 ### Játékleírás
 

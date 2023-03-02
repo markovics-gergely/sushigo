@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TokenService } from './services/token.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Sushi Go!';
+
+  constructor(private tokenService: TokenService) { }
+
+  public get loggedIn(): boolean {
+    return this.tokenService.loggedIn;
+  }
 }

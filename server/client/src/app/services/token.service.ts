@@ -51,4 +51,8 @@ export class TokenService {
     this.cookieService.delete(this.cookieName);
     this.cookieService.delete(this.rCookieName);
   }
+
+  public get loggedIn(): boolean {
+    return this.token !== '';
+  }
 }

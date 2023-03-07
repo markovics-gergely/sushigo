@@ -54,6 +54,7 @@
   &.open {
     width: 280px;
     padding-right: 100px;
+    transition-delay: .3s;
   }
 }
 
@@ -75,6 +76,9 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
   }
 
+  &.open {
+    transition-delay: .3s;
+  }
 }
 
 .foil {

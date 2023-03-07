@@ -1,7 +1,7 @@
 <div class="foil" [ngClass]="open ? 'open' : ''">
-  <mat-accordion displayMode="flat" class="main-list">
+  <mat-accordion displayMode="flat" class="main-list" [ngClass]="open ? 'open' : ''">
     <mat-expansion-panel>
-      <mat-expansion-panel-header class="friend-list-header">
+      <mat-expansion-panel-header class="friend-list-header" [ngClass]="open ? 'open' : ''">
         <mat-panel-title>
           Friends
         </mat-panel-title>
@@ -11,7 +11,7 @@
       </div>
     </mat-expansion-panel>
     <mat-expansion-panel>
-      <mat-expansion-panel-header class="friend-list-header">
+      <mat-expansion-panel-header class="friend-list-header" [ngClass]="open ? 'open' : ''">
         <mat-panel-title>
           Sent requests
         </mat-panel-title>
@@ -21,7 +21,7 @@
       </div>
     </mat-expansion-panel>
     <mat-expansion-panel>
-      <mat-expansion-panel-header class="friend-list-header">
+      <mat-expansion-panel-header class="friend-list-header" [ngClass]="open ? 'open' : ''">
         <mat-panel-title>
           Received requests
         </mat-panel-title>

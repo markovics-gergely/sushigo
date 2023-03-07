@@ -1,4 +1,39 @@
 <div class="foil" [ngClass]="open ? 'open' : ''">
+  <mat-accordion displayMode="flat" class="main-list">
+    <mat-expansion-panel>
+      <mat-expansion-panel-header class="friend-list-header">
+        <mat-panel-title>
+          Friends
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div *ngFor="let friend in friends">
+        {{friend.username}}
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header class="friend-list-header">
+        <mat-panel-title>
+          Sent requests
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div *ngFor="let request in sent">
+        {{request.username}}
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header class="friend-list-header">
+        <mat-panel-title>
+          Received requests
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div *ngFor="let request in requested">
+        {{request.username}}
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+<div class="friend-header" [ngClass]="open ? 'open' : ''">
+  Friends
 </div>
 <button class="friend-button" (click)="switchOpen()">
   <i class="bx bx-group"></i>

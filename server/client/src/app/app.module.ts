@@ -21,6 +21,7 @@ import { CommonModule } from '@angular/common';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HomeComponent } from './components/home/home.component';
 import { FriendComponent } from './components/overlay/friend/friend.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { FriendComponent } from './components/overlay/friend/friend.component';
     MatTooltipModule,
     MatCheckboxModule,
     CommonModule,
+    MatExpansionModule,
     JwtModule.forRoot({
       config: {},
     })

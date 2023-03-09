@@ -30,7 +30,8 @@ namespace user.api.Extensions
             services.AddTransient<IRequestHandler<ClaimGameCommand, Unit>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<EditUserRoleCommand, Unit>, UserCommandHandler>();
 
-            services.AddTransient<IRequestHandler<AddFriendCommand, Unit>, FriendCommandHandler>();
+            services.AddTransient<IRequestHandler<AddFriendCommand, UserNameViewModel>, FriendCommandHandler>();
+            services.AddTransient<IRequestHandler<RemoveFriendCommand, Unit>, FriendCommandHandler>();
 
             services.AddTransient<IRequestHandler<GetUserQuery, UserViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>, UserQueryHandler>();

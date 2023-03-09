@@ -14,7 +14,7 @@ using user.dal.UnitOfWork.Interfaces;
 namespace user.bll.Infrastructure
 {
     public class FriendCommandHandler :
-        IRequestHandler<AddFriendCommand, Unit>,
+        IRequestHandler<AddFriendCommand, UserNameViewModel>,
         IRequestHandler<RemoveFriendCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -62,6 +62,7 @@ namespace user.bll.Infrastructure
                 _unitOfWork.FriendRepository.Insert(newEntity);
             }
             await _unitOfWork.Save();
+            var model = _mapper.Map<UserNameViewModel>(friendUserEntity);
             await _mediator.Publish(new AddFriendEvent
             { ReceiverId = friendUserEntity.Id, SenderUser = new UserNameViewModel
                 { 
@@ -69,7 +70,7 @@ namespace user.bll.Infrastructure
                     UserName = request.User?.GetUserNameFromJwt() ?? ""
                 }
             }, cancellationToken);
-            return Unit.Value;
+            return model;
         }
 
         public async Task<Unit> Handle(RemoveFriendCommand request, CancellationToken cancellationToken)

@@ -13,7 +13,7 @@ export class FriendAddDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<FriendAddDialogComponent>,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this._form = new FormGroup({
@@ -33,5 +33,9 @@ export class FriendAddDialogComponent implements OnInit {
 
   public get form(): FormGroup | undefined {
     return this._form;
+  }
+
+  public get valid(): boolean {
+    return this._form?.valid || false;
   }
 }

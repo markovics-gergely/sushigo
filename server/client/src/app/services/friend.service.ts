@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IFriendListViewModel, IFriendStatusViewModel } from 'src/shared/friend.models';
 import { IUserNameViewModel } from 'src/shared/user.models';
-import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +12,7 @@ export class FriendService {
   private readonly baseUrl: string = `${environment.baseUrl}/friend`;
   private _friends: IFriendListViewModel | undefined;
 
-  constructor(private client: HttpClient) {}
+  constructor(private client: HttpClient) { }
 
   public loadFriends(): void {
     this.client
@@ -24,11 +24,8 @@ export class FriendService {
     return this._friends;
   }
 
-  public removeFriendFromList(id: string): void {
-    if (!this._friends) { return; }
-    this._friends.friends = this._friends.friends.filter((f) => f.id !== id);
-    this._friends.sent = this._friends.sent.filter((f) => f.id !== id);
-    this._friends.received = this._friends.received.filter((f) => f.id !== id);
+  private addFriend(userName: string): Observable<any> {
+    return this.client.post(`${this.baseUrl}/${userName}`, {});
   }
 
   public addFriendToList(friend: IUserNameViewModel): void {
@@ -38,6 +35,31 @@ export class FriendService {
       this._friends.received.splice(index, 1);
       this._friends.friends.push(friend);
     }
+  }
+
+  public addFriendAndRefresh(userName: string): void {
+    this.addFriend(userName).subscribe({
+      next: (user: IUserNameViewModel) => this.addFriendToList(user),
+      error: (err) => console.log(err),
+    });
+  }
+
+  private removeFriend(id: string): Observable<any> {
+    return this.client.delete(`${this.baseUrl}/${id}`);
+  }
+
+  public removeFriendFromList(id: string): void {
+    if (!this._friends) { return; }
+    this._friends.friends = this._friends.friends.filter((f) => f.id !== id);
+    this._friends.sent = this._friends.sent.filter((f) => f.id !== id);
+    this._friends.received = this._friends.received.filter((f) => f.id !== id);
+  }
+
+  public removeFriendAndRefresh(id: string): void {
+    this.removeFriend(id).subscribe({
+      next: () => this.removeFriendFromList(id),
+      error: (err) => console.log(err),
+    });
   }
 
   public loadStatus(status: IFriendStatusViewModel): void {

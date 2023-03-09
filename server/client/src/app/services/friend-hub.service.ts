@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { environment } from 'src/environments/environment';
+import { IUserNameViewModel } from 'src/shared/user.models';
 import { FriendService } from './friend.service';
 import { TokenService } from './token.service';
 
@@ -34,12 +35,8 @@ export class FriendHubService {
   }
 
   public addListeners(): void {
-    this._hubConnection?.on('FriendRequest', (data) => {
-      console.log(data);
-    });
-    this._hubConnection?.on('FriendRemove', (data) => {
-      console.log(data);
-    });
+    this._hubConnection?.on('FriendRequest', (data: IUserNameViewModel) => this.friendService.addFriendToList(data));
+    this._hubConnection?.on('FriendRemove', (data: { sender: string }) => this.friendService.removeFriendFromList(data.sender));
     this._hubConnection?.on('FriendStatuses', this.friendService.loadStatuses);
     this._hubConnection?.on('FriendStatus', this.friendService.loadStatus);
   }

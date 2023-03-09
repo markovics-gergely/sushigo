@@ -33,30 +33,30 @@ export class FriendComponent implements OnInit {
   }
 
   public get friends(): IUserNameViewModel[] {
-    return this.friendService.friends?.friends || [{ id: '1', userName: 'test', status: true}, { id: '2', userName: 'test2', status: false}];
+    return this.friendService.friends?.friends || [{ id: '1', userName: 'test', status: true }, { id: '2', userName: 'test2', status: false }];
   }
 
   public get sent(): IUserNameViewModel[] {
-    return this.friendService.friends?.sent || [{ id: '1', userName: 'test', status: true}, { id: '2', userName: 'test2', status: false}];
+    return this.friendService.friends?.sent || [{ id: '1', userName: 'test', status: true }, { id: '2', userName: 'test2', status: false }];
   }
 
   public get received(): IUserNameViewModel[] {
-    return this.friendService.friends?.received || [{ id: '1', userName: 'test', status: true}, { id: '2', userName: 'test2', status: false}];
+    return this.friendService.friends?.received || [{ id: '1', userName: 'test', status: true }, { id: '2', userName: 'test2', status: false }];
   }
 
   public declineFriend(friend: IUserNameViewModel): void {
-    
+    this.friendService.removeFriendAndRefresh(friend.id);
   }
 
-  public addFriend(friend: IUserNameViewModel): void {
-    
+  public addFriend(userName: string): void {
+    this.friendService.addFriendAndRefresh(userName);
   }
 
   public openAddFriend(): void {
     const dialogRef = this.dialog.open(FriendAddDialogComponent);
     dialogRef.afterClosed().subscribe((name: string) => {
       if (name) {
-        
+        this.addFriend(name);
       }
     });
   }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Data;
 using user.bll.Extensions;
 using user.bll.Infrastructure.Queries;
@@ -37,16 +38,16 @@ namespace user.bll.Infrastructure
         {
             var userguid = Guid.Parse(request.User?.GetUserIdFromJwt() ?? "");
             var friends = _unitOfWork.FriendRepository.Get(
-                filter: x => x.GetFriendTypes(userguid) != FriendTypes.None,
+                filter: x => userguid == x.SenderId || userguid == x.ReceiverId,
                 transform: x => x.AsNoTracking()
             )
                 .GroupBy(f => f.GetFriendTypes(userguid))
                 .ToDictionary(f => f.Key, f => f.Select(ff => ff.SenderId == userguid ? ff.ReceiverId : ff.SenderId).ToList());
             return Task.FromResult(new FriendListViewModel
             {
-                Friends = _mapper.Map<IEnumerable<UserNameViewModel>>(GetUsersWithIds(friends[FriendTypes.Friend])),
-                Sent = _mapper.Map<IEnumerable<UserNameViewModel>>(GetUsersWithIds(friends[FriendTypes.Sent])),
-                Received = _mapper.Map<IEnumerable<UserNameViewModel>>(GetUsersWithIds(friends[FriendTypes.Received])),
+                Friends = _mapper.Map<IEnumerable<UserNameViewModel>>(GetUsersWithIds(friends.TryGetValue(FriendTypes.Friend, out var val1) ? val1 : new())),
+                Sent = _mapper.Map<IEnumerable<UserNameViewModel>>(GetUsersWithIds(friends.TryGetValue(FriendTypes.Sent, out var val2) ? val2 : new())),
+                Received = _mapper.Map<IEnumerable<UserNameViewModel>>(GetUsersWithIds(friends.TryGetValue(FriendTypes.Received, out var val3) ? val3 : new())),
             });
         }
     }

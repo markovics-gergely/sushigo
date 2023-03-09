@@ -17,7 +17,7 @@ namespace user.api.Hubs
     public class FriendEventsHub : Hub<IFriendsEventsHub>
     {
         private readonly IMediator _mediator;
-        private readonly ConnectionMapping<string> connectionMapping = new();
+        private readonly static ConnectionMapping<string> _connections = new();
 
         /// <summary>
         /// Initialize
@@ -36,9 +36,16 @@ namespace user.api.Hubs
         {
             string id = Context.User?.GetUserIdFromJwt() ?? "";
             await Groups.AddToGroupAsync(Context.ConnectionId, id);
-            connectionMapping.Add(id, Context.ConnectionId);
+            _connections.Add(id, Context.ConnectionId);
 
-            await SendStatusToFriends(id, true);
+            var query = new GetFriendsQuery(Context.User);
+            var result = await _mediator.Send(query);
+            var friends = result?.Friends?.Concat(result.Sent)?.Concat(result.Received)?.Select(friend => friend.Id.ToString()) ?? new List<string>();
+
+            Task.WaitAll(
+                SendStatusToFriends(friends, true),
+                LoadFriendStatus(friends)
+            );
             return base.OnConnectedAsync();
         }
 
@@ -50,29 +57,32 @@ namespace user.api.Hubs
         public override async Task<Task> OnDisconnectedAsync(Exception? exception)
         {
             string id = Context.User?.GetUserIdFromJwt() ?? "";
-            connectionMapping.Remove(id, Context.ConnectionId);
+            _connections.Remove(id, Context.ConnectionId);
 
-            await SendStatusToFriends(id, false);
+            var query = new GetFriendsQuery(Context.User);
+            var result = await _mediator.Send(query);
+            var friends = result?.Friends?.Concat(result.Sent)?.Concat(result.Received)?.Select(friend => friend.Id.ToString()) ?? new List<string>();
+
+            Task.WaitAll(
+                SendStatusToFriends(friends, false),
+                LoadFriendStatus(friends)
+            );
             return base.OnDisconnectedAsync(exception);
         }
 
-        private async Task SendStatusToFriends(string id, bool status)
+        private async Task SendStatusToFriends(IEnumerable<string> friends, bool status)
         {
-            var query = new GetFriendsQuery(Context.User);
-            var result = await _mediator.Send(query);
-            var friends = result.Friends.Concat(result.Sent).Concat(result.Received).Select(friend => friend.Id.ToString());
-            await Clients.Groups(friends).FriendStatus(new FriendStatusViewModel { Id = id, Status = status });
+            await Clients.Groups(friends).FriendStatus(new FriendStatusViewModel { Id = Context.User?.GetUserIdFromJwt() ?? "", Status = status });
         }
 
         /// <summary>
         /// Send list of friend statuses
         /// </summary>
-        /// <param name="guids"></param>
         /// <returns></returns>
-        public void LoadFriendStatus(List<string> guids)
+        public async Task LoadFriendStatus(IEnumerable<string> friends)
         {
-            var list = guids.Select(x => new FriendStatusViewModel { Id = x, Status = connectionMapping.Exists(x) }).ToList();
-            Clients.Caller.FriendStatuses(list).Wait();
+            var list = friends.Select(x => new FriendStatusViewModel { Id = x, Status = _connections.Exists(x) }).ToList();
+            await Clients.Caller.FriendStatuses(list);
         }
     }
 }

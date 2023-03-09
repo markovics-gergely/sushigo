@@ -48,7 +48,7 @@
         </div>
         <div class="friend-buttons">
           <i class="bx bxs-circle status" [ngClass]="request.status ? 'ok' : ''"></i>
-          <button class="accept-button" (click)="addFriend(request)">
+          <button class="accept-button" (click)="addFriend(request.userName)">
             <i class="bx bx-check"></i>
           </button>
           <button class="decline-button" (click)="declineFriend(request)">

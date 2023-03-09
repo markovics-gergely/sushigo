@@ -53,7 +53,7 @@ export class RegisterComponent implements OnInit {
             this.router.navigate(['login']);
           },
           error: (err) => {
-            this.snackService.openSnackBar(err.statusText, 'OK');
+            console.log(err);
           },
         })
         .add(() => {

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using user.bll.Infrastructure.Commands;
 using user.bll.Infrastructure.Queries;
+using user.bll.Infrastructure.ViewModels;
 using user.dal.Types;
 
 namespace user.api.Controllers
@@ -35,7 +36,7 @@ namespace user.api.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost("{name}")]
-        public async Task<ActionResult> AddFriendAsync([FromRoute] string name, CancellationToken cancellationToken)
+        public async Task<ActionResult<UserNameViewModel>> AddFriendAsync([FromRoute] string name, CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
             var query = new AddFriendCommand(name, user);
@@ -62,7 +63,7 @@ namespace user.api.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> GetFriendsAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<FriendListViewModel>> GetFriendsAsync(CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
             var query = new GetFriendsQuery(user);

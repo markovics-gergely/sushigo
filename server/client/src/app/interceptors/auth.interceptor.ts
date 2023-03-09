@@ -25,23 +25,27 @@ export class AuthInterceptor implements HttpInterceptor {
     const authReq = request.clone({
       setHeaders: { Authorization: 'Bearer ' + token },
     });
+    console.log(authReq);
+    
     return next.handle(authReq)
       .pipe(
         catchError((err: HttpErrorResponse) => {
+          console.log(err);
           if (err.status === 401) {
-            this.snackService.openSnackBar(err.error, 'OK');
             this.tokenService.clearCookies();
             this.router.navigate(['login']);
           }
           else if (err.status === 403) {
-            this.snackService.openSnackBar(err.error, 'OK');
             this.tokenService.clearCookies();
           }
-          else if (err.status === 404) {
-            this.snackService.openSnackBar(err.error, 'OK');
-          }
+          const error = err.error?.title || this.snakeToText(err.error?.error_description) || err.message;
+          this.snackService.openSnackBar(`${error} (${err.status})`, 'OK');
           throw err;
         })
       );
+  }
+
+  private snakeToText(snake: string): string | undefined {
+    return snake?.split('_').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
   }
 }

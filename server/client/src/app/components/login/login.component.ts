@@ -50,7 +50,6 @@ export class LoginComponent implements OnInit {
           },
           error: (err) => {
             console.log(err);
-            this.snackService.openSnackBar(err.statusText, 'OK');
             this.tokenService.clearCookies();
           },
         })

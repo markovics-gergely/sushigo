@@ -13,6 +13,7 @@ export interface IUserViewModel {
     role?: Array<AppRole> | AppRole;
     experience: number;
     games?: Array<GameType>;
+    exp: number;
 }
 
 export interface ILoginUserDTO {

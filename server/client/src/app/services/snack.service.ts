@@ -10,7 +10,7 @@ import {
 })
 export class SnackService {
   /** Snackbar duration in seconds */
-  private readonly duration: number = 5;
+  private readonly duration: number = 1500;
   private readonly hPosition: MatSnackBarHorizontalPosition = 'end';
   private readonly vPosition: MatSnackBarVerticalPosition = 'bottom';
 

@@ -381,11 +381,9 @@ mat-datepicker-content {
 }
 
 .snack-class {
-  color: var(--color-text-light) !important;
-  background-color: var(--color-primary) !important;
-  .mat-simple-snackbar-action {
-    color: var(--color-text-light) !important;
-  }
+  --mat-mdc-snack-bar-button-color: var(--color-text-light);
+  --mdc-snackbar-container-color: var(--color-primary);
+  --mdc-snackbar-supporting-text-color: var(--color-text-light);
 }
 
 .dialog-bottom-buttons {

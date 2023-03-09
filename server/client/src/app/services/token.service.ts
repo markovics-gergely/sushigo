@@ -9,14 +9,12 @@ import jwt_decode from 'jwt-decode';
 export class TokenService {
   private readonly cookieName = 'sushitoken';
   private readonly rCookieName = 'rsushitoken';
-  private expires: Date | undefined;
 
   constructor(private cookieService: CookieService) {}
 
   public set userToken(user: IUser) {
     this.token = user.access_token;
     this.refreshToken = user.refresh_token;
-    this.expiresAt = user.expires_in;
   }
 
   private set token(token: string) {
@@ -35,12 +33,12 @@ export class TokenService {
     return this.cookieService.get(this.rCookieName);
   }
 
-  private set expiresAt(expires: number) {
-    this.expires = new Date(new Date().getTime() + expires * 1000);
-  }
-
   public get user(): IUserViewModel {
     return jwt_decode(this.token);
+  }
+
+  public get expires(): Date | undefined {
+    return this.user?.exp ? new Date(this.user.exp * 1000) : undefined;
   }
 
   public get userId(): string {
@@ -52,7 +50,11 @@ export class TokenService {
     this.cookieService.delete(this.rCookieName);
   }
 
+  private get notExpired(): boolean {
+    return this.expires !== undefined && this.expires > new Date();
+  }
+
   public get loggedIn(): boolean {
-    return this.token !== '';
+    return this.token !== '' && this.notExpired;
   }
 }

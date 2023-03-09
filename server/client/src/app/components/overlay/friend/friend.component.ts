@@ -17,7 +17,7 @@ export class FriendComponent implements OnInit {
   constructor(private friendHubService: FriendHubService, private friendService: FriendService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    this.friendHubService.startConnection();
+    this.friendService.loadFriends().add(() => this.friendHubService.startConnection());
   }
 
   public get open(): boolean {
@@ -55,6 +55,8 @@ export class FriendComponent implements OnInit {
   public openAddFriend(): void {
     const dialogRef = this.dialog.open(FriendAddDialogComponent);
     dialogRef.afterClosed().subscribe((name: string) => {
+      console.log(name);
+      
       if (name) {
         this.addFriend(name);
       }

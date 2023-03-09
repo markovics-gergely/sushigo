@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
 using user.bll.Exceptions;
 using user.bll.Extensions;
 using user.bll.Infrastructure.Commands;
@@ -29,7 +30,7 @@ namespace user.bll.Infrastructure
             _mediator = mediator;
         }
 
-        public async Task<Unit> Handle(AddFriendCommand request, CancellationToken cancellationToken)
+        public async Task<UserNameViewModel> Handle(AddFriendCommand request, CancellationToken cancellationToken)
         {
             var friendUserEntity = _unitOfWork.UserRepository.Get(
                 filter: x => x.UserName == request.FriendName,
@@ -39,7 +40,10 @@ namespace user.bll.Infrastructure
                 throw new EntityNotFoundException(nameof(friendUserEntity) + " user not found");
             }
             var userguid = Guid.Parse(request.User?.GetUserIdFromJwt() ?? "");
-            var friendEntity = _unitOfWork.FriendRepository.Get(filter: x => x.OwnFriend(userguid, friendUserEntity.Id)).FirstOrDefault();
+            var friendEntity = _unitOfWork.FriendRepository.Get(filter: x =>
+                (x.SenderId == userguid && x.ReceiverId == friendUserEntity.Id)
+                || (x.SenderId == friendUserEntity.Id && x.ReceiverId == userguid)
+            ).FirstOrDefault();
             if (friendEntity != null)
             {
                 if (friendEntity.Pending && friendEntity.ReceiverId == userguid)
@@ -76,13 +80,10 @@ namespace user.bll.Infrastructure
         public async Task<Unit> Handle(RemoveFriendCommand request, CancellationToken cancellationToken)
         {
             var userguid = Guid.Parse(request.User?.GetUserIdFromJwt() ?? "");
-            _validator = new RemoveFriendValidator(userguid, request.FriendId, _unitOfWork);
-            if (!_validator.Validate())
-            {
-                throw new ValidationErrorException("No friend to remove");
-            }
             var friend = _unitOfWork.FriendRepository.Get(
-                    filter: x => x.OwnFriend(userguid, request.FriendId),
+                    filter: x =>
+                        (x.SenderId == userguid && x.ReceiverId == request.FriendId)
+                        || (x.SenderId == request.FriendId && x.ReceiverId == userguid),
                     transform: x => x.AsNoTracking()
                 ).FirstOrDefault();
             if (friend == null)

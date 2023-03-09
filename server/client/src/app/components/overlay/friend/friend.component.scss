@@ -64,6 +64,9 @@
       &.open {
         transition-delay: 0.3s;
       }
+      .mat-expansion-panel-header-title {
+        color: var(--color-text-light);
+      }
     }
     .mat-expansion-panel-content {
       .mat-expansion-panel-body {

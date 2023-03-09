@@ -12,7 +12,6 @@ export class AppComponent {
   constructor(private tokenService: TokenService) { }
 
   public get loggedIn(): boolean {
-    return true;
     return this.tokenService.loggedIn;
   }
 }

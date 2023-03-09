@@ -33,6 +33,8 @@ namespace user.api.Extensions
             services.AddTransient<IRequestHandler<AddFriendCommand, UserNameViewModel>, FriendCommandHandler>();
             services.AddTransient<IRequestHandler<RemoveFriendCommand, Unit>, FriendCommandHandler>();
 
+            services.AddTransient<IRequestHandler<GetFriendsQuery, FriendListViewModel>, FriendQueryHandler>();
+
             services.AddTransient<IRequestHandler<GetUserQuery, UserViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>, UserQueryHandler>();
 

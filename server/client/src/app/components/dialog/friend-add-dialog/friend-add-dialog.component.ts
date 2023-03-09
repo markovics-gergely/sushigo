@@ -12,7 +12,7 @@ export class FriendAddDialogComponent implements OnInit {
   private _form: FormGroup | undefined;
 
   constructor(
-    public dialogRef: MatDialogRef<FriendAddDialogComponent>,
+    public dialogRef: MatDialogRef<FriendAddDialogComponent, string>,
   ) { }
 
   ngOnInit(): void {

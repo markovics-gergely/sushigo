@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { environment } from 'src/environments/environment';
+import { IFriendStatusViewModel } from 'src/shared/friend.models';
 import { IUserNameViewModel } from 'src/shared/user.models';
 import { FriendService } from './friend.service';
 import { TokenService } from './token.service';
@@ -25,11 +26,11 @@ export class FriendHubService {
       })
       .configureLogging(signalR.LogLevel.Information)
       .build();
+    this.addListeners();
     this._hubConnection
       .start()
       .then(() => {
         this._connected = true;
-        this.addListeners();
       })
       .catch((err) => console.log('Error while starting connection: ' + err));
   }
@@ -37,8 +38,9 @@ export class FriendHubService {
   public addListeners(): void {
     this._hubConnection?.on('FriendRequest', (data: IUserNameViewModel) => this.friendService.addFriendToList(data));
     this._hubConnection?.on('FriendRemove', (data: { sender: string }) => this.friendService.removeFriendFromList(data.sender));
-    this._hubConnection?.on('FriendStatuses', this.friendService.loadStatuses);
-    this._hubConnection?.on('FriendStatus', this.friendService.loadStatus);
+    this._hubConnection?.on('FriendStatuses', (statuses: Array<IFriendStatusViewModel>) => { console.log(statuses);
+     this.friendService.loadStatuses(statuses); });
+    this._hubConnection?.on('FriendStatus', (status: IFriendStatusViewModel) => { this.friendService.loadStatus(status); });
   }
 
   public get connected(): boolean {

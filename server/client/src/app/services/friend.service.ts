@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IFriendListViewModel, IFriendStatusViewModel } from 'src/shared/friend.models';
 import { IUserNameViewModel } from 'src/shared/user.models';
@@ -9,15 +9,15 @@ import { IUserNameViewModel } from 'src/shared/user.models';
   providedIn: 'root',
 })
 export class FriendService {
-  private readonly baseUrl: string = `${environment.baseUrl}/friend`;
+  private readonly baseUrl: string = /*`${environment.baseUrl}/friend`*/ 'http://localhost:5200/friend';
   private _friends: IFriendListViewModel | undefined;
 
   constructor(private client: HttpClient) { }
 
-  public loadFriends(): void {
-    this.client
+  public loadFriends(): Subscription {
+    return this.client
       .get<IFriendListViewModel>(this.baseUrl)
-      .subscribe((friends: IFriendListViewModel) => (this._friends = friends));
+      .subscribe((friends: IFriendListViewModel) => {this._friends = friends; console.log(friends);});
   }
 
   public get friends(): IFriendListViewModel | undefined {
@@ -62,22 +62,27 @@ export class FriendService {
     });
   }
 
-  public loadStatus(status: IFriendStatusViewModel): void {
-    this.loadStatuses([status]);
-  }
-
   public loadStatuses(statuses: Array<IFriendStatusViewModel>): void {
     this.loadStatusToList(this._friends?.friends || [], statuses);
     this.loadStatusToList(this._friends?.sent || [], statuses);
     this.loadStatusToList(this._friends?.received || [], statuses);
   }
 
+  public loadStatus(status: IFriendStatusViewModel): void {
+    console.log(status);
+    const array = new Array<IFriendStatusViewModel>();
+    array.push(status);
+    this.loadStatuses(array);
+  }
+
   private loadStatusToList(list: Array<IUserNameViewModel>, statuses: Array<IFriendStatusViewModel>): void {
+    console.log(list);
+    
     list.forEach((friend) => {
       const status = statuses.find((s) => s.id === friend.id);
-      if (status) {
-        friend.status = status.status;
-      }
+      console.log(status);
+      
+      friend.status = status?.status;
     });
   }
 }

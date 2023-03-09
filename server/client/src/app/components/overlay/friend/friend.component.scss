@@ -3,7 +3,7 @@
   top: 10px;
   right: 10px;
   z-index: 1002;
-  background-color: var(--primary-color);
+  background-color: var(--color-primary);
   color: white;
   border-radius: 10px;
   width: 100px;
@@ -17,16 +17,100 @@
   font-size: 24px;
 
   &:hover {
-    background-color: var(--primary-color-hover);
+    background-color: var(--color-primary-hover);
   }
 
   &:active {
-    background-color: var(--primary-color-active);
+    background-color: var(--color-primary-active);
   }
+}
+
+.friend-list-item {
+  background-color: var(--color-primary);
 }
 
 .main-list {
   width: 100%;
+  height: 100%;
+  padding: 0 10px;
+  mat-expansion-panel {
+    padding: 0;
+    background-color: rgba(var(--color-primary-rgb), 0.6);
+    margin: 5px 0;
+    border-radius: 10px !important;
+    transition: all 0.4s ease-in-out;
+    height: 50px;
+
+    &.mat-expanded {
+      height: calc(100% - 120px);
+    }
+    .friend-list-header {
+      background-color: var(--color-primary);
+      color: white;
+      border-radius: 10px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      border: none;
+      font-size: 18px;
+      transition: all 0.4s ease-in-out;
+
+      &:hover {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+      }
+
+      &.open {
+        transition-delay: 0.3s;
+      }
+    }
+    .mat-expansion-panel-content {
+      .mat-expansion-panel-body {
+        padding: 0 !important;
+        margin-top: 5px;
+        overflow-y: auto;
+        .friend-wrapper {
+          padding: 5px 10px;
+          background: rgba(0, 0, 0, 0.1);
+          border-radius: 10px;
+          margin: 5px;
+          height: 50px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          &:hover {
+            background: rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+          }
+          .friend-name {
+            font-size: 18px;
+            color: white;
+          }
+          .friend-buttons {
+            .status {
+              margin-right: 10px;
+              color: rgba(0, 0, 0, 0.2);
+              &.ok {
+                color: var(--color-ok);
+              }
+            }
+            button {
+              background: rgba(0, 0, 0, 0.3);
+              border-radius: 10px;
+              border: none;
+              margin-left: 5px;
+              box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+              color: white;
+              font-size: 16px;
+              width: 40px;
+              height: 40px;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 .friend-header {
@@ -34,18 +118,18 @@
   top: 10px;
   right: 10px;
   z-index: 1001;
-  background-color: var(--primary-color-light);
+  background-color: rgba(var(--color-primary-rgb), 0.7);
   color: white;
   border-radius: 10px;
   width: 100px;
   height: 50px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   border: none;
   font-size: 24px;
-  transition: all .4s ease-in-out;
+  transition: all 0.4s ease-in-out;
 
   &:hover {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
@@ -54,30 +138,32 @@
   &.open {
     width: 280px;
     padding-right: 100px;
-    transition-delay: .3s;
-  }
-}
-
-.friend-list-header {
-  background-color: var(--primary-color);
-  color: white;
-  border-radius: 10px;
-  margin: 5px 10px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  border: none;
-  font-size: 18px;
-  transition: all .4s ease-in-out;
-
-  &:hover {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+    transition-delay: 0.3s;
   }
 
-  &.open {
-    transition-delay: .3s;
+  .title {
+    width: 0;
+    margin: 0 5px;
+    overflow: hidden;
+    transition: all 0.4s ease-in-out;
+    transition-delay: 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &.open {
+      width: 100%;
+    }
+  }
+  .add-button {
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 10px;
+    border: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+    color: white;
+    font-size: 16px;
   }
 }
 
@@ -91,11 +177,10 @@
   width: 0;
   height: 0;
   z-index: 1000;
-  background-color: black;
-  opacity: 0.6;
-  transition: all .5s ease-in-out;
-  padding-top: 70px;
-  color: var(--text-color-light);
+  background-color: rgba(var(--color-primary-rgb), 0.2);
+  transition: all 0.5s ease-in-out;
+  padding-top: 65px;
+  color: var(--color-text-light);
 
   &.open {
     width: 300px;

@@ -22,6 +22,9 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HomeComponent } from './components/home/home.component';
 import { FriendComponent } from './components/overlay/friend/friend.component';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { FriendAddDialogComponent } from './components/dialog/friend-add-dialog/friend-add-dialog.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     CanDirective,
     LoadingComponent,
     HomeComponent,
-    FriendComponent
+    FriendComponent,
+    FriendAddDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,18 +51,20 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatCheckboxModule,
     CommonModule,
     MatExpansionModule,
+    MatFormFieldModule,
+    MatInputModule,
     JwtModule.forRoot({
       config: {},
-    })
+    }),
   ],
   providers: [
     CookieService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
-      multi: true
-    }
+      multi: true,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Add a friend</h1>
+<mat-dialog-content [formGroup]="form" *ngIf="form" class="form">
+  <mat-form-field appearance="outline">
+    <mat-label>Friend's username</mat-label>
+    <input
+      matInput
+      placeholder="Username"
+      formControlName="name"
+    />
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button (click)="add()" cdkFocusInitial>
+    Add
+  </button>
+</mat-dialog-actions>

@@ -11,14 +11,9 @@
 
 $colors: (
   primary: #1aa750,
-  primary-hover: #148a41,
-  primary-active: #116531,
   primary-light: #14da60,
+  primary-dark: #0d582a,
   secondary: #ffffff,
-  secondary-dark: #dddddd,
-  secondary-light: #f6f5ff,
-  accent-light: #15f56b,
-  accent-dark: #0d582a,
   body: #dafdda,
   text: #707070,
   text-light: #ffffff,
@@ -127,7 +122,7 @@ body {
             word-wrap: break-word;
             min-width: 50px;
             width: 150px;
-            color: var(--color-secondary);
+            color: var(--color-text-light);
             background-color: var(--color-primary);
             display: flex;
             justify-content: center;
@@ -244,7 +239,7 @@ body {
 
 ::selection {
   background-color: var(--color-primary);
-  color: var(--color-secondary);
+  color: var(--color-text-light);
 }
 
 select,
@@ -263,8 +258,8 @@ select,
   &:focus,
   &:active {
     outline: none !important;
-    box-shadow: 0 0 10px var(--color-accent-dark);
-    border-color: var(--color-accent-dark) !important;
+    box-shadow: 0 0 10px var(--color-primary-dark);
+    border-color: var(--color-primary-dark) !important;
   }
 
   &.between {
@@ -288,7 +283,7 @@ select,
       background-color: var(--color-primary);
       border-radius: 10px;
       padding: 10px;
-      color: var(--color-secondary);
+      color: var(--color-text-light);
       text-decoration: none;
 
       .title {
@@ -349,16 +344,16 @@ mat-datepicker-content {
   .mat-calendar-body-selected {
     background-color: var(--color-primary) !important;
     &.mat-calendar-body-cell-content {
-      color: var(--color-secondary) !important;
+      color: var(--color-text-light) !important;
     }
   }
 
   .mat-calendar-body-in-range {
     &::before {
-      background-color: var(--color-accent-light) !important;
+      background-color: var(--color-primary-light) !important;
     }
     .mat-calendar-body-cell-content {
-      color: var(--color-secondary) !important;
+      color: var(--color-text-light) !important;
     }
   }
 }
@@ -386,10 +381,10 @@ mat-datepicker-content {
 }
 
 .snack-class {
-  color: var(--color-secondary) !important;
+  color: var(--color-text-light) !important;
   background-color: var(--color-primary) !important;
   .mat-simple-snackbar-action {
-    color: var(--color-secondary) !important;
+    color: var(--color-text-light) !important;
   }
 }
 

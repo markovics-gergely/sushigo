@@ -7,13 +7,11 @@ import { TokenService } from './token.service';
 })
 export class AclService {
 
-  constructor(private tokenService: TokenService) {}
+  constructor(private tokenService: TokenService) { }
 
   public can(role: string): boolean {
     const roles = ACL[role];
     const userRoles = this.tokenService.user.role ?? [];
-    console.log(this.tokenService.user);
-    
     return roles && (roles.includes('*') || [userRoles].flat().some(role => roles.includes(role)));
   }
 

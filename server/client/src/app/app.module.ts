@@ -27,6 +27,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -59,6 +60,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatExpansionModule,
     MatFormFieldModule,
     MatInputModule,
+    MatButtonToggleModule,
     JwtModule.forRoot({
       config: {},
     }),

@@ -10,7 +10,7 @@ import { CanDirective } from './directives/can.directive';
 import { LoadingComponent } from './components/overlay/loading/loading.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -25,6 +25,12 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { FriendAddDialogComponent } from './components/dialog/friend-add-dialog/friend-add-dialog.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -56,6 +62,14 @@ import { MatInputModule } from '@angular/material/input';
     JwtModule.forRoot({
       config: {},
     }),
+    TranslateModule.forRoot({
+      defaultLanguage: 'en',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [
     CookieService,
@@ -67,4 +81,4 @@ import { MatInputModule } from '@angular/material/input';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

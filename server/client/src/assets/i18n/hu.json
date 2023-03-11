@@ -1,0 +1,22 @@
+{
+    "login": {
+        "title": "Belépés",
+        "sign-up": "Regisztráljon",
+        "sign-up-detail": "Nincs felhasználója?",
+        "username": "Felhasználónév vagy e-mail",
+        "password": "Jelszó",
+        "submit": "Belépés"
+    },
+    "register": {
+        "title": "Regisztrálás",
+        "login-detail": "Már van felhasználója?",
+        "login": "Lépjen be",
+        "username": "Felhasználónév",
+        "first-name": "Keresztnév",
+        "last-name": "Vezetéknév",
+        "email": "E-mail",
+        "password": "Jelszó",
+        "confirm-password": "Jelszó megerősítése",
+        "submit": "Regisztrálás"
+    }
+}

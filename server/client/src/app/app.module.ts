@@ -11,7 +11,7 @@ import { LoadingComponent } from './components/overlay/loading/loading.component
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { JwtModule } from '@auth0/angular-jwt';
+import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -28,9 +28,13 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { TokenService } from './services/token.service';
+import { LanguageComponent } from './components/overlay/language/language.component';
 
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http);
+export function jwtOptionsFactory(tokenService: TokenService) {
+  return {
+    tokenGetter: () => tokenService.token
+  };
 }
 
 @NgModule({
@@ -43,6 +47,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     HomeComponent,
     FriendComponent,
     FriendAddDialogComponent,
+    LanguageComponent,
   ],
   imports: [
     BrowserModule,
@@ -62,7 +67,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatInputModule,
     MatButtonToggleModule,
     JwtModule.forRoot({
-      config: {},
+      jwtOptionsProvider: {
+        provide: JWT_OPTIONS,
+        useFactory: jwtOptionsFactory,
+        deps: [TokenService]
+      }
     }),
     TranslateModule.forRoot({
       defaultLanguage: 'en',
@@ -80,7 +89,12 @@ export function HttpLoaderFactory(http: HttpClient) {
       useClass: AuthInterceptor,
       multi: true,
     },
+    TokenService
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
+}

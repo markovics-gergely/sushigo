@@ -1,0 +1,18 @@
+.lang-buttons {
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border-radius: 10px;
+}
+
+.mat-button-toggle {
+  background-color: var(--color-text-light);
+  color: var(--color-text);
+}
+.mat-button-toggle-checked {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+}

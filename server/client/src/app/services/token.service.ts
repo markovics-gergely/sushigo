@@ -33,16 +33,16 @@ export class TokenService {
     return this.cookieService.get(this.rCookieName);
   }
 
-  public get user(): IUserViewModel {
-    return jwt_decode(this.token);
+  public get user(): IUserViewModel | undefined {
+    return this.token ? jwt_decode(this.token) : undefined;
   }
 
   public get expires(): Date | undefined {
     return this.user?.exp ? new Date(this.user.exp * 1000) : undefined;
   }
 
-  public get userId(): string {
-    return this.user.sub;
+  public get userId(): string | undefined {
+    return this.user?.sub;
   }
 
   public clearCookies() {
@@ -55,6 +55,6 @@ export class TokenService {
   }
 
   public get loggedIn(): boolean {
-    return this.token !== '' && this.notExpired;
+    return this.cookieService.check(this.cookieName) && this.notExpired;
   }
 }

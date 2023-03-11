@@ -1,9 +1,9 @@
 <div class="container">
   <div class="card" *ngIf="registerForm">
     <div class="title-space">
-      <span class="title" i18n>Register</span>
-      <p class="sign-up" i18n>
-        Already have an account? <a routerLink="/login">Log in</a>
+      <span class="title">{{ 'register.title' | translate }}</span>
+      <p class="sign-up">
+        {{ 'register.login-detail' | translate }} <a routerLink="/login">{{ 'register.login' | translate }}</a>
       </p>
     </div>
     <form
@@ -12,11 +12,11 @@
       [formGroup]="registerForm"
       (ngSubmit)="register()"
     >
-      <label for="userName" i18n>Username</label>
+      <label for="userName">{{ 'register.username' | translate }}</label>
       <input
         id="userName"
         type="email"
-        placeholder="Username"
+        [placeholder]="'register.username' | translate"
         formControlName="userName"
         required
         minlength="4"
@@ -24,57 +24,57 @@
 
       <div class="name-row">
         <div>
-          <label for="firstName" i18n>First name</label>
+          <label for="firstName">{{ 'register.first-name' | translate }}</label>
           <input
             id="firstName"
             type="text"
-            placeholder="First name"
+            [placeholder]="'register.first-name' | translate"
             formControlName="firstName"
             required
             minlength="4"
           />
         </div>
         <div>
-          <label for="lastName" i18n>Last name</label>
+          <label for="lastName">{{ 'register.last-name' | translate }}</label>
           <input
             id="lastName"
             type="text"
-            placeholder="Last name"
+            [placeholder]="'register.last-name' | translate"
             formControlName="lastName"
             required
             minlength="4"
           />
         </div>
       </div>
-      <label for="email" i18n>E-mail</label>
+      <label for="email">{{ 'register.email' | translate }}</label>
       <input
         id="email"
         type="email"
-        placeholder="E-mail"
+        [placeholder]="'register.email' | translate"
         formControlName="email"
         required
         minlength="4"
       />
-      <label for="pw" i18n>Password</label>
+      <label for="pw">{{ 'register.password' | translate }}</label>
       <input
         id="pw"
         type="password"
-        placeholder="Password"
+        [placeholder]="'register.password' | translate"
         formControlName="pw"
         required
         minlength="7"
       />
-      <label for="pwc" i18n>Confirm password</label>
+      <label for="pwc">{{ 'register.confirm-password' | translate }}</label>
       <input
         id="pwc"
         type="password"
-        placeholder="Confirm password"
+        [placeholder]="'register.confirm-password' | translate"
         formControlName="pwc"
         required
         minlength="7"
       />
-      <button class="button" type="submit" [disabled]="!registerForm.valid" i18n>
-        Register
+      <button class="button" type="submit" [disabled]="!registerForm.valid">
+        {{ 'register.submit' | translate }}
       </button>
     </form>
   </div>

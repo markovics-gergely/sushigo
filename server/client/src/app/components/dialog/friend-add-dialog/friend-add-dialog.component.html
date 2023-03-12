@@ -6,8 +6,8 @@
   </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button (click)="add()" [disabled]="!valid" cdkFocusInitial>
+  <button mat-button (click)="add()" [disabled]="!valid" class="friend-dialog-button" cdkFocusInitial>
     Add
   </button>
-  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button (click)="cancel()" class="friend-dialog-button">Cancel</button>
 </mat-dialog-actions>

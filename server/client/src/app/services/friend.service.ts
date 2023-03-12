@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { IFriendListViewModel, IFriendStatusViewModel } from 'src/shared/friend.models';
+import { IFriendListCounter, IFriendListViewModel, IFriendStatusViewModel } from 'src/shared/friend.models';
 import { IUserNameViewModel } from 'src/shared/user.models';
 
 @Injectable({
@@ -11,6 +11,7 @@ import { IUserNameViewModel } from 'src/shared/user.models';
 export class FriendService {
   private readonly baseUrl: string = /*`${environment.baseUrl}/friend`*/ 'http://localhost:5200/friend';
   private _friends: IFriendListViewModel | undefined;
+  private _friendsCounter: IFriendListCounter = { friends: 0, sent: 0, received: 0 };
 
   constructor(private client: HttpClient) { }
 
@@ -69,19 +70,14 @@ export class FriendService {
   }
 
   public loadStatus(status: IFriendStatusViewModel): void {
-    console.log(status);
     const array = new Array<IFriendStatusViewModel>();
     array.push(status);
     this.loadStatuses(array);
   }
 
   private loadStatusToList(list: Array<IUserNameViewModel>, statuses: Array<IFriendStatusViewModel>): void {
-    console.log(list);
-    
     list.forEach((friend) => {
       const status = statuses.find((s) => s.id === friend.id);
-      console.log(status);
-      
       friend.status = status?.status;
     });
   }

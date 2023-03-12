@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { LanguagesService } from './services/languages.service';
 import { TokenService } from './services/token.service';
 
 @Component({
@@ -10,13 +10,11 @@ import { TokenService } from './services/token.service';
 export class AppComponent implements OnInit {
   title = 'Sushi Go!';
 
-  constructor(private tokenService: TokenService, private translate: TranslateService) {
+  constructor(private tokenService: TokenService, private languageService: LanguagesService) {
   }
   
   ngOnInit(): void {
-    this.translate.setDefaultLang('en');
-    this.translate.addLangs(['en', 'hu']);
-    this.translate.use('en');
+    this.languageService.init();
   }
 
   public get loggedIn(): boolean {

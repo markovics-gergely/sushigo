@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { IUser, IUserViewModel } from 'src/shared/user.models';
 import jwt_decode from 'jwt-decode';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokenService {
-  private readonly cookieName = 'sushitoken';
-  private readonly rCookieName = 'rsushitoken';
+  private readonly cookieName = environment.token_name;
+  private readonly rCookieName = environment.refresh_token_name;
+  private readonly langCookieName = environment.language_token_name;
 
   constructor(private cookieService: CookieService) {}
 
@@ -45,9 +47,18 @@ export class TokenService {
     return this.user?.sub;
   }
 
+  public get language(): string | undefined {
+    return this.cookieService.get(this.langCookieName);
+  }
+
+  public set language(lang: string | undefined) {
+    this.cookieService.set(this.langCookieName, lang ?? "");
+  }
+
   public clearCookies() {
     this.cookieService.delete(this.cookieName);
     this.cookieService.delete(this.rCookieName);
+    this.cookieService.delete(this.langCookieName);
   }
 
   private get notExpired(): boolean {

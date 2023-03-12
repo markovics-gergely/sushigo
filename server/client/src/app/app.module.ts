@@ -10,7 +10,11 @@ import { CanDirective } from './directives/can.directive';
 import { LoadingComponent } from './components/overlay/loading/loading.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  HTTP_INTERCEPTORS,
+} from '@angular/common/http';
 import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -30,10 +34,13 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TokenService } from './services/token.service';
 import { LanguageComponent } from './components/overlay/language/language.component';
+import { RespMatGridTileDirective } from './directives/resp-mat-grid-tile.directive';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatCardModule } from '@angular/material/card';
 
 export function jwtOptionsFactory(tokenService: TokenService) {
   return {
-    tokenGetter: () => tokenService.token
+    tokenGetter: () => tokenService.token,
   };
 }
 
@@ -48,6 +55,7 @@ export function jwtOptionsFactory(tokenService: TokenService) {
     FriendComponent,
     FriendAddDialogComponent,
     LanguageComponent,
+    RespMatGridTileDirective,
   ],
   imports: [
     BrowserModule,
@@ -66,21 +74,23 @@ export function jwtOptionsFactory(tokenService: TokenService) {
     MatFormFieldModule,
     MatInputModule,
     MatButtonToggleModule,
+    MatGridListModule,
+    MatCardModule,
     JwtModule.forRoot({
       jwtOptionsProvider: {
         provide: JWT_OPTIONS,
         useFactory: jwtOptionsFactory,
-        deps: [TokenService]
-      }
+        deps: [TokenService],
+      },
     }),
     TranslateModule.forRoot({
       defaultLanguage: 'en',
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    })
+        deps: [HttpClient],
+      },
+    }),
   ],
   providers: [
     CookieService,
@@ -89,12 +99,12 @@ export function jwtOptionsFactory(tokenService: TokenService) {
       useClass: AuthInterceptor,
       multi: true,
     },
-    TokenService
+    TokenService,
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }

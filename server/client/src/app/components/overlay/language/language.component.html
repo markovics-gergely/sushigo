@@ -1,3 +1,7 @@
-<mat-button-toggle-group name="languages" aria-label="Languages" class="lang-buttons" (change)="onSelect($event.value)" [value]="currentLang">
-  <mat-button-toggle *ngFor="let lang of langs" [value]="lang">{{ lang.toUpperCase() }}</mat-button-toggle>
-</mat-button-toggle-group>
+<div class="lang-buttons" [ngStyle]="closeStyle">
+  <div class="open-icon" (click)="switchOpen()"><i class='bx' [ngClass]="open ? 'bx-chevron-right' : 'bx-chevron-left'"></i><i class='bx bx-world' ></i></div>
+  <mat-button-toggle-group name="languages" aria-label="Languages" (change)="onSelect($event.value)" [value]="currentLang">
+    <mat-button-toggle *ngFor="let lang of langs" [value]="lang">{{ lang.toUpperCase() }}</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
+

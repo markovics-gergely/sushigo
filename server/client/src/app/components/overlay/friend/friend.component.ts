@@ -55,7 +55,6 @@ export class FriendComponent implements OnInit {
   public openAddFriend(): void {
     const dialogRef = this.dialog.open(FriendAddDialogComponent);
     dialogRef.afterClosed().subscribe((name: string) => {
-      console.log(name);
       
       if (name) {
         this.addFriend(name);

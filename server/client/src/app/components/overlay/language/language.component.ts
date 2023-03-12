@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { LanguagesService } from 'src/app/services/languages.service';
 
 @Component({
   selector: 'app-language',
@@ -7,17 +7,33 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./language.component.scss']
 })
 export class LanguageComponent {
-  constructor(private translate: TranslateService) { }
+  private _open: boolean = false;
+
+  constructor(private languagesService: LanguagesService) { }
 
   public onSelect(lang: string) {
-    this.translate.use(lang)
+    this.languagesService.language = lang;
   }
 
   public get langs(): string[] {
-    return this.translate.getLangs();
+    return this.languagesService.languages;
   }
 
   public get currentLang(): string {
-    return this.translate.currentLang;
+    return this.languagesService.language ?? this.languagesService.defaultLanguage;
+  }
+
+  public get open(): boolean {
+    return this._open;
+  }
+
+  public switchOpen(): void {
+    console.log(this.open);
+    
+    this._open = !this._open;
+  }
+
+  public get closeStyle(): { [klass: string]: any; } {
+    return this._open ? { right: "0px" } : { right: `-${this.langs.length * 50 + 2}px` };
   }
 }

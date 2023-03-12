@@ -6,6 +6,12 @@ export interface IFriendListViewModel {
     received: Array<IUserNameViewModel>;
 }
 
+export interface IFriendListCounter {
+    friends: number;
+    sent: number;
+    received: number;
+}
+
 export interface IFriendStatusViewModel {
     id: string;
     status: boolean;

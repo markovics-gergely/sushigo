@@ -36,10 +36,9 @@ export class FriendHubService {
   }
 
   public addListeners(): void {
-    this._hubConnection?.on('FriendRequest', (data: IUserNameViewModel) => this.friendService.addFriendToList(data));
+    this._hubConnection?.on('FriendRequest', (data: IUserNameViewModel) => this.friendService.receiveFriendRequestSuccess(data));
     this._hubConnection?.on('FriendRemove', (data: { sender: string }) => this.friendService.removeFriendFromList(data.sender));
-    this._hubConnection?.on('FriendStatuses', (statuses: Array<IFriendStatusViewModel>) => {
-     this.friendService.loadStatuses(statuses); });
+    this._hubConnection?.on('FriendStatuses', (statuses: Array<IFriendStatusViewModel>) => { this.friendService.loadStatuses(statuses); });
     this._hubConnection?.on('FriendStatus', (status: IFriendStatusViewModel) => { this.friendService.loadStatus(status); });
   }
 

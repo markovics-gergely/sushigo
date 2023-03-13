@@ -23,8 +23,8 @@ builder.Services.AddSwaggerForOcelot(builder.Configuration, options => {
                 {
                     TokenUrl = new Uri(configuration.GetValue<string>("IdentityServer:Authority") + "/connect/token"),
                     Scopes = new Dictionary<string, string> {
-                        { configuration.GetValue<string>("IdentityServer:Name"),
-                                    configuration.GetValue<string>("IdentityServer:Description") }
+                        { configuration.GetValue<string>("IdentityServer:Name") ?? string.Empty,
+                                    configuration.GetValue<string>("IdentityServer:Description") ?? string.Empty }
                             }
                 }
             },
@@ -43,7 +43,7 @@ builder.Services.AddSwaggerForOcelot(builder.Configuration, options => {
                                 Type = ReferenceType.SecurityScheme
                             }
                         },
-                        new List<string>(){ configuration.GetValue<string>("IdentityServer:Name") }
+                        new List<string>(){ configuration.GetValue<string>("IdentityServer:Name") ?? string.Empty }
                     }
                 });
         opt.OperationFilter<SwaggerFileOperationFilter>();

@@ -32,8 +32,8 @@ namespace user.api.Extensions
                         {
                             TokenUrl = new Uri(configuration.GetValue<string>("IdentityServer:Authority") + "/connect/token"),
                             Scopes = new Dictionary<string, string> {
-                                { configuration.GetValue<string>("Api:ApiResource:Name"),
-                                    configuration.GetValue<string>("Api:ApiResource:Description") }
+                                { configuration.GetValue<string>("Api:ApiResource:Name") ?? string.Empty,
+                                    configuration.GetValue<string>("Api:ApiResource:Description") ?? string.Empty }
                             }
                         }
                     },
@@ -52,7 +52,7 @@ namespace user.api.Extensions
                                 Type = ReferenceType.SecurityScheme
                             }
                         },
-                        new List<string>(){ configuration.GetValue<string>("Api:Name") }
+                        new List<string>(){ configuration.GetValue<string>("Api:Name") ?? string.Empty }
                     }
                 });
             });

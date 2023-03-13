@@ -92,6 +92,7 @@ namespace user.api.Extensions
         }
         private static IEnumerable<Client> GetClients(IConfiguration configuration)
         {
+            var scopes = configuration.GetSection("Api:ApiScopes").Get<List<string>>() ?? new List<string>();
             return new List<Client>
             {
                 new Client
@@ -106,7 +107,7 @@ namespace user.api.Extensions
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         RoleTypes.RoleScope
-                    }.Concat(configuration.GetSection("Api:ApiScopes").Get<List<string>>()).ToList(),
+                    }.Concat(scopes).ToList(),
                     AllowOfflineAccess = true,
                     RefreshTokenExpiration = TokenExpiration.Sliding,
                     AlwaysSendClientClaims = true,

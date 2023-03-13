@@ -24,8 +24,8 @@ namespace apigateway.api.Extensions
                         {
                             TokenUrl = new Uri(configuration.GetValue<string>("IdentityServer:Authority") + "/connect/token"),
                             Scopes = new Dictionary<string, string> {
-                                { configuration.GetValue<string>("IdentityServer:Name"),
-                                    configuration.GetValue<string>("IdentityServer:Description") }
+                                { configuration.GetValue<string>("IdentityServer:Name") ?? string.Empty,
+                                    configuration.GetValue<string>("IdentityServer:Description") ?? string.Empty }
                             }
                         }
                     },
@@ -44,7 +44,7 @@ namespace apigateway.api.Extensions
                                 Type = ReferenceType.SecurityScheme
                             }
                         },
-                        new List<string>(){ configuration.GetValue<string>("IdentityServer:Name") }
+                        new List<string>(){ configuration.GetValue<string>("IdentityServer:Name") ?? string.Empty }
                     }
                 });
                 options.OperationFilter<SwaggerFileOperationFilter>();
@@ -85,8 +85,10 @@ namespace apigateway.api.Extensions
                 return;
 
             var fileParams = context.MethodInfo.GetParameters().Where(p => p.ParameterType == typeof(IFormFile));
+            if (fileParams == null)
+                return;
             operation.RequestBody.Content[fileUploadMime].Schema.Properties =
-                fileParams.ToDictionary(k => k.Name, v => new OpenApiSchema()
+                fileParams.ToDictionary(k => k.Name ?? string.Empty, v => new OpenApiSchema()
                 {
                     Type = "string",
                     Format = "binary"

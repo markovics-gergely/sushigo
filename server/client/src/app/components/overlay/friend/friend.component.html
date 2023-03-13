@@ -1,8 +1,8 @@
 <div class="foil" [ngClass]="open ? 'open' : ''">
   <mat-accordion displayMode="flat" class="main-list" [ngClass]="open ? 'open' : ''">
-    <mat-expansion-panel expanded="true">
-      <mat-expansion-panel-header class="friend-list-header" [ngClass]="open ? 'open' : ''">
-        <mat-panel-title>
+    <mat-expansion-panel expanded="true" (afterExpand)="clearCount('friends')">
+      <mat-expansion-panel-header class="friend-list-header" [ngClass]="getHeaderClass(friendsCount)">
+        <mat-panel-title [matBadge]="friendsCount" [matBadgeHidden]="!friendsCount" matBadgeOverlap="true">
           Friends
         </mat-panel-title>
       </mat-expansion-panel-header>
@@ -18,9 +18,9 @@
         </div>
       </div>
     </mat-expansion-panel>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header class="friend-list-header" [ngClass]="open ? 'open' : ''">
-        <mat-panel-title>
+    <mat-expansion-panel (afterExpand)="clearCount('sent')">
+      <mat-expansion-panel-header class="friend-list-header" [ngClass]="getHeaderClass(sentCount)">
+        <mat-panel-title [matBadge]="sentCount" [matBadgeHidden]="!sentCount" matBadgeOverlap="true">
           Sent requests
         </mat-panel-title>
       </mat-expansion-panel-header>
@@ -36,9 +36,9 @@
         </div>
       </div>
     </mat-expansion-panel>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header class="friend-list-header" [ngClass]="open ? 'open' : ''">
-        <mat-panel-title>
+    <mat-expansion-panel (afterExpand)="clearCount('received')">
+      <mat-expansion-panel-header class="friend-list-header" [ngClass]="getHeaderClass(receivedCount)">
+        <mat-panel-title [matBadge]="receivedCount" [matBadgeHidden]="!receivedCount" matBadgeOverlap="true">
           Received requests
         </mat-panel-title>
       </mat-expansion-panel-header>
@@ -65,6 +65,6 @@
   </button>
   <div class="title" [ngClass]="open ? 'open' : ''">Friends</div>
 </div>
-<button class="friend-button" (click)="switchOpen()">
+<button class="friend-button" (click)="switchOpen()" [ngClass]="getHeaderClass(undefined)">
   <i class="bx bx-group"></i>
 </button>

@@ -41,6 +41,10 @@ namespace user.bll.Infrastructure
 
         public Task<UserViewModel> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
+            if (request.User == null)
+            {
+                throw new EntityNotFoundException("Requested user not found");
+            }
             var userEntity = _unitOfWork.UserRepository.Get(
                 filter: x => x.Id.ToString() == (request.Id ?? request.User.GetUserIdFromJwt()),
                 transform: x => x.AsNoTracking())

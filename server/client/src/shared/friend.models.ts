@@ -7,9 +7,9 @@ export interface IFriendListViewModel {
 }
 
 export interface IFriendListCounter {
-    friends: number;
-    sent: number;
-    received: number;
+    friends: string[];
+    sent: string[];
+    received: string[];
 }
 
 export interface IFriendStatusViewModel {

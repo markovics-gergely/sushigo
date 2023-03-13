@@ -71,6 +71,10 @@ namespace user.bll.Infrastructure
 
         public async Task<bool> Handle(EditUserCommand request, CancellationToken cancellationToken)
         {
+            if (request.User == null)
+            {
+                throw new EntityNotFoundException("User not found");
+            }
             var userEntity = _unitOfWork.UserRepository.Get(filter: x => x.Id.ToString() == request.User.GetUserIdFromJwt()).FirstOrDefault();
             if (userEntity == null)
             {

@@ -37,7 +37,7 @@ namespace apigateway.api.Extensions
             {
                 options.AddPolicy("CorsPolicy", builder =>
                 {
-                    builder.WithOrigins(configuration.GetSection("AllowedOrigins").Get<string[]>())
+                    builder.WithOrigins(configuration.GetSection("AllowedOrigins").Get<string[]>() ?? new string[] { })
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();

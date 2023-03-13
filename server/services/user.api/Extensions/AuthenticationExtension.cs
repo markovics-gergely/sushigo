@@ -37,7 +37,7 @@ namespace user.api.Extensions
             {
                 options.AddPolicy("CorsPolicy", builder =>
                 {
-                    builder.WithOrigins(configuration.GetSection("AllowedOrigins").Get<string[]>())
+                    builder.WithOrigins(configuration.GetSection("AllowedOrigins").Get<string[]>() ?? new string[] { })
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
@@ -61,7 +61,7 @@ namespace user.api.Extensions
                 }
             }
 
-            await next?.Invoke();
+            await next.Invoke();
         }
     }
 }

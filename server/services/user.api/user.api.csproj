@@ -41,4 +41,8 @@
     <ProjectReference Include="..\user.bll\user.bll.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>

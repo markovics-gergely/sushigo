@@ -6,6 +6,7 @@ using user.bll.Infrastructure.Commands;
 using user.bll.Infrastructure.DataTransferObjects;
 using user.bll.Infrastructure.Queries;
 using user.bll.Infrastructure.ViewModels;
+using user.dal.Configurations.Interfaces;
 using user.dal.Types;
 
 namespace user.api.Controllers
@@ -20,14 +21,27 @@ namespace user.api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IUserConfigurationService _config;
 
         /// <summary>
         /// Constructor for dependency injection
         /// </summary>
         /// <param name="mediator"></param>
-        public UserController(IMediator mediator)
+        /// <param name="config"></param>
+        public UserController(IMediator mediator, IUserConfigurationService config)
         {
             _mediator = mediator;
+            _config = config;
+        }
+
+        /// <summary>
+        /// Get config values from the server
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("config")]
+        public IActionResult GetConfig()
+        {
+            return Ok(new { MaxUploadSize = _config.GetMaxUploadSize() });
         }
 
         /// <summary>
@@ -78,7 +92,7 @@ namespace user.api.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns>Success</returns>
         [HttpPut("edit")]
-        public async Task<ActionResult<bool>> EditUserAsync([FromBody] EditUserDTO userDTO, CancellationToken cancellationToken)
+        public async Task<ActionResult<UserViewModel>> EditUserAsync([FromForm] EditUserDTO userDTO, CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
             var command = new EditUserCommand(userDTO, user);

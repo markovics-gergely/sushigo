@@ -86,7 +86,7 @@
 
 ### Játékleírás
 
-**[Játékszabályzat](https://tarsasjatekok.com/files/common/f/f5/f54/f5489c4e84b252e77f45f8a12895022b/sushi-go-party-szabaly-lowres.pdf)**  
+**[Játékszabályzat](https://tarsasjatekok.com/files/common/f/f5/f54/f5489c4e84b252e77f45f8a12895022b/sushi-go-party-szabaly-highres.pdf)**  
 
 Egy nagy buli sushi tálat kell összeraknotok! De maradjon ám hely a desszertnek is!
 Szerezz minél több pontot az ételek kártyák ügyes kiválogatásával! A Sushi Go Party!-ban csak a játékosokon múlik, milyen ételek kerülnek terítékre! A játék elején összeállított menühöz tartozó kártyákból a játékosszámnak megfelelőt kell kiosztani. Minden kártya másképpen ér pontot, de a kapott lapok közül mindig csak egy választható - a többit tovább kell adni a szomszédnak. Jól gondold meg, mit választasz!

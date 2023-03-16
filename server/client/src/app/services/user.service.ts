@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { ILoginUserDTO, IRegisterUserDTO } from 'src/shared/user.models';
+import { ILoginUserDTO, IRegisterUserDTO, IUserViewModel } from 'src/shared/user.models';
 import { TokenService } from './token.service';
 
 @Injectable({
@@ -68,5 +68,9 @@ export class UserService {
     return this.client.post(`${this.baseUrl}/refresh`, body.toString(), {
       headers: headers,
     });
+  }
+
+  public get user(): Observable<IUserViewModel> {
+    return this.client.get<IUserViewModel>(`${this.baseUrl}`);
   }
 }

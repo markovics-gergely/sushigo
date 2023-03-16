@@ -64,6 +64,13 @@ namespace user.dal
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
 
+            builder.Entity<ApplicationUser>()
+                .HasOne(u => u.Avatar)
+                .WithOne(a => a.User)
+                .HasForeignKey<ApplicationUser>(a => a.AvatarId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+
             builder.Entity<ApplicationRole>()
                 .HasData(
                     new ApplicationRole

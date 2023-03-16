@@ -1,22 +1,38 @@
 {
-    "login": {
-        "title": "Log in",
-        "sign-up": "Sign up",
-        "sign-up-detail": "Don't have an account?",
-        "username": "Username or e-mail",
-        "password": "Password",
-        "submit": "Log in"
+  "login": {
+    "title": "Log in",
+    "sign-up": "Sign up",
+    "sign-up-detail": "Don't have an account?",
+    "username": "Username or e-mail",
+    "password": "Password",
+    "submit": "Log in"
+  },
+  "register": {
+    "title": "Register",
+    "login-detail": "Already have an account?",
+    "login": "Log in",
+    "username": "Username",
+    "first-name": "First name",
+    "last-name": "Last name",
+    "email": "E-mail",
+    "password": "Password",
+    "confirm-password": "Confirm password",
+    "submit": "Register"
+  },
+  "home": {
+    "user": {
+      "title": "Profile",
+      "username": "Username",
+      "name": "Name",
+      "email": "E-mail",
+      "exp": "{{points}} Experience points",
+      "classic": "Classic mode only",
+      "party": "Party mode enabled",
+      "edit": "Edit",
+      "logout": "Log out"
     },
-    "register": {
-        "title": "Register",
-        "login-detail": "Already have an account?",
-        "login": "Log in",
-        "username": "Username",
-        "first-name": "First name",
-        "last-name": "Last name",
-        "email": "E-mail",
-        "password": "Password",
-        "confirm-password": "Confirm password",
-        "submit": "Register"
+    "history": {
+      "title": "History"
     }
+  }
 }

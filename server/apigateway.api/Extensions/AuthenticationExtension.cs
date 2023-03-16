@@ -14,8 +14,8 @@ namespace apigateway.api.Extensions
             })
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
-                    options.Authority = configuration.GetValue<string>("Authentication:AuthorityDocker");
-                    options.Audience = configuration.GetValue<string>("Authentication:AuthorityDocker") + "/resources";
+                    options.Authority = configuration.GetValue<string>("IdentityServer:AuthorityDocker");
+                    options.Audience = configuration.GetValue<string>("IdentityServer:AuthorityDocker") + "/resources";
                     options.RequireHttpsMetadata = false;
                     options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
                     options.Events = new JwtBearerEvents
@@ -47,6 +47,24 @@ namespace apigateway.api.Extensions
                            .AllowCredentials();
                 });
             });
+        }
+        public static async Task AuthQueryStringToHeader(HttpContext context, Func<Task> next)
+        {
+            var qs = context.Request.QueryString;
+
+            if (string.IsNullOrWhiteSpace(context.Request.Headers["Authorization"]) && qs.HasValue)
+            {
+                var token = (from pair in qs.Value?.TrimStart('?').Split('&')
+                             where pair.StartsWith("token=")
+                             select pair[6..]).FirstOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    context.Request.Headers.Add("Authorization", "Bearer " + token);
+                }
+            }
+
+            await next.Invoke();
         }
     }
 }

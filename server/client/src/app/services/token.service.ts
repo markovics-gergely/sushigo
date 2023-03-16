@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { IUser, IUserViewModel } from 'src/shared/user.models';
+import { AppRole, IUser, IUserTokenViewModel } from 'src/shared/user.models';
 import jwt_decode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
 
@@ -35,7 +35,7 @@ export class TokenService {
     return this.cookieService.get(this.rCookieName);
   }
 
-  public get user(): IUserViewModel | undefined {
+  public get user(): IUserTokenViewModel | undefined {
     return this.token ? jwt_decode(this.token) : undefined;
   }
 
@@ -67,5 +67,10 @@ export class TokenService {
 
   public get loggedIn(): boolean {
     return this.cookieService.check(this.cookieName) && this.notExpired;
+  }
+
+  public get roles(): AppRole[] {
+    const values = this.user?.role ?? [];
+    return Array.isArray(values) ? values : [values];
   }
 }

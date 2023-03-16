@@ -37,6 +37,10 @@ import { LanguageComponent } from './components/overlay/language/language.compon
 import { RespMatGridTileDirective } from './directives/resp-mat-grid-tile.directive';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
+import { UserComponent } from './components/user/user.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
+import { HistoryComponent } from './components/history/history.component';
 
 export function jwtOptionsFactory(tokenService: TokenService) {
   return {
@@ -56,6 +60,8 @@ export function jwtOptionsFactory(tokenService: TokenService) {
     FriendAddDialogComponent,
     LanguageComponent,
     RespMatGridTileDirective,
+    UserComponent,
+    HistoryComponent,
   ],
   imports: [
     BrowserModule,
@@ -76,6 +82,8 @@ export function jwtOptionsFactory(tokenService: TokenService) {
     MatButtonToggleModule,
     MatGridListModule,
     MatCardModule,
+    MatDividerModule,
+    MatButtonModule,
     JwtModule.forRoot({
       jwtOptionsProvider: {
         provide: JWT_OPTIONS,

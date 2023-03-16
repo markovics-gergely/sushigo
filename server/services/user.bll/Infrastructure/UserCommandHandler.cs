@@ -9,12 +9,15 @@ using user.bll.Validators.Implementations;
 using user.bll.Exceptions;
 using user.bll.Extensions;
 using user.dal.Types;
+using user.dal.Configurations.Interfaces;
+using user.dal.Repository.Interfaces;
+using user.bll.Infrastructure.ViewModels;
 
 namespace user.bll.Infrastructure
 {
     public class UserCommandHandler :
         IRequestHandler<CreateUserCommand, bool>,
-        IRequestHandler<EditUserCommand, bool>,
+        IRequestHandler<EditUserCommand, UserViewModel>,
         IRequestHandler<ClaimPartyCommand, Unit>,
         IRequestHandler<ClaimGameCommand, Unit>,
         IRequestHandler<EditUserRoleCommand, Unit>
@@ -24,14 +27,18 @@ namespace user.bll.Infrastructure
         private IValidator? _validator;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserConfigurationService _config;
+        private readonly IFileRepository _fileRepository;
 
         public UserCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, RoleManager<ApplicationRole> roleManager,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager, IUserConfigurationService config, IFileRepository fileRepository)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _roleManager = roleManager;
             _userManager = userManager;
+            _config = config;
+            _fileRepository = fileRepository;
         }
 
         public async Task<bool> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -69,16 +76,30 @@ namespace user.bll.Infrastructure
             return result.Succeeded;
         }
 
-        public async Task<bool> Handle(EditUserCommand request, CancellationToken cancellationToken)
+        public async Task<UserViewModel> Handle(EditUserCommand request, CancellationToken cancellationToken)
         {
             if (request.User == null)
             {
                 throw new EntityNotFoundException("User not found");
             }
-            var userEntity = _unitOfWork.UserRepository.Get(filter: x => x.Id.ToString() == request.User.GetUserIdFromJwt()).FirstOrDefault();
+            var userEntity = _unitOfWork.UserRepository.Get(
+                filter: x => x.Id.ToString() == request.User.GetUserIdFromJwt(),
+                includeProperties: nameof(ApplicationUser.Avatar)
+                ).FirstOrDefault();
             if (userEntity == null)
             {
                 throw new EntityNotFoundException("User not found");
+            }
+            if (request.DTO.Avatar != null)
+            {
+                _validator = new AndCondition(
+                                new FileSizeValidator(request.DTO.Avatar, _config.GetMaxUploadSize()),
+                                new FileHeaderValidator(request.DTO.Avatar)
+                                );
+                if (!_validator.Validate())
+                {
+                    throw new ValidationErrorException("There was a problem with the provided avatar");
+                }
             }
             _validator = new EditUserValidator(request.DTO, _unitOfWork);
             if (!_validator.Validate())
@@ -89,9 +110,29 @@ namespace user.bll.Infrastructure
             userEntity.FirstName = request.DTO.FirstName;
             userEntity.LastName = request.DTO.LastName;
 
+            var avatar = request.DTO.Avatar;
+            if (avatar != null)
+            {
+                var filePath = Path.GetTempFileName();
+                var sanitizedFilename = _fileRepository.SanitizeFilename(avatar.FileName);
+                var extension = Path.GetExtension(sanitizedFilename);
+                using (var stream = File.Create(filePath))
+                {
+                    await avatar.CopyToAsync(stream, cancellationToken);
+                }
+                var savedImage = _fileRepository.SaveFile(Guid.Parse(request.User.GetUserIdFromJwt()), filePath, extension);
+                userEntity.Avatar = savedImage;
+            }
+
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
-            return true;
+
+            var identityResult = await _userManager.SetUserNameAsync(userEntity, userEntity.UserName);
+            if (identityResult.Errors.Any())
+            {
+                throw new InvalidParameterException(string.Join('\n', identityResult.Errors.Select(e => e.Description).ToList()));
+            }
+            return _mapper.Map<UserViewModel>(userEntity);
         }
 
         public async Task<Unit> Handle(EditUserRoleCommand request, CancellationToken cancellationToken)

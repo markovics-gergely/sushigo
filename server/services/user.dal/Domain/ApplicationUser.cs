@@ -12,6 +12,9 @@ namespace user.dal.Domain
         public required string LastName { get; set; }
         public long Experience { get; set; } = 0;
 
+        public Guid? AvatarId { get; set; }
+        public Image? Avatar { get; set; }
+
         public ICollection<GameTypes> GameClaims { get; set; } = new List<GameTypes>();
 
         public virtual ICollection<IdentityUserClaim<Guid>> Claims { get; set; } = new List<IdentityUserClaim<Guid>>();

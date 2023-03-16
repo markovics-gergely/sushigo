@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using user.bll.Infrastructure.DataTransferObjects;
 using user.bll.Infrastructure.ViewModels;
+using user.bll.ValueConverters;
 using user.dal.Domain;
 
 namespace user.bll.MappingProfiles
@@ -20,6 +21,7 @@ namespace user.bll.MappingProfiles
 
             CreateMap<ApplicationUser, UserViewModel>()
                 .ForMember(u => u.Name, opt => opt.MapFrom(a => a.GetFullName()))
+                .ForMember(dest => dest.Avatar, opt => opt.ConvertUsing<ImageDisplayUrlConverter, Image?>(src => src.Avatar))
                 .ReverseMap();
 
             CreateMap<ApplicationUser, UserNameViewModel>()

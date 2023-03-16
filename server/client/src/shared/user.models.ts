@@ -8,7 +8,7 @@ export interface IUser {
     expires_in: number;
 }
 
-export interface IUserViewModel {
+export interface IUserTokenViewModel {
     sub: string;
     role?: Array<AppRole> | AppRole;
     experience: number;
@@ -38,4 +38,13 @@ export interface IUserNameViewModel {
     id: string;
     userName: string;
     status?: boolean;
+}
+
+export interface IUserViewModel {
+    userName: string;
+    name: string;
+    email: string;
+    avatar: string;
+    experience: number;
+    mode?: string;
 }

@@ -1,22 +1,38 @@
 {
-    "login": {
-        "title": "Belépés",
-        "sign-up": "Regisztráljon",
-        "sign-up-detail": "Nincs felhasználója?",
-        "username": "Felhasználónév vagy e-mail",
-        "password": "Jelszó",
-        "submit": "Belépés"
+  "login": {
+    "title": "Belépés",
+    "sign-up": "Regisztráljon",
+    "sign-up-detail": "Nincs felhasználója?",
+    "username": "Felhasználónév vagy e-mail",
+    "password": "Jelszó",
+    "submit": "Belépés"
+  },
+  "register": {
+    "title": "Regisztrálás",
+    "login-detail": "Már van felhasználója?",
+    "login": "Lépjen be",
+    "username": "Felhasználónév",
+    "first-name": "Keresztnév",
+    "last-name": "Vezetéknév",
+    "email": "E-mail",
+    "password": "Jelszó",
+    "confirm-password": "Jelszó megerősítése",
+    "submit": "Regisztrálás"
+  },
+  "home": {
+    "user": {
+      "title": "Profil",
+      "username": "Felhasználónév",
+      "name": "Név",
+      "email": "E-mail",
+      "exp": "{{points}} Tapasztalatpont",
+      "classic": "Csak Classic mód",
+      "party": "Party mód aktiválva",
+      "edit": "Szerkesztés",
+      "logout": "Kilépés"
     },
-    "register": {
-        "title": "Regisztrálás",
-        "login-detail": "Már van felhasználója?",
-        "login": "Lépjen be",
-        "username": "Felhasználónév",
-        "first-name": "Keresztnév",
-        "last-name": "Vezetéknév",
-        "email": "E-mail",
-        "password": "Jelszó",
-        "confirm-password": "Jelszó megerősítése",
-        "submit": "Regisztrálás"
+    "history": {
+      "title": "Történet"
     }
+  }
 }

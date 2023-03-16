@@ -1,23 +1,34 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { IFriendListCounter, IFriendListViewModel, IFriendStatusViewModel } from 'src/shared/friend.models';
+import { environment } from 'src/environments/environment';
+import {
+  IFriendListCounter,
+  IFriendListViewModel,
+  IFriendStatusViewModel,
+} from 'src/shared/friend.models';
 import { IUserNameViewModel } from 'src/shared/user.models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FriendService {
-  private readonly baseUrl: string = /*`${environment.baseUrl}/friend`*/ 'http://localhost:5200/friend';
+  private readonly baseUrl: string = `${environment.baseUrl}/friend`;
   private _friends: IFriendListViewModel | undefined;
-  private _friendsCounter: IFriendListCounter = { friends: [], sent: [], received: [] };
+  private _friendsCounter: IFriendListCounter = {
+    friends: [],
+    sent: [],
+    received: [],
+  };
 
-  constructor(private client: HttpClient) { }
+  constructor(private client: HttpClient) {}
 
   public loadFriends(): Subscription {
     return this.client
       .get<IFriendListViewModel>(this.baseUrl)
-      .subscribe((friends: IFriendListViewModel) => {this._friends = friends; console.log(friends);});
+      .subscribe((friends: IFriendListViewModel) => {
+        this._friends = friends;
+      });
   }
 
   public get friends(): IFriendListViewModel | undefined {
@@ -28,12 +39,17 @@ export class FriendService {
     return this._friendsCounter;
   }
 
-  private addFriend(userName: string): Observable<any> {
-    return this.client.post(`${this.baseUrl}/${userName}`, {});
+  private addFriend(userName: string): Observable<IUserNameViewModel> {
+    return this.client.post<IUserNameViewModel>(
+      `${this.baseUrl}/${userName}`,
+      {}
+    );
   }
 
   public receiveFriendRequestSuccess(friend: IUserNameViewModel): void {
-    if (!this._friends) { return; }
+    if (!this._friends) {
+      return;
+    }
     const index = this._friends.sent.findIndex((f) => f.id === friend.id);
     if (index >= 0) {
       this._friends.sent.splice(index, 1);
@@ -46,7 +62,9 @@ export class FriendService {
   }
 
   private sendFriendRequestSuccess(friend: IUserNameViewModel): void {
-    if (!this._friends) { return; }
+    if (!this._friends) {
+      return;
+    }
     const index = this._friends.received.findIndex((f) => f.id === friend.id);
     if (index >= 0) {
       this._friends.received.splice(index, 1);
@@ -70,26 +88,23 @@ export class FriendService {
   }
 
   public removeFriendFromList(id: string): void {
-    this.filterAllFriends(id);
-    this.filterAllFriendsCounter(id);
-  }
-
-  private filterAllFriends(id: string): void {
-    if (!this._friends) { return; }
-    Object.keys(this._friends).forEach((k) => {
+    Object.keys(this._friends!).forEach((k) => {
       const key = k as keyof IFriendListViewModel;
       this._friends![key] = this.filterFriends(this._friends![key], id);
     });
-  }
-
-  private filterAllFriendsCounter(id: string): void {
     Object.keys(this._friendsCounter).forEach((k) => {
       const key = k as keyof IFriendListCounter;
-      this._friendsCounter[key] = this.filterFriendsCounter(this._friendsCounter[key], id);
+      this._friendsCounter[key] = this.filterFriendsCounter(
+        this._friendsCounter[key],
+        id
+      );
     });
   }
 
-  private filterFriends(list: Array<IUserNameViewModel>, id: string): Array<IUserNameViewModel> {
+  private filterFriends(
+    list: Array<IUserNameViewModel>,
+    id: string
+  ): Array<IUserNameViewModel> {
     return list.filter((f) => f.id !== id);
   }
 
@@ -105,19 +120,13 @@ export class FriendService {
   }
 
   public loadStatuses(statuses: Array<IFriendStatusViewModel>): void {
-    this.loadStatusToList(this._friends?.friends || [], statuses);
-    this.loadStatusToList(this._friends?.sent || [], statuses);
-    this.loadStatusToList(this._friends?.received || [], statuses);
-  }
-
-  public loadStatus(status: IFriendStatusViewModel): void {
-    const array = new Array<IFriendStatusViewModel>();
-    array.push(status);
-    this.loadStatuses(array);
-  }
-
-  private loadStatusToList(list: Array<IUserNameViewModel>, statuses: Array<IFriendStatusViewModel>): void {
-    list.forEach((friend) => {
+    if (!this._friends) return;
+    const friends = [
+      ...this._friends.friends,
+      ...this._friends.sent,
+      ...this._friends.received,
+    ].flat();
+    friends.forEach((friend) => {
       const status = statuses.find((s) => s.id === friend.id);
       friend.status = status?.status;
     });

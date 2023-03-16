@@ -80,6 +80,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 app.UseCors("CorsPolicy");
+app.Use(AuthenticationExtension.AuthQueryStringToHeader);
 
 app.UseAuthentication();
 app.UseAuthorization();

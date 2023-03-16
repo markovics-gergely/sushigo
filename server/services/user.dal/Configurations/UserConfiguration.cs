@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace user.dal.Configurations
+﻿namespace user.dal.Configurations
 {
-    internal class UserConfiguration
+    public class UserConfiguration
     {
+        public int MaxUploadSize { get; set; } = 25;
+
+        public string StaticFilePath { get; set; } = string.Empty;
     }
 }

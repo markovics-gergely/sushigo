@@ -25,7 +25,7 @@ namespace user.api.Extensions
         {
             services.AddHttpClient();
             services.AddTransient<IRequestHandler<CreateUserCommand, bool>, UserCommandHandler>();
-            services.AddTransient<IRequestHandler<EditUserCommand, bool>, UserCommandHandler>();
+            services.AddTransient<IRequestHandler<EditUserCommand, UserViewModel>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<ClaimPartyCommand, Unit>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<ClaimGameCommand, Unit>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<EditUserRoleCommand, Unit>, UserCommandHandler>();
@@ -39,9 +39,11 @@ namespace user.api.Extensions
             services.AddTransient<IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>, UserQueryHandler>();
 
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddTransient<IFileRepository, FileRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CommandCachingBehavior<,>));
 
             services.AddDistributedMemoryCache();
         }

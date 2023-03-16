@@ -184,6 +184,9 @@ namespace user.dal.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("AvatarId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -245,6 +248,10 @@ namespace user.dal.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AvatarId")
+                        .IsUnique()
+                        .HasFilter("[AvatarId] IS NOT NULL");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -278,6 +285,32 @@ namespace user.dal.Migrations
                     b.HasIndex("SenderId");
 
                     b.ToTable("Friends");
+                });
+
+            modelBuilder.Entity("user.dal.Domain.Image", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("DisplayPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileExtension")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhysicalPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Size")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Image");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -331,6 +364,16 @@ namespace user.dal.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("user.dal.Domain.ApplicationUser", b =>
+                {
+                    b.HasOne("user.dal.Domain.Image", "Avatar")
+                        .WithOne("User")
+                        .HasForeignKey("user.dal.Domain.ApplicationUser", "AvatarId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Avatar");
+                });
+
             modelBuilder.Entity("user.dal.Domain.Friend", b =>
                 {
                     b.HasOne("user.dal.Domain.ApplicationUser", "Receiver")
@@ -363,6 +406,11 @@ namespace user.dal.Migrations
                     b.Navigation("Tokens");
 
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("user.dal.Domain.Image", b =>
+                {
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

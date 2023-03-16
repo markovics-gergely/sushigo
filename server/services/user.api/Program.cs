@@ -2,10 +2,12 @@ using Hellang.Middleware.ProblemDetails;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using user.api.Extensions;
 using user.api.Hubs;
 using user.bll.Settings;
 using user.dal;
+using user.dal.Configurations.Interfaces;
 using user.dal.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +29,7 @@ builder.Services.AddIdentityExtensions(configuration);
 builder.Services.AddAuthenticationExtensions(configuration);
 
 builder.Services.AddServiceExtensions();
+builder.Services.AddConfigurations(configuration);
 builder.Services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
 builder.Services.AddSwaggerExtension(configuration);
 
@@ -69,6 +72,13 @@ if (app.Environment.IsDevelopment())
         options.OAuthUsePkce();
     });
 }
+
+var configService = app.Services.GetRequiredService<IUserConfigurationService>();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(configService.GetStaticFilePhysicalPath()),
+    RequestPath = $"/{configService.GetStaticFileRequestPath()}"
+});
 
 app.UseRouting();
 app.UseCors("CorsPolicy");

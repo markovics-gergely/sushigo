@@ -47,6 +47,7 @@ namespace user.bll.Infrastructure
             }
             var userEntity = _unitOfWork.UserRepository.Get(
                 filter: x => x.Id.ToString() == (request.Id ?? request.User.GetUserIdFromJwt()),
+                includeProperties: nameof(ApplicationUser.Avatar),
                 transform: x => x.AsNoTracking())
                 .FirstOrDefault();
 

@@ -23,7 +23,7 @@ const env: string = (argv as { [x: string]: string })['env'] || 'dev';
 // Checks whether command line argument of `prod` was provided signifying production mode
 const prod = env === 'prod';
 
-const envVariables = ['baseUrl', 'grant_type', 'client_id', 'client_secret', 'scope', 'token_name', 'refresh_token_name', 'language_token_name']
+const envVariables = ['baseUrl', 'grant_type', 'client_id', 'client_secret', 'scope', 'token_name', 'refresh_token_name', 'language_token_name', 'theme_token_name']
 const envValues = Object.keys(process.env).filter(v => envVariables.includes(v)).map((key) => `    ${key}: '${process.env[key]}'`).join(',\n');
 
 //actual content to be compiled dynamically and pasted into respective environment files

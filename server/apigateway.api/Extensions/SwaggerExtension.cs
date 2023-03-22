@@ -7,8 +7,16 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace apigateway.api.Extensions
 {
+    /// <summary>
+    /// Swagger extensions
+    /// </summary>
     public static class SwaggerExtension
     {
+        /// <summary>
+        /// Add swagger related extensions
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
         public static void AddSwaggerExtension(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSwaggerGen(options =>
@@ -55,10 +63,17 @@ namespace apigateway.api.Extensions
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class AuthorizeSwaggerOperationFilter : IOperationFilter
     {
         private readonly OpenApiSecurityRequirement requirement;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="requirement"></param>
         public AuthorizeSwaggerOperationFilter(OpenApiSecurityRequirement requirement)
         {
             this.requirement = requirement;

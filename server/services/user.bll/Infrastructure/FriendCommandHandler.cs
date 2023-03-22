@@ -7,8 +7,6 @@ using user.bll.Extensions;
 using user.bll.Infrastructure.Commands;
 using user.bll.Infrastructure.Events;
 using user.bll.Infrastructure.ViewModels;
-using user.bll.Validators.Implementations;
-using user.bll.Validators.Interfaces;
 using user.dal.Domain;
 using user.dal.UnitOfWork.Interfaces;
 
@@ -21,7 +19,6 @@ namespace user.bll.Infrastructure
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        private IValidator? _validator;
 
         public FriendCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IMediator mediator)
         {

@@ -27,7 +27,8 @@
   </mat-card-header>
   <mat-card-content><mat-divider></mat-divider></mat-card-content>
   <mat-card-actions>
-    <button mat-flat-button>{{ "home.user.edit" | translate }}</button>
-    <button mat-flat-button>{{ "home.user.logout" | translate }}</button>
+    <button mat-stroked-button>{{ "home.user.edit" | translate }}</button>
+    <button mat-stroked-button>{{ "home.user.logout" | translate }}</button>
+    <button mat-stroked-button *can="'CanClaimParty'">{{ "home.user.logout" | translate }}</button>
   </mat-card-actions>
 </mat-card>

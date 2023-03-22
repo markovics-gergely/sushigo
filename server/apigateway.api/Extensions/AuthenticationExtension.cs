@@ -2,8 +2,16 @@
 
 namespace apigateway.api.Extensions
 {
+    /// <summary>
+    /// Extensions for authentication
+    /// </summary>
     public static class AuthenticationExtension
     {
+        /// <summary>
+        /// Add authentication related extensions
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
         public static void AddAuthenticationExtensions(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(options =>

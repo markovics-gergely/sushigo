@@ -6,7 +6,6 @@ using System.Data;
 using user.bll.Extensions;
 using user.bll.Infrastructure.Queries;
 using user.bll.Infrastructure.ViewModels;
-using user.bll.Validators.Interfaces;
 using user.dal.Domain;
 using user.dal.Types;
 using user.dal.UnitOfWork.Interfaces;
@@ -18,7 +17,6 @@ namespace user.bll.Infrastructure
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private IValidator? _validator;
 
         public FriendQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {

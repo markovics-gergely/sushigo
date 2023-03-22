@@ -5,9 +5,10 @@
     <input matInput placeholder="Username" formControlName="name" />
   </mat-form-field>
 </mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button (click)="add()" [disabled]="!valid" class="friend-dialog-button" cdkFocusInitial>
+<mat-dialog-actions *ngIf="form">
+  <button mat-stroked-button (click)="add()" [disabled]="!valid" class="friend-dialog-button" cdkFocusInitial>
     Add
   </button>
-  <button mat-button (click)="cancel()" class="friend-dialog-button">Cancel</button>
+  <button mat-stroked-button (click)="cancel()" class="friend-dialog-button">Cancel</button>
 </mat-dialog-actions>
+<div class="spinner" *ngIf="!form"><mat-spinner></mat-spinner></div>

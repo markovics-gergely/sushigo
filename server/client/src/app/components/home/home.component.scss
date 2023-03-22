@@ -9,14 +9,24 @@
 }
 
 .banner {
-  background-image: linear-gradient(
-    to right,
-    var(--color-primary),
-    black 30% 70%,
-    var(--color-primary)
-  );
+  padding: 5px;
   img {
-    height: 100px;
+    height: 90px;
+    width: calc(100% - 10px);
     object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--color-primary);
+    position: absolute;
+  }
+  h1 {
+    font-size: 5rem;
+    color: var(--color-text-light);
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    z-index: 1;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: var(--color-primary);
   }
 }

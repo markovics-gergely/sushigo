@@ -45,6 +45,12 @@ namespace user.api.Extensions
             });
         }
 
+        /// <summary>
+        /// Add autherization from query
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="next"></param>
+        /// <returns></returns>
         public static async Task AuthQueryStringToHeader(HttpContext context, Func<Task> next)
         {
             var qs = context.Request.QueryString;

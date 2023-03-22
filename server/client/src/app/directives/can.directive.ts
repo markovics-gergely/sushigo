@@ -5,13 +5,14 @@ import {
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
+import { AppRole } from 'src/shared/user.models';
 import { AclService } from '../services/acl.service';
 
 @Directive({
   selector: '[can]',
 })
 export class CanDirective {
-  private _roles: string[] = [];
+  private _roles: (AppRole | '*')[] = [];
 
   constructor(
     private aclService: AclService,
@@ -21,7 +22,7 @@ export class CanDirective {
   ) {}
 
   @Input()
-  set can(val: string | Array<string>) {
+  set can(val: (AppRole | '*') | Array<(AppRole | '*')>) {
     this._roles = Array.isArray(val) ? val : [val];
     this.updateView();
   }

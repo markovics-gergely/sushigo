@@ -11,6 +11,7 @@ export class TokenService {
   private readonly cookieName = environment.token_name;
   private readonly rCookieName = environment.refresh_token_name;
   private readonly langCookieName = environment.language_token_name;
+  private readonly themeCookieName = environment.theme_token_name;
 
   constructor(private cookieService: CookieService) {}
 
@@ -55,10 +56,19 @@ export class TokenService {
     this.cookieService.set(this.langCookieName, lang ?? "");
   }
 
+  public get theme(): string | undefined {
+    return this.cookieService.get(this.themeCookieName);
+  }
+
+  public set theme(theme: string | undefined) {
+    this.cookieService.set(this.themeCookieName, theme ?? "");
+  }
+
   public clearCookies() {
     this.cookieService.delete(this.cookieName);
     this.cookieService.delete(this.rCookieName);
     this.cookieService.delete(this.langCookieName);
+    this.cookieService.delete(this.themeCookieName);
   }
 
   private get notExpired(): boolean {

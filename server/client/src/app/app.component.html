@@ -1,10 +1,9 @@
-<body style="width: 100%; height: 100%;">
-  <div style="display: flex; height: 100%; width: 100%;">
-    <div style="width: 100%; height: 100%;">
-      <router-outlet></router-outlet>
-    </div>
-    <app-loading></app-loading>
-    <app-language></app-language>
-    <app-friend *ngIf="loggedIn"></app-friend>
+<div style="display: flex; height: 100%; width: 100%;">
+  <div style="width: 100%; height: 100%;">
+    <router-outlet></router-outlet>
   </div>
-</body>
+  <app-loading></app-loading>
+  <app-language></app-language>
+  <app-theme></app-theme>
+  <app-friend *ngIf="loggedIn"></app-friend>
+</div>

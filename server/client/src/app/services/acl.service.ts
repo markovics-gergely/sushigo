@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ACL } from 'src/shared/acl.models';
+import { AppRole } from 'src/shared/user.models';
 import { TokenService } from './token.service';
 
 @Injectable({
@@ -9,13 +10,13 @@ export class AclService {
 
   constructor(private tokenService: TokenService) { }
 
-  public can(role: string): boolean {
+  public can(role: AppRole | '*'): boolean {
     const roles = ACL[role];
     const userRoles = this.tokenService.user?.role ?? [];
     return roles && (roles.includes('*') || [userRoles].flat().some(role => roles.includes(role)));
   }
 
-  public hasRoles(roles: string[]): boolean {
+  public hasRoles(roles: (AppRole | '*')[]): boolean {
     const userRoles = this.tokenService.user?.role ?? [];
     return [userRoles].flat().some(role => roles.includes(role));
   }

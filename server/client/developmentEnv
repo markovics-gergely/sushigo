@@ -6,3 +6,4 @@ scope="sushigoidentity"
 token_name="sushitoken"
 refresh_token_name="rsushitoken"
 language_token_name="langsushitoken"
+theme_token_name=themesushitoken

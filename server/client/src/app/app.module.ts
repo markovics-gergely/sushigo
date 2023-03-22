@@ -41,6 +41,11 @@ import { UserComponent } from './components/user/user.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { HistoryComponent } from './components/history/history.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { StoreComponent } from './components/store/store.component';
+import { ConfirmComponent } from './components/dialog/confirm/confirm.component';
+import { EditUserComponent } from './components/dialog/edit-user/edit-user.component';
+import { ThemeComponent } from './components/overlay/theme/theme.component';
 
 export function jwtOptionsFactory(tokenService: TokenService) {
   return {
@@ -62,6 +67,10 @@ export function jwtOptionsFactory(tokenService: TokenService) {
     RespMatGridTileDirective,
     UserComponent,
     HistoryComponent,
+    StoreComponent,
+    ConfirmComponent,
+    EditUserComponent,
+    ThemeComponent,
   ],
   imports: [
     BrowserModule,
@@ -84,6 +93,7 @@ export function jwtOptionsFactory(tokenService: TokenService) {
     MatCardModule,
     MatDividerModule,
     MatButtonModule,
+    MatProgressSpinnerModule,
     JwtModule.forRoot({
       jwtOptionsProvider: {
         provide: JWT_OPTIONS,

@@ -27,23 +27,15 @@ services:
     depends_on:
         - sushisqlserver
 
-#  nginx:
-#    image: ${DOCKER_REGISTRY-}nginx
-#    build:
-#      context: .
-#      dockerfile: nginx/Dockerfile
-#    ports:
-#      - "80:80"
-#    depends_on:
-#      - apigateway.api
-#      - user.api
-#      - lobby.api
-
 #  client:
 #    image: ${DOCKER_REGISTRY-}client
 #    build:
 #      context: .
 #      dockerfile: client/Dockerfile
+#    ports:
+#      - "4200:80"
+#    volumes:
+#      - 'clientdata:/usr/local/app/node_modules'
 
   sushisqlserver:
     container_name: sushisql
@@ -91,4 +83,6 @@ volumes:
   redis_data:
     driver: local
   mssqldata:
+    driver: local
+  clientdata:
     driver: local

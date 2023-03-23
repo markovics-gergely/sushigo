@@ -1,1 +1,68 @@
-<p>edit-user works!</p>
+<h1 mat-dialog-title>{{ "home.user.edit-dialog.title" | translate }}</h1>
+<div mat-dialog-content>
+  <form
+    *ngIf="editForm"
+    method="post"
+    class="form-table"
+    [formGroup]="editForm"
+  >
+    <mat-form-field appearance="outline">
+      <mat-label>{{ "home.user.edit-dialog.username" | translate }}</mat-label>
+      <input
+        id="userName"
+        type="email"
+        matInput
+        [placeholder]="'home.user.edit-dialog.username' | translate"
+        formControlName="userName"
+        minlength="4"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ "home.user.edit-dialog.first-name" | translate }}</mat-label>
+      <input
+        id="firstName"
+        type="text"
+        matInput
+        [placeholder]="'home.user.edit-dialog.first-name' | translate"
+        formControlName="firstName"
+        minlength="4"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ "home.user.edit-dialog.last-name" | translate }}</mat-label>
+      <input
+        id="lastName"
+        type="text"
+        matInput
+        [placeholder]="'home.user.edit-dialog.last-name' | translate"
+        formControlName="lastName"
+        minlength="4"
+      />
+    </mat-form-field>
+    <mat-toolbar>
+      <input 
+        hidden
+        type="file"
+        (change)="uploadAvatar($event)"
+        #fileInput
+        accept="image/png, image/jpg, image/jpeg" 
+      />
+      <button
+        mat-flat-button
+        (click)="fileInput.click()"
+        color="primary"
+      >
+      {{ "home.user.edit-dialog.upload" | translate }}
+      </button>
+      <span class="avatar-name">{{ avatar }}</span>
+    </mat-toolbar>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-flat-button color="warn" (click)="cancel()">
+    {{ "home.user.edit-dialog.cancel" | translate }}
+  </button>
+  <button mat-flat-button color="primary" (click)="submit()" cdkFocusInitial>
+    {{ "home.user.edit-dialog.submit" | translate }}
+  </button>
+</div>

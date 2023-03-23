@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AclService } from 'src/app/services/acl.service';
+import { Router } from '@angular/router';
+import { ConfirmService } from 'src/app/services/confirm.service';
+import { LoadingService } from 'src/app/services/loading.service';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
 import { environment } from 'src/environments/environment';
@@ -8,17 +10,25 @@ import { IUserViewModel } from 'src/shared/user.models';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
+  styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
   private _user: IUserViewModel | undefined;
 
-  constructor(private userService: UserService, private tokenService: TokenService, private aclService: AclService) { }
+  constructor(
+    private userService: UserService,
+    private tokenService: TokenService,
+    private confirmService: ConfirmService,
+    private router: Router,
+    private loadingService: LoadingService
+  ) {}
 
   ngOnInit(): void {
     this.userService.user.subscribe((user: IUserViewModel) => {
       this._user = user;
-      this._user.mode = this.tokenService.roles.includes('Party') ? 'party' : 'classic';
+      this._user.mode = this.tokenService.roles.includes('Party')
+        ? 'party'
+        : 'classic';
     });
   }
 
@@ -27,6 +37,36 @@ export class UserComponent implements OnInit {
   }
 
   public get avatarUrl(): string | undefined {
-    return this._user ? `${environment.baseUrl}${this._user.avatar}?token=${this.tokenService.token}` : undefined;
+    return this._user
+      ? `${environment.baseUrl}${this._user.avatar}?token=${this.tokenService.token}`
+      : undefined;
+  }
+
+  public logout() {
+    this.confirmService
+      .confirm('logout', '250px')
+      .subscribe((result: boolean) => {
+        if (result) {
+          this.tokenService.clearCookies();
+          this.router.navigate(['/login']);
+        }
+      });
+  }
+
+  public edit() {
+    if (!this._user) return;
+    this.loadingService.loading = true;
+    this.userService.startEdit({
+      userName: this._user.userName,
+      firstName: this._user.name.split(" ")[0],
+      lastName: this._user.name.split(" ")[1],
+      avatar: undefined,
+    }).subscribe({
+      next: (user: IUserViewModel | undefined) => {
+        if (!user) return;
+        this._user = user;
+      }
+    })
+    .add(() => this.loadingService.loading = false);
   }
 }

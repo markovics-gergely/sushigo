@@ -1,4 +1,14 @@
 {
+  "confirm": {
+    "buttons": {
+      "yes": "Igen",
+      "no": "Nem"
+    },
+    "logout": {
+      "title": "Kilépés",
+      "message": "Biztosan ki akar lépni?"
+    }
+  },
   "login": {
     "title": "Belépés",
     "sign-up": "Regisztráljon",
@@ -29,7 +39,16 @@
       "classic": "Csak Classic mód",
       "party": "Party mód aktiválva",
       "edit": "Szerkesztés",
-      "logout": "Kilépés"
+      "logout": "Kilépés",
+      "edit-dialog": {
+        "title": "Profil szerkesztése",
+        "username": "Felhasználónév",
+        "first-name": "Keresztnév",
+        "last-name": "Vezetéknév",
+        "upload": "Feltöltés",
+        "submit": "Mentés",
+        "cancel": "Mégse"
+      }
     },
     "history": {
       "title": "Történet"

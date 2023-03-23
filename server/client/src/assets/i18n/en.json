@@ -1,4 +1,14 @@
 {
+  "confirm": {
+    "buttons": {
+      "yes": "Yes",
+      "no": "No"
+    },
+    "logout": {
+      "title": "Log out",
+      "message": "Are you sure you want to log out?"
+    }
+  },
   "login": {
     "title": "Log in",
     "sign-up": "Sign up",
@@ -29,7 +39,16 @@
       "classic": "Classic mode only",
       "party": "Party mode enabled",
       "edit": "Edit",
-      "logout": "Log out"
+      "logout": "Log out",
+      "edit-dialog": {
+        "title": "Edit profile",
+        "username": "Username",
+        "first-name": "First name",
+        "last-name": "Last name",
+        "upload": "Upload",
+        "submit": "Save",
+        "cancel": "Cancel"
+      }
     },
     "history": {
       "title": "History"

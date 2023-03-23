@@ -46,6 +46,7 @@ import { StoreComponent } from './components/store/store.component';
 import { ConfirmComponent } from './components/dialog/confirm/confirm.component';
 import { EditUserComponent } from './components/dialog/edit-user/edit-user.component';
 import { ThemeComponent } from './components/overlay/theme/theme.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 export function jwtOptionsFactory(tokenService: TokenService) {
   return {
@@ -94,6 +95,7 @@ export function jwtOptionsFactory(tokenService: TokenService) {
     MatDividerModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatToolbarModule,
     JwtModule.forRoot({
       jwtOptionsProvider: {
         provide: JWT_OPTIONS,

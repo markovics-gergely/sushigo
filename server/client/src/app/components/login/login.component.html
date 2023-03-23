@@ -1,9 +1,10 @@
 <div class="container">
-  <div class="card" *ngIf="loginForm">
+  <mat-card class="card" *ngIf="loginForm">
     <div class="title-space">
-      <span class="title">{{ 'login.title' | translate}}</span>
+      <span class="title">{{ "login.title" | translate }}</span>
       <p class="sign-up">
-        {{ 'login.sign-up-detail' | translate }} <a routerLink="/register">{{ 'login.sign-up' | translate }}</a>
+        {{ "login.sign-up-detail" | translate }}
+        <a routerLink="/register">{{ "login.sign-up" | translate }}</a>
       </p>
     </div>
     <form
@@ -12,27 +13,31 @@
       [formGroup]="loginForm"
       (ngSubmit)="login()"
     >
-      <label for="userName">{{ 'login.username' | translate }}</label>
-      <input
-        id="userName"
-        type="email"
-        [placeholder]="'login.username' | translate"
-        formControlName="userName"
-        required
-        minlength="4"
-      />
-      <label for="password">{{ 'login.password' | translate }}</label>
-      <input
-        id="password"
-        type="password"
-        [placeholder]="'login.password' | translate"
-        formControlName="password"
-        required
-        minlength="7"
-      />
-      <button class="button" type="submit" [disabled]="!loginForm.valid">
-        {{ 'login.submit' | translate }}
+      <mat-form-field appearance="outline">
+        <mat-label>{{ "login.username" | translate }}</mat-label>
+        <input
+          id="username"
+          type="email"
+          matInput
+          [placeholder]="'login.username' | translate"
+          formControlName="username"
+          minlength="4"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ "login.password" | translate }}</mat-label>
+        <input
+          id="password"
+          type="password"
+          matInput
+          [placeholder]="'login.password' | translate"
+          formControlName="password"
+          minlength="7"
+        />
+      </mat-form-field>
+      <button mat-flat-button color="primary" class="button" type="submit" [disabled]="!loginForm.valid">
+        {{ "login.submit" | translate }}
       </button>
     </form>
-  </div>
+  </mat-card>
 </div>

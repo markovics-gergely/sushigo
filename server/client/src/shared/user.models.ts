@@ -48,3 +48,10 @@ export interface IUserViewModel {
     experience: number;
     mode?: string;
 }
+
+export interface IEditUserDTO {
+    userName: string;
+    firstName: string;
+    lastName: string;
+    avatar?: File;
+}

@@ -21,6 +21,10 @@
     margin-right: 10px;
     width: 244px;
     height: 244px;
+
+    img {
+      object-fit: contain;
+    }
   }
   mat-card-header {
     overflow: hidden;
@@ -58,7 +62,8 @@
   mat-card-actions {
     padding: 0;
     button {
-      color: var(--color-text);
+      color: var(--color-text-light);
+      margin-right: 5px;
     }
   }
 }

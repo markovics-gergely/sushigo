@@ -36,6 +36,6 @@ export class ThemeService {
   }
 
   public init() {
-    this.theme = this.themes[0].theme;
+    this.theme = this.tokenService.theme || this.themes[0].theme;
   }
 }

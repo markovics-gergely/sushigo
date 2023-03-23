@@ -1,3 +1,12 @@
+<button mat-flat-button color="primary" class="friend-button" (click)="switchOpen()" [ngClass]="getHeaderClass(undefined)">
+  <i class="bx bx-group"></i>
+</button>
+<div class="friend-header" [ngClass]="open ? 'open' : ''">
+  <button mat-flat-button class="add-button" (click)="openAddFriend()">
+    <i class="bx bx-plus"></i>
+  </button>
+  <div class="title" [ngClass]="open ? 'open' : ''">Friends</div>
+</div>
 <div class="foil" [ngClass]="open ? 'open' : ''">
   <mat-accordion displayMode="flat" class="main-list" [ngClass]="open ? 'open' : ''">
     <mat-expansion-panel expanded="true" (afterExpand)="clearCount('friends')">
@@ -6,7 +15,7 @@
           Friends
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <div *ngFor="let friend of friends" class="friend-list-item" class="friend-wrapper">
+      <div *ngFor="let friend of friends" class="friend-wrapper" class="friend-wrapper">
         <div class="friend-name">
           {{friend.userName}}
         </div>
@@ -59,12 +68,3 @@
     </mat-expansion-panel>
   </mat-accordion>
 </div>
-<div class="friend-header" [ngClass]="open ? 'open' : ''">
-  <button class="add-button" (click)="openAddFriend()">
-    <i class="bx bx-plus"></i>
-  </button>
-  <div class="title" [ngClass]="open ? 'open' : ''">Friends</div>
-</div>
-<button class="friend-button" (click)="switchOpen()" [ngClass]="getHeaderClass(undefined)">
-  <i class="bx bx-group"></i>
-</button>

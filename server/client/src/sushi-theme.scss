@@ -1,7 +1,5 @@
 @use "@angular/material" as mat;
-@use 'sass:map';
-@import 'styles/_utils';
-
+@use "sass:map";
 @include mat.core();
 
 $primary-dark: mat.define-palette(mat.$pink-palette);
@@ -12,6 +10,7 @@ $dark-theme: mat.define-dark-theme(
       primary: $primary-dark,
       accent: $accent-dark,
     ),
+    typography: mat.define-typography-config(),
   )
 );
 
@@ -28,12 +27,9 @@ $light-theme: mat.define-light-theme(
   )
 );
 
-.light-theme {
-  @include mat.all-component-themes($light-theme);
-}
-
+@include mat.all-component-themes($light-theme);
 .dark-theme {
-  @include mat.all-component-themes($dark-theme);
+  @include mat.all-component-colors($dark-theme);
 }
 
 @mixin addColor($color, $value) {
@@ -41,25 +37,103 @@ $light-theme: mat.define-light-theme(
   --color-#{$color}-rgb: #{red($value)}, #{green($value)}, #{blue($value)};
 }
 
+$colors: (
+  (
+    name: "primary",
+    palette: $primary,
+    shade: 500,
+  ),
+  (
+    name: "primary-light",
+    palette: $primary,
+    shade: 200,
+  ),
+  (
+    name: "primary-dark",
+    palette: $primary,
+    shade: 700,
+  ),
+  (
+    name: "body",
+    palette: $primary,
+    shade: 100,
+  ),
+  (
+    name: "accent",
+    palette: $accent,
+    shade: 500,
+  ),
+  (
+    name: "accent-light",
+    palette: $accent,
+    shade: 200,
+  ),
+  (
+    name: "accent-dark",
+    palette: $accent,
+    shade: 800,
+  )
+);
+
+$colors-dark: (
+  (
+    name: "primary",
+    palette: $primary-dark,
+    shade: 500,
+  ),
+  (
+    name: "primary-light",
+    palette: $primary-dark,
+    shade: 200,
+  ),
+  (
+    name: "primary-dark",
+    palette: $primary-dark,
+    shade: 800,
+  ),
+  (
+    name: "body",
+    palette: $primary-dark,
+    shade: 900,
+  ),
+  (
+    name: "accent",
+    palette: $accent-dark,
+    shade: 500,
+  ),
+  (
+    name: "accent-light",
+    palette: $accent-dark,
+    shade: 200,
+  ),
+  (
+    name: "accent-dark",
+    palette: $accent-dark,
+    shade: 800,
+  )
+);
+
 :root {
   .light-theme {
-    @include addColor("primary", mat.get-color-from-palette($primary, 500));
-    @include addColor("primary-light", mat.get-color-from-palette($primary, 200));
-    @include addColor("primary-dark", mat.get-color-from-palette($primary, 800));
-    @include addColor("body", mat.get-color-from-palette($primary, 100));
+    @each $color in $colors {
+      @include addColor(
+        map.get($color, name),
+        mat.get-color-from-palette(
+          map.get($color, palette),
+          map.get($color, shade)
+        )
+      );
+    }
   }
   .dark-theme {
-    @include addColor("primary", mat.get-color-from-palette($primary-dark, 500));
-    @include addColor("primary-light", mat.get-color-from-palette($primary-dark, 200));
-    @include addColor("primary-dark", mat.get-color-from-palette($primary-dark, 800));
-    @include addColor("body", mat.get-color-from-palette($primary-dark, 900));
+    @each $color in $colors-dark {
+      @include addColor(
+        map.get($color, name),
+        mat.get-color-from-palette(
+          map.get($color, palette),
+          map.get($color, shade)
+        )
+      );
+    }
   }
 }
-
-/*body.light-theme {
-  background-color: var(--color-body);
-}
-
-body.dark-theme {
-  background-color: var(--color-body);
-}*/

@@ -101,7 +101,7 @@ namespace user.bll.Infrastructure
                     throw new ValidationErrorException("There was a problem with the provided avatar");
                 }
             }
-            _validator = new EditUserValidator(request.DTO, _unitOfWork);
+            _validator = new EditUserValidator(request.DTO, _unitOfWork, request.User.GetUserIdFromJwt());
             if (!_validator.Validate())
             {
                 throw new ValidationErrorException("Invalid modification");

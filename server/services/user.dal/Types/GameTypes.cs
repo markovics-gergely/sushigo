@@ -5,13 +5,13 @@
     /// </summary>
     public enum GameTypes
     {
-        FirstMeal,
+        MyFirstMeal,
         SushiGo,
-        ExperimentalParty,
-        MasterfulMenu,
-        BowlOfPlenty,
-        RaceForBestSnacks,
-        Banquet,
+        PartySampler,
+        MasterMenu,
+        PointsPlatter,
+        CutThroatCombo,
+        BigBanquet,
         DinnerForTwo
     }
 }

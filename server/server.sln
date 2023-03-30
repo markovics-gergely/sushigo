@@ -19,11 +19,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lobby.bll", "services\lobby
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lobby.dal", "services\lobby.dal\lobby.dal.csproj", "{47F29142-EC86-4BF6-83A7-1EE7EDEADE58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shop.dal", "services\shop.dal\shop.dal.csproj", "{96CCB512-85E9-449C-AD31-507373C9E056}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "shop.dal", "services\shop.dal\shop.dal.csproj", "{96CCB512-85E9-449C-AD31-507373C9E056}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shop.bll", "services\shop.bll\shop.bll.csproj", "{8817F1F2-8115-4C50-81B9-56D8142BC6F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "shop.bll", "services\shop.bll\shop.bll.csproj", "{8817F1F2-8115-4C50-81B9-56D8142BC6F4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{96CCB512-85E9-449C-AD31-507373C9E056} = {96CCB512-85E9-449C-AD31-507373C9E056}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shop.api", "services\shop.api\shop.api.csproj", "{2951320F-942F-4713-904C-FB383A8E1ECC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "shop.api", "services\shop.api\shop.api.csproj", "{2951320F-942F-4713-904C-FB383A8E1ECC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8817F1F2-8115-4C50-81B9-56D8142BC6F4} = {8817F1F2-8115-4C50-81B9-56D8142BC6F4}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

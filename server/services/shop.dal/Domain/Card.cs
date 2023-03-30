@@ -5,6 +5,6 @@
         public Guid Id { get; set; }
         public CardType Type { get; set; }
         public SushiType SushiType { get; set; }
-        public required string ImagePath { get; set; }
+        public required Image ImagePath { get; set; }
     }
 }

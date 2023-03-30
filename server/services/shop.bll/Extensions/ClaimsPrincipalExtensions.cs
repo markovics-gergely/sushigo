@@ -1,4 +1,4 @@
-﻿namespace user.bll.Extensions
+﻿namespace shop.bll.Extensions
 {
     public static class ClaimsPrincipalExtensions
     {
@@ -17,7 +17,7 @@
             return int.Parse(claimsPrincipal.Claims.First(x => x.Type == RoleTypes.ExpClaim).Value);
         }
 
-        public static IEnumerable<GameTypes> GetUserGamesFromJwt(this ClaimsPrincipal claimsPrincipal)
+        public static IEnumerable<DeckType> GetUserGamesFromJwt(this ClaimsPrincipal claimsPrincipal)
         {
             return claimsPrincipal.Claims.Where(x => x.Type == RoleTypes.GameClaim).Select(x => (GameTypes)Enum.Parse(typeof(GameTypes), x.Value));
         }

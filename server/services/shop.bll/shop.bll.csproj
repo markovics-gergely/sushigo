@@ -13,11 +13,13 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructure\" />
-    <Folder Include="MappingProfiles\" />
+    <Folder Include="Infrastructure\Commands\" />
+    <Folder Include="Infrastructure\DataTransferObjects\" />
+    <Folder Include="Infrastructure\Events\" />
+    <Folder Include="Infrastructure\ViewModels\" />
+    <Folder Include="Infrastructure\Queries\" />
+    <Folder Include="Infrastructure\Pipelines\" />
     <Folder Include="ValueConverters\" />
-    <Folder Include="Validators\" />
-    <Folder Include="Settings\" />
   </ItemGroup>
 
 </Project>

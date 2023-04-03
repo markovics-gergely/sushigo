@@ -1,4 +1,6 @@
-﻿namespace shop.dal.Domain
+﻿using shared.Models;
+
+namespace shop.dal.Domain
 {
     public class DeckCard
     {

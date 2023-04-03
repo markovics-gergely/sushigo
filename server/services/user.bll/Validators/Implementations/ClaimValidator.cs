@@ -4,9 +4,9 @@ namespace user.bll.Validators.Implementations
 {
     public class ClaimValidator : IValidator
     {
-        private readonly int _expMin;
-        private readonly int _exp;
-        public ClaimValidator(int expMin, int exp) {
+        private readonly long _expMin;
+        private readonly long _exp;
+        public ClaimValidator(long expMin, long exp) {
             _expMin = expMin;
             _exp = exp;
         }

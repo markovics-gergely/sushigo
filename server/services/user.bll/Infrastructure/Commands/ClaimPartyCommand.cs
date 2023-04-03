@@ -1,15 +1,15 @@
 ﻿using MediatR;
-using System.Security.Claims;
+using shared.Models;
 
 namespace user.bll.Infrastructure.Commands
 {
     public class ClaimPartyCommand : IRequest
     {
-        public ClaimsPrincipal? User { get; }
+        public PartyBoughtDTO PartyBoughtDTO { get; }
 
-        public ClaimPartyCommand(ClaimsPrincipal? user = null)
+        public ClaimPartyCommand(PartyBoughtDTO partyBoughtDTO)
         {
-            User = user;
+            PartyBoughtDTO = partyBoughtDTO;
         }
     }
 }

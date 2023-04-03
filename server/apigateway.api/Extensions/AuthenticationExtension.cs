@@ -56,6 +56,13 @@ namespace apigateway.api.Extensions
                 });
             });
         }
+
+        /// <summary>
+        /// Query authorization to header
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="next"></param>
+        /// <returns></returns>
         public static async Task AuthQueryStringToHeader(HttpContext context, Func<Task> next)
         {
             var qs = context.Request.QueryString;

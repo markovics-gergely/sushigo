@@ -9,6 +9,16 @@
           "Url": "http://user.api/swagger/v1/swagger.json"
         }
       ]
+    },
+    {
+      "Key": "shop",
+      "Config": [
+        {
+          "Name": "Shop API",
+          "Version": "v1",
+          "Url": "http://shop.api/swagger/v1/swagger.json"
+        }
+      ]
     }
   ]
 }

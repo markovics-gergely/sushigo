@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using shop.bll.Infrastructure.ViewModels;
+using shop.dal.Domain;
 
 namespace shop.bll.MappingProfiles
 {
-    internal class DeckProfile
+    public class DeckProfile : Profile
     {
+        public DeckProfile() {
+            CreateMap<Deck, DeckViewModel>()
+                .ForMember(d => d.CardTypes, opt => opt.MapFrom(v => v.Cards.Select(c => c.CardType)))
+                .ReverseMap();
+        }
     }
 }

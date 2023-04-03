@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
-using user.dal.Configurations.Interfaces;
+using shop.dal.Configurations.Interfaces;
 
 namespace shop.dal.Configurations.Implementations
 {

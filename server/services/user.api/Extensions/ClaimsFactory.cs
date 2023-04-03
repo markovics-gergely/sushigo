@@ -1,6 +1,7 @@
 ﻿using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using shared.Models;
 using System.Security.Claims;
 using user.dal.Domain;
 using user.dal.Types;
@@ -42,7 +43,7 @@ namespace user.api.Extensions
                 identity.AddClaim(new Claim(JwtClaimTypes.Role, "CanClaimParty"));
             }
             identity.AddClaim(new Claim(RoleTypes.ExpClaim, user.Experience.ToString()));
-            identity.AddClaims(user.GameClaims.Select(g => new Claim(RoleTypes.GameClaim, g.ToString())));
+            identity.AddClaims(user.DeckClaims.Select(g => new Claim(RoleTypes.GameClaim, g.ToString())));
 
             return identity;
         }

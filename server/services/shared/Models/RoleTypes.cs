@@ -1,4 +1,4 @@
-﻿namespace user.dal.Types
+﻿namespace shared.Models
 {
     /// <summary>
     /// Types of user roles
@@ -33,11 +33,11 @@
         /// <summary>
         /// Experience needed to claim party role
         /// </summary>
-        public const int PartyExp = 100;
+        public const long PartyExp = 100;
 
         /// <summary>
         /// Experience needed to claim a game type
         /// </summary>
-        public const int GameExp = 50;
+        public const long GameExp = 50;
     }
 }

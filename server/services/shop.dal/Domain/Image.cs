@@ -1,4 +1,4 @@
-﻿namespace user.dal.Domain
+﻿namespace shop.dal.Domain
 {
     public class Image
     {

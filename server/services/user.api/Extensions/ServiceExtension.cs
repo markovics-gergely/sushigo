@@ -26,12 +26,12 @@ namespace user.api.Extensions
             services.AddHttpClient();
             services.AddTransient<IRequestHandler<CreateUserCommand, bool>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<EditUserCommand, UserViewModel>, UserCommandHandler>();
-            services.AddTransient<IRequestHandler<ClaimPartyCommand, Unit>, UserCommandHandler>();
-            services.AddTransient<IRequestHandler<ClaimGameCommand, Unit>, UserCommandHandler>();
-            services.AddTransient<IRequestHandler<EditUserRoleCommand, Unit>, UserCommandHandler>();
+            services.AddTransient<IRequestHandler<ClaimPartyCommand>, UserCommandHandler>();
+            services.AddTransient<IRequestHandler<ClaimDeckCommand>, UserCommandHandler>();
+            services.AddTransient<IRequestHandler<EditUserRoleCommand>, UserCommandHandler>();
 
             services.AddTransient<IRequestHandler<AddFriendCommand, UserNameViewModel>, FriendCommandHandler>();
-            services.AddTransient<IRequestHandler<RemoveFriendCommand, Unit>, FriendCommandHandler>();
+            services.AddTransient<IRequestHandler<RemoveFriendCommand>, FriendCommandHandler>();
 
             services.AddTransient<IRequestHandler<GetFriendsQuery, FriendListViewModel>, FriendQueryHandler>();
 

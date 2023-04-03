@@ -6,10 +6,10 @@ namespace shop.dal.Repository.Implementations
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
-        private readonly UserDbContext context;
+        private readonly ShopDbContext context;
         private readonly DbSet<TEntity> dbSet;
 
-        public GenericRepository(UserDbContext context)
+        public GenericRepository(ShopDbContext context)
         {
             this.context = context;
             dbSet = context.Set<TEntity>();

@@ -1,4 +1,4 @@
-﻿namespace user.bll.Infrastructure.Queries.Cache
+﻿namespace user.bll.Infrastructure.Commands.Cache
 {
     public interface ICacheableMediatrCommandResponse
     {

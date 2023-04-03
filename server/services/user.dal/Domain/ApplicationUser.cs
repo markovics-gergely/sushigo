@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using shared.Models;
 using user.dal.Types;
 
 namespace user.dal.Domain
@@ -15,7 +16,7 @@ namespace user.dal.Domain
         public Guid? AvatarId { get; set; }
         public Image? Avatar { get; set; }
 
-        public ICollection<GameTypes> GameClaims { get; set; } = new List<GameTypes>();
+        public ICollection<DeckType> DeckClaims { get; set; } = new List<DeckType>();
 
         public virtual ICollection<IdentityUserClaim<Guid>> Claims { get; set; } = new List<IdentityUserClaim<Guid>>();
         public virtual ICollection<IdentityUserLogin<Guid>> Logins { get; set; } = new List<IdentityUserLogin<Guid>>();

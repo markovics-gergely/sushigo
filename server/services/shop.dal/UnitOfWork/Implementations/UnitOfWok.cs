@@ -6,14 +6,14 @@ namespace shop.dal.UnitOfWork.Implementations
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly UserDbContext context;
+        private readonly ShopDbContext context;
         private readonly IGenericRepository<Card> cardRepository;
         private readonly IGenericRepository<Deck> deckRepository;
 
         public IGenericRepository<Card> CardRepository => cardRepository;
         public IGenericRepository<Deck> DeckRepository => deckRepository;
 
-        public UnitOfWork(UserDbContext context,
+        public UnitOfWork(ShopDbContext context,
             IGenericRepository<Card> cardRepository,
             IGenericRepository<Deck> deckRepository)
         {

@@ -6,9 +6,9 @@ namespace user.dal.Domain
     {
         public Guid Id { get; set; }
         public required Guid SenderId { get; set; }
-        public ApplicationUser Sender { get; set; }
+        public ApplicationUser Sender { get; set; } = null!;
         public required Guid ReceiverId { get; set; }
-        public ApplicationUser Receiver { get; set; }
+        public ApplicationUser Receiver { get; set; } = null!;
         public required bool Pending { get; set; } = true;
         public FriendTypes GetFriendTypes(Guid guid)
         {

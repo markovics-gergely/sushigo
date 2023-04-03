@@ -14,7 +14,7 @@ namespace user.bll.Infrastructure
 {
     public class FriendCommandHandler :
         IRequestHandler<AddFriendCommand, UserNameViewModel>,
-        IRequestHandler<RemoveFriendCommand, Unit>
+        IRequestHandler<RemoveFriendCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMediator _mediator;
@@ -74,7 +74,7 @@ namespace user.bll.Infrastructure
             return model;
         }
 
-        public async Task<Unit> Handle(RemoveFriendCommand request, CancellationToken cancellationToken)
+        public async Task Handle(RemoveFriendCommand request, CancellationToken cancellationToken)
         {
             var userguid = Guid.Parse(request.User?.GetUserIdFromJwt() ?? "");
             var friend = _unitOfWork.FriendRepository.Get(
@@ -94,7 +94,6 @@ namespace user.bll.Infrastructure
                 ReceiverId = request.FriendId,
                 SenderId = userguid
             }, cancellationToken);
-            return Unit.Value;
         }
     }
 }

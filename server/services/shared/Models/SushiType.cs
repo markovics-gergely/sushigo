@@ -1,4 +1,4 @@
-﻿namespace shop.dal.Domain
+﻿namespace shared.Models
 {
     public enum SushiType
     {

@@ -28,13 +28,14 @@ builder.Services.AddIdentityExtensions(configuration);
 
 builder.Services.AddAuthenticationExtensions(configuration);
 
+builder.Services.AddMediatR(cfgg => { cfgg.RegisterServicesFromAssembly(typeof(Program).Assembly); });
+builder.Services.AddRabbitExtensions();
 builder.Services.AddServiceExtensions();
 builder.Services.AddConfigurations(configuration);
 builder.Services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
 builder.Services.AddSwaggerExtension(configuration);
 
 builder.Services.AddSignalR();
-builder.Services.AddMediatR(typeof(Program).Assembly);
 builder.Services.AddControllers();
 
 builder.Services.AddMemoryCache();

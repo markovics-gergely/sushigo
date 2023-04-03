@@ -79,10 +79,15 @@ namespace apigateway.api.Extensions
             this.requirement = requirement;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <param name="context"></param>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
             if (context.MethodInfo.GetCustomAttribute<AuthorizeAttribute>() != null ||
-                context.MethodInfo.DeclaringType.GetCustomAttribute<AuthorizeAttribute>() != null)
+                context.MethodInfo.DeclaringType?.GetCustomAttribute<AuthorizeAttribute>() != null)
             {
                 operation.Security.Add(requirement);
                 operation.Responses.TryAdd("401", new OpenApiResponse() { Description = "Unauthorized" });
@@ -91,8 +96,16 @@ namespace apigateway.api.Extensions
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class SwaggerFileOperationFilter : IOperationFilter
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <param name="context"></param>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
             var fileUploadMime = "multipart/form-data";

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using shared.Models;
 using user.dal.Comparers;
 using user.dal.Converters;
 using user.dal.Domain;
@@ -39,9 +40,9 @@ namespace user.dal
                 .IsRequired();
 
             builder.Entity<ApplicationUser>()
-                .Property(u => u.GameClaims)
-                .HasConversion<EnumCollectionJsonValueConverter<GameTypes>>()
-                .Metadata.SetValueComparer(new CollectionValueComparer<GameTypes>());
+                .Property(u => u.DeckClaims)
+                .HasConversion<EnumCollectionJsonValueConverter<DeckType>>()
+                .Metadata.SetValueComparer(new CollectionValueComparer<DeckType>());
 
             builder.Entity<ApplicationUser>()
                 .HasMany(e => e.UserRoles)

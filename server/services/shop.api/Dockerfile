@@ -8,6 +8,8 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["services/shop.api/shop.api.csproj", "services/shop.api/"]
+COPY ["services/shop.bll/shop.bll.csproj", "services/shop.bll/"]
+COPY ["services/shop.dal/shop.dal.csproj", "services/shop.dal/"]
 RUN dotnet restore "services/shop.api/shop.api.csproj"
 COPY . .
 WORKDIR "/src/services/shop.api"

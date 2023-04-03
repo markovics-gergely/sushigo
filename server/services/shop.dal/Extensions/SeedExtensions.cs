@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using shared.Models;
 using shop.dal.Domain;
 
 namespace shop.dal.Extensions
@@ -7,7 +8,7 @@ namespace shop.dal.Extensions
     {
         public static void AddSeedExtensions(this ModelBuilder builder)
         {
-            var typeIdMap = Enum.GetValues(typeof(CardType)).Cast<CardType>().ToDictionary(type => type, _ => new Guid());
+            var typeIdMap = Enum.GetValues(typeof(CardType)).Cast<CardType>().ToDictionary(type => type, _ => Guid.NewGuid());
             foreach (var type in typeIdMap)
             {
                 builder.Entity<Card>()
@@ -21,7 +22,7 @@ namespace shop.dal.Extensions
                         }
                     );
             }
-            var decktypeIdMap = Enum.GetValues(typeof(DeckType)).Cast<DeckType>().ToDictionary(type => type, _ => new Guid());
+            var decktypeIdMap = Enum.GetValues(typeof(DeckType)).Cast<DeckType>().ToDictionary(type => type, _ => Guid.NewGuid());
             foreach (var deckType in decktypeIdMap)
             {
                 builder.Entity<Deck>()
@@ -29,7 +30,8 @@ namespace shop.dal.Extensions
                             new Deck
                             {
                                 Id = deckType.Value,
-                                DeckType = deckType.Key
+                                DeckType = deckType.Key,
+                                Cost = RoleTypes.GameExp
                             }
                         );
                 foreach (var cardType in deckType.Key.GetCardTypes())
@@ -38,7 +40,6 @@ namespace shop.dal.Extensions
                         .HasData(
                             new DeckCard
                             {
-                                Id = new Guid(),
                                 DeckType = deckType.Key,
                                 CardType = cardType
                             }

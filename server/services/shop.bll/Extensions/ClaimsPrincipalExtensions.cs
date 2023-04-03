@@ -1,4 +1,7 @@
-﻿namespace shop.bll.Extensions
+﻿using shared.Models;
+using System.Security.Claims;
+
+namespace shop.bll.Extensions
 {
     public static class ClaimsPrincipalExtensions
     {
@@ -17,14 +20,14 @@
             return int.Parse(claimsPrincipal.Claims.First(x => x.Type == RoleTypes.ExpClaim).Value);
         }
 
-        public static IEnumerable<DeckType> GetUserGamesFromJwt(this ClaimsPrincipal claimsPrincipal)
+        public static IEnumerable<DeckType> GetUserDecksFromJwt(this ClaimsPrincipal claimsPrincipal)
         {
-            return claimsPrincipal.Claims.Where(x => x.Type == RoleTypes.GameClaim).Select(x => (GameTypes)Enum.Parse(typeof(GameTypes), x.Value));
+            return claimsPrincipal.Claims.Where(x => x.Type == RoleTypes.GameClaim).Select(x => (DeckType)Enum.Parse(typeof(DeckType), x.Value));
         }
 
-        public static bool GetUserHasGame(this ClaimsPrincipal claimsPrincipal, GameTypes game)
+        public static bool GetUserHasDeck(this ClaimsPrincipal claimsPrincipal, DeckType deck)
         {
-            return claimsPrincipal.GetUserGamesFromJwt().Any(x => x == game);
+            return claimsPrincipal.GetUserDecksFromJwt().Any(x => x == deck);
         }
     }
 }

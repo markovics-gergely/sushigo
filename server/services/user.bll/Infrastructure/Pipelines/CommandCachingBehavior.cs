@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Text;
-using user.bll.Infrastructure.Queries.Cache;
+using user.bll.Infrastructure.Commands.Cache;
 using user.bll.Settings;
 
 namespace user.bll.Infrastructure.Pipelines

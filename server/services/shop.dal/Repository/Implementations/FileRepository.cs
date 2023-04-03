@@ -1,7 +1,7 @@
 ﻿using System.Net;
-using user.dal.Configurations.Interfaces;
-using user.dal.Domain;
 using shop.dal.Repository.Interfaces;
+using shop.dal.Domain;
+using shop.dal.Configurations.Interfaces;
 
 namespace shop.dal.Repository.Implementations
 {

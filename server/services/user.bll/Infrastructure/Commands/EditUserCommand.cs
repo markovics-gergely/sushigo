@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using System.Security.Claims;
 using user.bll.Extensions;
+using user.bll.Infrastructure.Commands.Cache;
 using user.bll.Infrastructure.DataTransferObjects;
-using user.bll.Infrastructure.Queries.Cache;
 using user.bll.Infrastructure.ViewModels;
 
 namespace user.bll.Infrastructure.Commands

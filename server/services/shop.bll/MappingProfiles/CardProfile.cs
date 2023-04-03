@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 
 namespace shop.bll.MappingProfiles
 {
-    internal class CardProfile
+    public class CardProfile : Profile
     {
+        public CardProfile() {
+
+        }
     }
 }

@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using shared.Models;
 using user.bll.Infrastructure.Commands;
 using user.bll.Infrastructure.Queries;
 using user.bll.Infrastructure.ViewModels;
@@ -54,7 +55,8 @@ namespace user.api.Controllers
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
             var query = new RemoveFriendCommand(id, user);
-            return Ok(await _mediator.Send(query, cancellationToken));
+            await _mediator.Send(query, cancellationToken);
+            return Ok();
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace user.dal.Configurations.Interfaces
+﻿namespace shop.dal.Configurations.Interfaces
 {
     public interface IShopConfigurationService
     {

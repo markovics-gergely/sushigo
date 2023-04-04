@@ -4,6 +4,7 @@ import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AclGuard } from './guards/acl.guard';
+import { StoreComponent } from './components/store/store.component';
 
 const routes: Routes = [
   {
@@ -18,6 +19,12 @@ const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent,
+    data: { name: 'home' },
+    canActivate: [AclGuard]
+  },
+  {
+    path: 'shop',
+    component: StoreComponent,
     data: { name: 'home' },
     canActivate: [AclGuard]
   },

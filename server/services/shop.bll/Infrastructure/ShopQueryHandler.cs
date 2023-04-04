@@ -35,11 +35,6 @@ namespace shop.bll.Infrastructure
                     transform: x => x.AsNoTracking()
                 ).ToList();
             var deckViewModel = _mapper.Map<IEnumerable<DeckViewModel>>(decks);
-            var claims = request.User.GetUserDecksFromJwt();
-            foreach(var deck in deckViewModel)
-            {
-                deck.Claimed = claims.Contains(deck.DeckType);
-            }
             return Task.FromResult(deckViewModel);
         }
     }

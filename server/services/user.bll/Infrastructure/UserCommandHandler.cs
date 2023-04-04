@@ -12,6 +12,7 @@ using user.dal.Configurations.Interfaces;
 using user.dal.Repository.Interfaces;
 using user.bll.Infrastructure.ViewModels;
 using shared.Models;
+using user.bll.Infrastructure.Events;
 
 namespace user.bll.Infrastructure
 {
@@ -24,6 +25,7 @@ namespace user.bll.Infrastructure
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
         private IValidator? _validator;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -31,7 +33,7 @@ namespace user.bll.Infrastructure
         private readonly IFileRepository _fileRepository;
 
         public UserCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, RoleManager<ApplicationRole> roleManager,
-            UserManager<ApplicationUser> userManager, IUserConfigurationService config, IFileRepository fileRepository)
+            UserManager<ApplicationUser> userManager, IUserConfigurationService config, IFileRepository fileRepository, IMediator mediator)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -39,6 +41,7 @@ namespace user.bll.Infrastructure
             _userManager = userManager;
             _config = config;
             _fileRepository = fileRepository;
+            _mediator = mediator;
         }
 
         public async Task<bool> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -175,6 +178,7 @@ namespace user.bll.Infrastructure
             userEntity.Experience -= RoleTypes.PartyExp;
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
+            await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() });
         }
 
         public async Task Handle(ClaimDeckCommand request, CancellationToken cancellationToken)
@@ -198,6 +202,7 @@ namespace user.bll.Infrastructure
             userEntity.Experience -= RoleTypes.GameExp;
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
+            await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() });
         }
     }
 }

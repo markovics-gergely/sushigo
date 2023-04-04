@@ -5,6 +5,7 @@ import { IFriendStatusViewModel } from 'src/shared/friend.models';
 import { IUserNameViewModel } from 'src/shared/user.models';
 import { FriendService } from './friend.service';
 import { TokenService } from './token.service';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class FriendHubService {
   private _hubConnection: signalR.HubConnection | undefined;
   private _connected: boolean = false;
 
-  constructor(private tokenService: TokenService, private friendService: FriendService) { }
+  constructor(private tokenService: TokenService, private friendService: FriendService, private userService: UserService) { }
 
   public startConnection(): void {
     if (this._connected) return;
@@ -40,6 +41,7 @@ export class FriendHubService {
     this._hubConnection?.on('FriendRemove', (data: { sender: string }) => this.friendService.removeFriendFromList(data.sender));
     this._hubConnection?.on('FriendStatuses', (statuses: Array<IFriendStatusViewModel>) => { this.friendService.loadStatuses(statuses); });
     this._hubConnection?.on('FriendStatus', (status: IFriendStatusViewModel) => { this.friendService.loadStatuses([status]); });
+    this._hubConnection?.on('RefreshUser', () => this.userService.refreshUser());
   }
 
   public get connected(): boolean {

@@ -32,7 +32,7 @@ export class TokenService {
     this.cookieService.set(this.rCookieName, token, this.expires);
   }
 
-  public get refreshToken1(): string {
+  public get refreshToken(): string {
     return this.cookieService.get(this.rCookieName);
   }
 

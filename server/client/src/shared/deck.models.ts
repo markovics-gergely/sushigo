@@ -5,6 +5,10 @@ export interface IDeckViewModel {
   cardTypes: CardType[];
 }
 
+export interface IBuyDeckDTO {
+  deckType: DeckType;
+}
+
 export enum DeckType {
   MyFirstMeal,
   SushiGo,

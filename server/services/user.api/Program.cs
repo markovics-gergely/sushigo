@@ -1,5 +1,4 @@
 using Hellang.Middleware.ProblemDetails;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;

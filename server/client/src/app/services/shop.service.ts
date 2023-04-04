@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { IDeckViewModel } from 'src/shared/deck.models';
+import { IBuyDeckDTO, IDeckViewModel } from 'src/shared/deck.models';
 
 @Injectable({
   providedIn: 'root'
@@ -19,5 +19,9 @@ export class ShopService {
 
   public claimParty(): Observable<Object> {
     return this.client.post(`${this.baseUrl}/party`, {});
+  }
+
+  public claimDeck(buyDeckDTO: IBuyDeckDTO): Observable<Object> {
+    return this.client.post(`${this.baseUrl}/deck`, buyDeckDTO);
   }
 }

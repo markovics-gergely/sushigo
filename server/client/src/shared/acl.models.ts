@@ -5,8 +5,8 @@ interface AclType {
 }
 
 export const ACL: AclType = {
-    home: ['Classic'],
-    store: ['Classic'],
-    'store.claim': ['Classic'],
-    lobby: ['Classic'],
+    'home': ['Classic'],
+    'home.claim.party': ['CanClaimParty'],
+    'shop': ['Party'],
+    'lobby': ['Classic'],
 };

@@ -7,18 +7,13 @@
   <mat-grid-tile
     [colspan]="2"
     [md]="1"
-    [sm]="1"
-    [xs]="1"
     [rowspan]="calcRow(4)"
     [mdr]="calcRow(2)"
     [xsr]="calcRow(1)"
-    [smr]="calcRow(1)"
   ></mat-grid-tile>
   <mat-grid-tile
     [colspan]="8"
     [md]="10"
-    [sm]="10"
-    [xs]="10"
     [rowspan]="1"
   >
   <mat-card class="card banner">
@@ -29,12 +24,9 @@
   <mat-grid-tile
     [colspan]="2"
     [md]="1"
-    [sm]="1"
-    [xs]="1"
     [rowspan]="calcRow(4)"
     [mdr]="calcRow(2)"
     [xsr]="calcRow(1)"
-    [smr]="calcRow(1)"
   ></mat-grid-tile>
 
   <mat-grid-tile
@@ -42,7 +34,6 @@
     [colspan]="2"
     [md]="5"
     [sm]="10"
-    [xs]="10"
     *ngFor="let deck of decks"
   >
     <mat-card class="card">

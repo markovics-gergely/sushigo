@@ -25,7 +25,7 @@ const routes: Routes = [
   {
     path: 'shop',
     component: StoreComponent,
-    data: { name: 'home' },
+    data: { name: 'shop' },
     canActivate: [AclGuard]
   },
   {

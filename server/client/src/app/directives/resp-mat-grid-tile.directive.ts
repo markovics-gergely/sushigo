@@ -73,15 +73,19 @@ export class RespMatGridTileDirective implements OnInit {
 
   ngOnInit(): void {
     this.initializeColsCount();
-
     this.media.asObservable().subscribe((changes: MediaChange[]) => {
-      this.grid.colspan =
-        this._colmap[changes[0]?.mqAlias as keyof IResponsiveColumnsMap] ??
-        this._cols;
-      this.grid.rowspan =
-        this._rowmap[changes[0]?.mqAlias as keyof IResponsiveColumnsMap] ??
-        this._rows;
+      this.grid.colspan = this.getActual(changes[0]?.mqAlias as keyof IResponsiveColumnsMap, this._colmap, this._cols);
+      this.grid.rowspan = this.getActual(changes[0]?.mqAlias as keyof IResponsiveColumnsMap, this._rowmap, this._rows);
     });
+  }
+
+  private getActual(col: keyof IResponsiveColumnsMap, map: IResponsiveColumnsMap, defaultCol: number): number {
+    const index = Object.keys(map).indexOf(col);
+    let actual = defaultCol;
+    Object.keys(map).slice(0, index + 1).forEach((key: string) => {
+      actual = map[key as keyof IResponsiveColumnsMap] ?? actual;
+    });
+    return actual;
   }
 
   private initializeColsCount(): void {
@@ -90,8 +94,8 @@ export class RespMatGridTileDirective implements OnInit {
         return this.media.isActive(mqAlias);
       }
     ) as keyof IResponsiveColumnsMap;
-
-    this.grid.colspan = this._colmap[colType] ?? this._cols;
-    this.grid.rowspan = this._rowmap[colType] ?? this._rows;
+    
+    this.grid.colspan = this.getActual(colType, this._colmap, this._cols);
+    this.grid.rowspan = this.getActual(colType, this._rowmap, this._rows);
   }
 }

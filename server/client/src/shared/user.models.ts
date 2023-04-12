@@ -1,5 +1,7 @@
+import { DeckType } from "./deck.models";
+
 export type AppRole = 'Classic' | 'Party' | 'CanClaimParty';
-export type GameType = 'FirstMeal' | 'SushiGo' | 'ExperimentalParty' | 'MasterfulMenu' | 'BowlOfPlenty' | 'RaceForBestSnacks' | 'Banquet' | 'DinnerForTwo';
+//export type DeckType = 'FirstMeal' | 'SushiGo' | 'ExperimentalParty' | 'MasterfulMenu' | 'BowlOfPlenty' | 'RaceForBestSnacks' | 'Banquet' | 'DinnerForTwo';
 
 export interface IUser {
     access_token: string;
@@ -12,7 +14,7 @@ export interface IUserTokenViewModel {
     sub: string;
     role?: Array<AppRole> | AppRole;
     experience: number;
-    games?: Array<GameType>;
+    decks?: Array<DeckType>;
     exp: number;
 }
 

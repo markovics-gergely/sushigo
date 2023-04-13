@@ -10,11 +10,14 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+    data: { name: 'login' },
+    canActivate: [AclGuard]
   },
   {
     path: 'register',
     component: RegisterComponent,
-    canActivate: []
+    data: { name: 'register' },
+    canActivate: [AclGuard]
   },
   {
     path: 'home',

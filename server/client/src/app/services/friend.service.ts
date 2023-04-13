@@ -20,6 +20,7 @@ export class FriendService {
     sent: [],
     received: [],
   };
+  private _online: Set<string> = new Set();
 
   constructor(private client: HttpClient) {}
 
@@ -32,11 +33,19 @@ export class FriendService {
   }
 
   public get friends(): IFriendListViewModel | undefined {
-    return this._friends;
+    return {
+      friends: this._friends?.friends.map((f) => ({ ...f, status: this._online.has(f.id) })) ?? [],
+      sent: this._friends?.sent.map((f) => ({ ...f, status: this._online.has(f.id) })) ?? [],
+      received: this._friends?.received.map((f) => ({ ...f, status: this._online.has(f.id) })) ?? [],
+    };
   }
 
   public get friendsCounter(): IFriendListCounter {
     return this._friendsCounter;
+  }
+
+  public get online(): Set<string> {
+    return this._online;
   }
 
   private addFriend(userName: string): Observable<IUserNameViewModel> {
@@ -62,9 +71,7 @@ export class FriendService {
   }
 
   private sendFriendRequestSuccess(friend: IUserNameViewModel): void {
-    if (!this._friends) {
-      return;
-    }
+    if (!this._friends) return;
     const index = this._friends.received.findIndex((f) => f.id === friend.id);
     if (index >= 0) {
       this._friends.received.splice(index, 1);
@@ -120,15 +127,13 @@ export class FriendService {
   }
 
   public loadStatuses(statuses: Array<IFriendStatusViewModel>): void {
-    if (!this._friends) return;
-    const friends = [
-      ...this._friends.friends,
-      ...this._friends.sent,
-      ...this._friends.received,
-    ].flat();
-    friends.forEach((friend) => {
-      const status = statuses.find((s) => s.id === friend.id);
-      friend.status = status?.status;
+    statuses.forEach((status) => {
+      if (status.status) {
+        this._online.add(status.id);
+      } else {
+        this._online.delete(status.id);
+      }
     });
+    console.log(this._online);
   }
 }

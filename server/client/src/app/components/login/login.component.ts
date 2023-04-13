@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from 'src/app/services/loading.service';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit {
     private userService: UserService,
     private loadingService: LoadingService,
     private router: Router,
+    private route: ActivatedRoute,
     private tokenService: TokenService) { }
 
   ngOnInit(): void {
@@ -43,7 +44,7 @@ export class LoginComponent implements OnInit {
         next: (response) => {
           this.loginForm?.reset();
           this.tokenService.userToken = response;
-          this.router.navigate(['home']);
+          this.router.navigate(this.route.snapshot.queryParams['returnUrl'] || ['home']);
         },
         error: (err) => {
           console.log(err);

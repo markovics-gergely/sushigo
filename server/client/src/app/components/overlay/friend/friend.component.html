@@ -1,70 +1,131 @@
-<button mat-flat-button color="primary" class="friend-button" (click)="switchOpen()" [ngClass]="getHeaderClass(undefined)">
-  <i class="bx bx-group"></i>
-</button>
-<div class="friend-header" [ngClass]="open ? 'open' : ''">
-  <button mat-flat-button class="add-button" (click)="openAddFriend()">
-    <i class="bx bx-plus"></i>
+<div *ngIf="connecting">
+  <button
+    style="margin-bottom: -5px"
+    mat-flat-button
+    color="primary"
+    class="friend-button"
+    [ngClass]="getHeaderClass(undefined)"
+  >
+    <i class="bx bx-loader-alt bx-spin"></i>
   </button>
-  <div class="title" [ngClass]="open ? 'open' : ''">Friends</div>
 </div>
-<div class="foil" [ngClass]="open ? 'open' : ''">
-  <mat-accordion displayMode="flat" class="main-list" [ngClass]="open ? 'open' : ''">
-    <mat-expansion-panel expanded="true" (afterExpand)="clearCount('friends')">
-      <mat-expansion-panel-header class="friend-list-header" [ngClass]="getHeaderClass(friendsCount)">
-        <mat-panel-title [matBadge]="friendsCount" [matBadgeHidden]="!friendsCount" matBadgeOverlap="true">
-          Friends
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div *ngFor="let friend of friends" class="friend-wrapper" class="friend-wrapper">
-        <div class="friend-name">
-          {{friend.userName}}
+<div *ngIf="connected">
+  <button
+    mat-flat-button
+    color="primary"
+    class="friend-button"
+    (click)="switchOpen()"
+    [ngClass]="getHeaderClass(undefined)"
+  >
+    <i class="bx bx-group"></i>
+  </button>
+  <div class="friend-header" [ngClass]="open ? 'open' : ''">
+    <button mat-flat-button class="add-button" (click)="openAddFriend()">
+      <i class="bx bx-plus"></i>
+    </button>
+    <div class="title" [ngClass]="open ? 'open' : ''">Friends</div>
+  </div>
+  <div class="foil" [ngClass]="open ? 'open' : ''">
+    <mat-accordion
+      displayMode="flat"
+      class="main-list"
+      [ngClass]="open ? 'open' : ''"
+    >
+      <mat-expansion-panel
+        expanded="true"
+        (afterExpand)="clearCount('friends')"
+        [ngClass]="open ? '' : 'closing'"
+      >
+        <mat-expansion-panel-header
+          class="friend-list-header"
+          [ngClass]="getHeaderClass(friendsCount)"
+        >
+          <mat-panel-title
+            [matBadge]="friendsCount"
+            [matBadgeHidden]="!friendsCount"
+            matBadgeOverlap="true"
+          >
+            Friends
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div
+          *ngFor="let friend of friends"
+          class="friend-wrapper"
+          class="friend-wrapper"
+        >
+          <div class="friend-name">
+            {{ friend.userName }}
+          </div>
+          <div class="friend-buttons">
+            <i
+              class="bx bxs-circle status"
+              [ngClass]="friend.status ? 'ok' : ''"
+            ></i>
+            <button class="decline-button" (click)="declineFriend(friend)">
+              <i class="bx bx-x"></i>
+            </button>
+          </div>
         </div>
-        <div class="friend-buttons">
-          <i class="bx bxs-circle status" [ngClass]="friend.status ? 'ok' : ''"></i>
-          <button class="decline-button" (click)="declineFriend(friend)">
-            <i class="bx bx-x"></i>
-          </button>
+      </mat-expansion-panel>
+      <mat-expansion-panel (afterExpand)="clearCount('sent')">
+        <mat-expansion-panel-header
+          class="friend-list-header"
+          [ngClass]="getHeaderClass(sentCount)"
+        >
+          <mat-panel-title
+            [matBadge]="sentCount"
+            [matBadgeHidden]="!sentCount"
+            matBadgeOverlap="true"
+          >
+            Sent requests
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div *ngFor="let request of sent" class="friend-wrapper">
+          <div class="friend-name">
+            {{ request.userName }}
+          </div>
+          <div class="friend-buttons">
+            <i
+              class="bx bxs-circle status"
+              [ngClass]="request.status ? 'ok' : ''"
+            ></i>
+            <button class="decline-button" (click)="declineFriend(request)">
+              <i class="bx bx-x"></i>
+            </button>
+          </div>
         </div>
-      </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel (afterExpand)="clearCount('sent')">
-      <mat-expansion-panel-header class="friend-list-header" [ngClass]="getHeaderClass(sentCount)">
-        <mat-panel-title [matBadge]="sentCount" [matBadgeHidden]="!sentCount" matBadgeOverlap="true">
-          Sent requests
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div *ngFor="let request of sent" class="friend-wrapper">
-        <div class="friend-name">
-          {{request.userName}}
+      </mat-expansion-panel>
+      <mat-expansion-panel (afterExpand)="clearCount('received')">
+        <mat-expansion-panel-header
+          class="friend-list-header"
+          [ngClass]="getHeaderClass(receivedCount)"
+        >
+          <mat-panel-title
+            [matBadge]="receivedCount"
+            [matBadgeHidden]="!receivedCount"
+            matBadgeOverlap="true"
+          >
+            Received requests
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div *ngFor="let request of received" class="friend-wrapper">
+          <div class="friend-name">
+            {{ request.userName }}
+          </div>
+          <div class="friend-buttons">
+            <i
+              class="bx bxs-circle status"
+              [ngClass]="request.status ? 'ok' : ''"
+            ></i>
+            <button class="accept-button" (click)="addFriend(request.userName)">
+              <i class="bx bx-check"></i>
+            </button>
+            <button class="decline-button" (click)="declineFriend(request)">
+              <i class="bx bx-x"></i>
+            </button>
+          </div>
         </div>
-        <div class="friend-buttons">
-          <i class="bx bxs-circle status" [ngClass]="request.status ? 'ok' : ''"></i>
-          <button class="decline-button" (click)="declineFriend(request)">
-            <i class="bx bx-x"></i>
-          </button>
-        </div>
-      </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel (afterExpand)="clearCount('received')">
-      <mat-expansion-panel-header class="friend-list-header" [ngClass]="getHeaderClass(receivedCount)">
-        <mat-panel-title [matBadge]="receivedCount" [matBadgeHidden]="!receivedCount" matBadgeOverlap="true">
-          Received requests
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div *ngFor="let request of received" class="friend-wrapper">
-        <div class="friend-name">
-          {{request.userName}}
-        </div>
-        <div class="friend-buttons">
-          <i class="bx bxs-circle status" [ngClass]="request.status ? 'ok' : ''"></i>
-          <button class="accept-button" (click)="addFriend(request.userName)">
-            <i class="bx bx-check"></i>
-          </button>
-          <button class="decline-button" (click)="declineFriend(request)">
-            <i class="bx bx-x"></i>
-          </button>
-        </div>
-      </div>
-    </mat-expansion-panel>
-  </mat-accordion>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
 </div>

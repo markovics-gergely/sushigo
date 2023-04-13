@@ -28,8 +28,6 @@ export class LanguageComponent {
   }
 
   public switchOpen(): void {
-    console.log(this.open);
-    
     this._open = !this._open;
   }
 

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data;
 using user.bll.Extensions;
+using user.bll.Infrastructure.Events;
 using user.bll.Infrastructure.Queries;
 using user.bll.Infrastructure.ViewModels;
 using user.dal.Domain;
@@ -16,12 +17,14 @@ namespace user.bll.Infrastructure
         IRequestHandler<GetFriendsQuery, FriendListViewModel>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public FriendQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public FriendQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, IMediator mediator)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         private IEnumerable<ApplicationUser> GetUsersWithIds(IEnumerable<Guid>? guids)
@@ -41,12 +44,14 @@ namespace user.bll.Infrastructure
             )
                 .GroupBy(f => f.GetFriendTypes(userguid))
                 .ToDictionary(f => f.Key, f => f.Select(ff => ff.SenderId == userguid ? ff.ReceiverId : ff.SenderId).ToList());
-            return Task.FromResult(new FriendListViewModel
+            var friendlist = new FriendListViewModel
             {
                 Friends = _mapper.Map<IEnumerable<UserNameViewModel>>(GetUsersWithIds(friends.TryGetValue(FriendTypes.Friend, out var val1) ? val1 : new())),
                 Sent = _mapper.Map<IEnumerable<UserNameViewModel>>(GetUsersWithIds(friends.TryGetValue(FriendTypes.Sent, out var val2) ? val2 : new())),
                 Received = _mapper.Map<IEnumerable<UserNameViewModel>>(GetUsersWithIds(friends.TryGetValue(FriendTypes.Received, out var val3) ? val3 : new())),
-            });
+            };
+            _mediator.Publish(new RefreshFriendsEvent { FriendList = friendlist, UserId = userguid.ToString() }, cancellationToken);
+            return Task.FromResult(friendlist);
         }
     }
 }

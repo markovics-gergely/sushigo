@@ -5,20 +5,26 @@ import { IFriendStatusViewModel } from 'src/shared/friend.models';
 import { IUserNameViewModel } from 'src/shared/user.models';
 import { FriendService } from './friend.service';
 import { TokenService } from './token.service';
-import { UserService } from './user.service';
+import { RefreshService } from './refresh.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FriendHubService {
   private readonly baseUrl: string = `${environment.baseUrl}/friend-hub`;
   private _hubConnection: signalR.HubConnection | undefined;
   private _connected: boolean = false;
+  private _connecting: boolean = false;
 
-  constructor(private tokenService: TokenService, private friendService: FriendService, private userService: UserService) { }
+  constructor(
+    private tokenService: TokenService,
+    private friendService: FriendService,
+    private refreshService: RefreshService
+  ) {}
 
   public startConnection(): void {
     if (this._connected) return;
+    this._connecting = true;
     this._hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${this.baseUrl}?token=${this.tokenService.token}`, {
         skipNegotiation: true,
@@ -31,20 +37,52 @@ export class FriendHubService {
     this._hubConnection
       .start()
       .then(() => {
-        this._connected = true;
+        this.friendService.loadFriends().add(() => {
+          this._connected = true;
+          this._connecting = false;
+        });
       })
-      .catch((err) => console.log('Error while starting connection: ' + err));
+      .catch((err) => {
+        console.log('Error while starting connection: ' + err);
+        this._connecting = false;
+      });
+  }
+
+  public stopConnection(): void {
+    if (!this._connected) return;
+    this._hubConnection?.stop().then(() => {
+      this._connected = false;
+    });
   }
 
   public addListeners(): void {
-    this._hubConnection?.on('FriendRequest', (data: IUserNameViewModel) => this.friendService.receiveFriendRequestSuccess(data));
-    this._hubConnection?.on('FriendRemove', (data: { sender: string }) => this.friendService.removeFriendFromList(data.sender));
-    this._hubConnection?.on('FriendStatuses', (statuses: Array<IFriendStatusViewModel>) => { this.friendService.loadStatuses(statuses); });
-    this._hubConnection?.on('FriendStatus', (status: IFriendStatusViewModel) => { this.friendService.loadStatuses([status]); });
-    this._hubConnection?.on('RefreshUser', () => this.userService.refreshUser());
+    this._hubConnection?.on('FriendRequest', (data: IUserNameViewModel) =>
+      this.friendService.receiveFriendRequestSuccess(data)
+    );
+    this._hubConnection?.on('FriendRemove', (data: IUserNameViewModel) =>
+      this.friendService.removeFriendFromList(data.id)
+    );
+    this._hubConnection?.on(
+      'FriendStatuses',
+      (statuses: Array<IFriendStatusViewModel>) => { 
+        console.log(statuses);
+        this.friendService.loadStatuses(statuses);
+      }
+    );
+    this._hubConnection?.on(
+      'FriendStatus',
+      (status: IFriendStatusViewModel) => {
+        this.friendService.loadStatuses([status]);
+      }
+    );
+    this._hubConnection?.on('RefreshUser', () => this.refreshService.refreshUser());
   }
 
   public get connected(): boolean {
     return this._connected;
+  }
+
+  public get connecting(): boolean {
+    return this._connecting;
   }
 }

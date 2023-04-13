@@ -14,7 +14,8 @@ namespace user.bll.Infrastructure
 {
     public class FriendCommandHandler :
         IRequestHandler<AddFriendCommand, UserNameViewModel>,
-        IRequestHandler<RemoveFriendCommand>
+        IRequestHandler<RemoveFriendCommand>,
+        IRequestHandler<UpdateFriendOfflineCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMediator _mediator;
@@ -94,6 +95,18 @@ namespace user.bll.Infrastructure
                 ReceiverId = request.FriendId,
                 SenderId = userguid
             }, cancellationToken);
+        }
+
+        public async Task Handle(UpdateFriendOfflineCommand request, CancellationToken cancellationToken)
+        {
+            var friends = _unitOfWork.FriendRepository.Get(
+                filter: x => request.UserId == x.SenderId.ToString() || request.UserId == x.ReceiverId.ToString(),
+                transform: x => x.AsNoTracking()
+            ).Select(x => x.SenderId.ToString() == request.UserId ? x.ReceiverId.ToString() : x.SenderId.ToString()).ToList();
+            if (friends.Any())
+            {
+                await _mediator.Publish(new OfflineEvent { Friends = friends, UserId = request.UserId }, cancellationToken);
+            }
         }
     }
 }

@@ -3,7 +3,7 @@
 @include mat.core();
 
 $primary-dark: mat.define-palette(mat.$pink-palette);
-$accent-dark: mat.define-palette(mat.$blue-grey-palette);
+$accent-dark: mat.define-palette(mat.$teal-palette);
 $dark-theme: mat.define-dark-theme(
   (
     color: (
@@ -15,7 +15,7 @@ $dark-theme: mat.define-dark-theme(
 );
 
 $primary: mat.define-palette(mat.$light-blue-palette);
-$accent: mat.define-palette(mat.$green-palette);
+$accent: mat.define-palette(mat.$amber-palette);
 $light-theme: mat.define-light-theme(
   (
     color: (

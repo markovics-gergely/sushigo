@@ -134,7 +134,10 @@
         .mat-expansion-panel-body {
           padding: 0 !important;
           margin-top: 5px;
-          overflow-y: auto;
+          &:not(.closing) {
+            overflow-y: auto;
+          }
+          overflow-x: hidden;
           .friend-wrapper {
             padding: 5px 10px;
             background: rgba(0, 0, 0, 0.15);
@@ -157,7 +160,7 @@
                 margin-right: 10px;
                 color: rgba(0, 0, 0, 0.2);
                 &.ok {
-                  color: var(--color-ok);
+                  color: var(--color-accent);
                 }
               }
               button {

@@ -11,9 +11,6 @@ import {
   IUserViewModel,
 } from 'src/shared/user.models';
 import { EditUserComponent } from '../components/dialog/edit-user/edit-user.component';
-import { LoadingService } from './loading.service';
-import { TokenService } from './token.service';
-import { RefreshService } from './refresh.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,10 +21,7 @@ export class UserService {
 
   constructor(
     private client: HttpClient,
-    private tokenService: TokenService,
-    private dialog: MatDialog,
-    private loadingService: LoadingService,
-    private refreshService: RefreshService
+    private dialog: MatDialog
   ) { }
 
   /**
@@ -60,48 +54,6 @@ export class UserService {
     return this.client.post<IUser>(`${this.baseUrl}/login`, body.toString(), {
       headers: headers,
     });
-  }
-
-  /**
-   * Refresh stored token with refresh token
-   * @returns
-   */
-  private refresh(): Observable<IUser> {
-    let headers = new HttpHeaders().set(
-      'Content-Type',
-      'application/x-www-form-urlencoded'
-    );
-    let body = new URLSearchParams();
-
-    const token = this.tokenService.refreshToken;
-    body.set('refresh_token', token);
-    body.set('grant_type', 'refresh_token');
-    body.set('client_id', environment.client_id);
-    body.set('client_secret', environment.client_secret);
-
-    return this.client.post<IUser>(`${this.baseUrl}/refresh`, body.toString(), {
-      headers: headers,
-    });
-  }
-
-  public refreshUser(): void {
-    this.loadingService.loading = true;
-    this.refresh()
-      .subscribe({
-        next: (response) => {
-          this.tokenService.userToken = response;
-          setTimeout(() => {
-            this.refreshService.refresh = true;
-          }, (response.expires_in - 30) * 1000);
-        },
-        error: (err) => {
-          console.log(err);
-          this.tokenService.clearCookies();
-        },
-      })
-      .add(() => {
-        this.loadingService.loading = false;
-      });
   }
 
   public startEdit(dto: IEditUserDTO): Observable<IUserViewModel | undefined> {

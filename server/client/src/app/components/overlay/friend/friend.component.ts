@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FriendHubService } from 'src/app/services/friend-hub.service';
 import { FriendService } from 'src/app/services/friend.service';
@@ -10,15 +10,23 @@ import { FriendAddDialogComponent } from '../../dialog/friend-add-dialog/friend-
   selector: 'app-friend',
   templateUrl: './friend.component.html',
   styleUrls: ['./friend.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
-export class FriendComponent implements OnInit {
+export class FriendComponent {
   private _open: boolean = false;
 
-  constructor(private friendHubService: FriendHubService, private friendService: FriendService, private dialog: MatDialog) { }
+  constructor(
+    private friendHubService: FriendHubService,
+    private friendService: FriendService,
+    private dialog: MatDialog
+  ) {}
 
-  ngOnInit(): void {
-    this.friendService.loadFriends().add(() => this.friendHubService.startConnection());
+  public get connected(): boolean {
+    return this.friendHubService.connected;
+  }
+
+  public get connecting(): boolean {
+    return this.friendHubService.connecting;
   }
 
   public get open(): boolean {
@@ -34,15 +42,15 @@ export class FriendComponent implements OnInit {
   }
 
   public get friends(): IUserNameViewModel[] {
-    return this.friendService.friends?.friends || [{ id: '1', userName: 'test', status: true }, { id: '2', userName: 'test2', status: false }];
+    return this.friendService.friends?.friends || [];
   }
 
   public get sent(): IUserNameViewModel[] {
-    return this.friendService.friends?.sent || [{ id: '1', userName: 'test', status: true }, { id: '2', userName: 'test2', status: false }];
+    return this.friendService.friends?.sent || [];
   }
 
   public get received(): IUserNameViewModel[] {
-    return this.friendService.friends?.received || [{ id: '1', userName: 'test', status: true }, { id: '2', userName: 'test2', status: false }];
+    return this.friendService.friends?.received || [];
   }
 
   public get friendsCount(): number {
@@ -68,7 +76,6 @@ export class FriendComponent implements OnInit {
   public openAddFriend(): void {
     const dialogRef = this.dialog.open(FriendAddDialogComponent);
     dialogRef.afterClosed().subscribe((name: string) => {
-      
       if (name) {
         this.addFriend(name);
       }
@@ -78,9 +85,12 @@ export class FriendComponent implements OnInit {
   public getHeaderClass(counter: number | undefined): string {
     const open = this._open ? 'open' : '';
     if (counter === undefined) {
-      const notified = this.friendsCount + this.sentCount + this.receivedCount > 0 ? 'notified' : '';
-      return `${notified} ${open}`
-    };
+      const notified =
+        this.friendsCount + this.sentCount + this.receivedCount > 0
+          ? 'notified'
+          : '';
+      return `${notified} ${open}`;
+    }
     const notified = counter > 0 ? 'notified' : '';
     return `${notified} ${open}`;
   }

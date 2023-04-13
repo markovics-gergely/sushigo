@@ -20,5 +20,19 @@ namespace user.api.Hubs.Interfaces
         /// <param name="friendStatus"></param>
         /// <returns></returns>
         Task FriendStatus(FriendStatusViewModel friendStatus);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns></returns>
+        Task FriendRequest(UserNameViewModel sender);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns></returns>
+        Task FriendRemove(UserNameViewModel sender);
     }
 }

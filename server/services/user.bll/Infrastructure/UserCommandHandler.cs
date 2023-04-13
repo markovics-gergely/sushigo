@@ -202,7 +202,7 @@ namespace user.bll.Infrastructure
             userEntity.Experience -= RoleTypes.GameExp;
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
-            await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() });
+            await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
         }
     }
 }

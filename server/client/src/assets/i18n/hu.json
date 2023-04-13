@@ -9,6 +9,10 @@
       "message": "Biztosan ki akar lépni?"
     }
   },
+  "refresh": {
+    "title": "Oldal frissítése",
+    "message": "A felhasználója {{sec}} másodpercen belül lejár. Frissíteni kívánja az oldalt?"
+  },
   "login": {
     "title": "Belépés",
     "sign-up": "Regisztráljon",

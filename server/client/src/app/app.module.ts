@@ -48,6 +48,7 @@ import { EditUserComponent } from './components/dialog/edit-user/edit-user.compo
 import { ThemeComponent } from './components/overlay/theme/theme.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { LobbyComponent } from './components/lobby/lobby.component';
+import { RefreshComponent } from './components/dialog/refresh/refresh.component';
 
 export function jwtOptionsFactory(tokenService: TokenService) {
   return {
@@ -74,6 +75,7 @@ export function jwtOptionsFactory(tokenService: TokenService) {
     EditUserComponent,
     ThemeComponent,
     LobbyComponent,
+    RefreshComponent,
   ],
   imports: [
     BrowserModule,

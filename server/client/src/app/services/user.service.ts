@@ -13,6 +13,7 @@ import {
 import { EditUserComponent } from '../components/dialog/edit-user/edit-user.component';
 import { LoadingService } from './loading.service';
 import { TokenService } from './token.service';
+import { RefreshService } from './refresh.service';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +26,8 @@ export class UserService {
     private client: HttpClient,
     private tokenService: TokenService,
     private dialog: MatDialog,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private refreshService: RefreshService
   ) { }
 
   /**
@@ -42,7 +44,7 @@ export class UserService {
    * @param loginUserDTO User to log in with
    * @returns Response from the server
    */
-  public login(loginUserDTO: ILoginUserDTO): Observable<Object> {
+  public login(loginUserDTO: ILoginUserDTO): Observable<IUser> {
     let headers = new HttpHeaders().set(
       'Content-Type',
       'application/x-www-form-urlencoded'
@@ -55,7 +57,7 @@ export class UserService {
     body.set('client_id', environment.client_id);
     body.set('client_secret', environment.client_secret);
 
-    return this.client.post(`${this.baseUrl}/login`, body.toString(), {
+    return this.client.post<IUser>(`${this.baseUrl}/login`, body.toString(), {
       headers: headers,
     });
   }
@@ -88,6 +90,9 @@ export class UserService {
       .subscribe({
         next: (response) => {
           this.tokenService.userToken = response;
+          setTimeout(() => {
+            this.refreshService.refresh = true;
+          }, (response.expires_in - 30) * 1000);
         },
         error: (err) => {
           console.log(err);

@@ -3,6 +3,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { AppRole, IUser, IUserTokenViewModel } from 'src/shared/user.models';
 import jwt_decode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -12,16 +13,17 @@ export class TokenService {
   private readonly rCookieName = environment.refresh_token_name;
   private readonly langCookieName = environment.language_token_name;
   private readonly themeCookieName = environment.theme_token_name;
+  private readonly DEFAULT_REFRESH_TIME = 30;
 
-  constructor(private cookieService: CookieService) {}
+  constructor(private cookieService: CookieService, private router: Router) { }
 
   public set userToken(user: IUser) {
-    this.token = user.access_token;
+    this.setToken(user.access_token, user.expires_in);
     this.refreshToken = user.refresh_token;
   }
 
-  private set token(token: string) {
-    this.cookieService.set(this.cookieName, token, this.expires);
+  private setToken(token: string, expires_in: number) {
+    this.cookieService.set(this.cookieName, token, new Date(Date.now() + expires_in * 1000));
   }
 
   public get token(): string {
@@ -29,7 +31,7 @@ export class TokenService {
   }
 
   private set refreshToken(token: string) {
-    this.cookieService.set(this.rCookieName, token, this.expires);
+    this.cookieService.set(this.rCookieName, token, this.DEFAULT_REFRESH_TIME);
   }
 
   public get refreshToken(): string {
@@ -53,7 +55,9 @@ export class TokenService {
   }
 
   public set language(lang: string | undefined) {
-    this.cookieService.set(this.langCookieName, lang ?? "");
+    if (lang !== undefined) {
+      this.cookieService.set(this.langCookieName, lang, 365);
+    }
   }
 
   public get theme(): string | undefined {
@@ -61,14 +65,19 @@ export class TokenService {
   }
 
   public set theme(theme: string | undefined) {
-    this.cookieService.set(this.themeCookieName, theme ?? "");
+    if (theme !== undefined) {
+      this.cookieService.set(this.themeCookieName, theme, 365);
+    }
   }
 
   public clearCookies() {
     this.cookieService.delete(this.cookieName);
     this.cookieService.delete(this.rCookieName);
-    this.cookieService.delete(this.langCookieName);
-    this.cookieService.delete(this.themeCookieName);
+    this.router.navigate(['login']);
+  }
+
+  public clearAllCookies() {
+    this.cookieService.deleteAll();
   }
 
   private get notExpired(): boolean {

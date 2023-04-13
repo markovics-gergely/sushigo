@@ -13,8 +13,10 @@ export class AclService {
 
   public can(role: AppRole | '*'): boolean {
     const roles = ACL[role];
-    const userRoles = this.tokenService.user?.role ?? [];
-    return roles && (roles.includes('*') || [userRoles].flat().some(role => roles.includes(role)));
+    if (!roles || roles.length === 0 || roles.includes('*')) {
+      return true;
+    }
+    return this.hasRoles(roles);
   }
 
   public hasDeck(deck: DeckType): boolean {
@@ -28,7 +30,6 @@ export class AclService {
   }
 
   public hasRoles(roles: (AppRole | '*')[]): boolean {
-    const userRoles = this.tokenService.user?.role ?? [];
-    return [userRoles].flat().some(role => roles.includes(role));
+    return this.tokenService.roles.some(role => roles.includes(role));
   }
 }

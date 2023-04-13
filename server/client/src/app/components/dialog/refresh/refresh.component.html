@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>{{ "refresh.title" | translate }}</h1>
+<div mat-dialog-content>
+  <p>{{ "refresh.message" | translate: { sec: counter } }}</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-flat-button color="warn" (click)="decline()">{{ 'confirm.buttons.no' | translate }}</button>
+  <button mat-flat-button color="primary" (click)="accept()" cdkFocusInitial>
+    {{ 'confirm.buttons.yes' | translate }}
+  </button>
+</div>

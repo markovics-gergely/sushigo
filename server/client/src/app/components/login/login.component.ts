@@ -11,7 +11,7 @@ import { ILoginUserDTO, IUser } from 'src/shared/user.models';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   encapsulation: ViewEncapsulation.None
-  
+
 })
 export class LoginComponent implements OnInit {
   private _loginForm: FormGroup | undefined;
@@ -38,20 +38,20 @@ export class LoginComponent implements OnInit {
     this.loadingService.loading = true;
     const loginUserDTO = this.loginForm.value as ILoginUserDTO;
     this.userService
-        .login(loginUserDTO)
-        .subscribe({
-          next: (response) => {
-            this.loginForm?.reset();
-            this.tokenService.userToken = response as IUser;
-            this.router.navigate(['home']);
-          },
-          error: (err) => {
-            console.log(err);
-            this.tokenService.clearCookies();
-          },
-        })
-        .add(() => {
-          this.loadingService.loading = false;
-        });
+      .login(loginUserDTO)
+      .subscribe({
+        next: (response) => {
+          this.loginForm?.reset();
+          this.tokenService.userToken = response;
+          this.router.navigate(['home']);
+        },
+        error: (err) => {
+          console.log(err);
+          this.tokenService.clearCookies();
+        },
+      })
+      .add(() => {
+        this.loadingService.loading = false;
+      });
   }
 }

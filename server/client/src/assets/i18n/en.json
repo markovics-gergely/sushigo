@@ -9,6 +9,10 @@
       "message": "Are you sure you want to log out?"
     }
   },
+  "refresh": {
+    "title": "Refresh page",
+    "message": "Your user session expires in {{sec}} seconds. Do you want to refresh the page?"
+  },
   "login": {
     "title": "Log in",
     "sign-up": "Sign up",

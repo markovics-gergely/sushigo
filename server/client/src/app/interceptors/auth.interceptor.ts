@@ -18,23 +18,19 @@ export class AuthInterceptor implements HttpInterceptor {
     private tokenService: TokenService,
     private snackService: SnackService,
     private router: Router
-  ) {}
+  ) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this.tokenService.token;
     const authReq = token ? request.clone({
       setHeaders: { Authorization: 'Bearer ' + token },
     }) : request;
-    
+
     return next.handle(authReq)
       .pipe(
         catchError((err: HttpErrorResponse) => {
           console.log(err);
-          if (err.status === 401) {
-            this.tokenService.clearCookies();
-            this.router.navigate(['login']);
-          }
-          else if (err.status === 403) {
+          if (err.status === 401 || err.status === 403) {
             this.tokenService.clearCookies();
           }
           const error = err.error?.title || this.snakeToText(err.error?.error_description) || err.message;

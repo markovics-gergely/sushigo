@@ -21,7 +21,7 @@ export class UserComponent implements OnInit {
     private confirmService: ConfirmService,
     private router: Router,
     private loadingService: LoadingService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userService.user.subscribe((user: IUserViewModel) => {
@@ -48,7 +48,6 @@ export class UserComponent implements OnInit {
       .subscribe((result: boolean) => {
         if (result) {
           this.tokenService.clearCookies();
-          this.router.navigate(['/login']);
         }
       });
   }
@@ -67,6 +66,6 @@ export class UserComponent implements OnInit {
         this._user = user;
       }
     })
-    .add(() => this.loadingService.loading = false);
+      .add(() => this.loadingService.loading = false);
   }
 }

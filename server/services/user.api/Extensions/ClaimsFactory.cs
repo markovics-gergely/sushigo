@@ -38,12 +38,16 @@ namespace user.api.Extensions
             var roles = await _userManager.GetRolesAsync(user);
 
             identity.AddClaims(roles.Select(role => new Claim(JwtClaimTypes.Role, role)));
-            if (user.Experience >= RoleTypes.PartyExp)
+            if (user.Experience >= RoleTypes.PartyExp && !roles.Contains("Party"))
             {
                 identity.AddClaim(new Claim(JwtClaimTypes.Role, "CanClaimParty"));
             }
+            if (user.Experience >= RoleTypes.DeckExp && roles.Contains("Party"))
+            {
+                identity.AddClaim(new Claim(JwtClaimTypes.Role, "CanClaimDeck"));
+            }
             identity.AddClaim(new Claim(RoleTypes.ExpClaim, user.Experience.ToString()));
-            identity.AddClaims(user.DeckClaims.Select(g => new Claim(RoleTypes.GameClaim, g.ToString())));
+            identity.AddClaims(user.DeckClaims.Select(g => new Claim(RoleTypes.DeckClaim, g.ToString())));
 
             return identity;
         }

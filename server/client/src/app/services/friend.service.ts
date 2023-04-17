@@ -134,6 +134,5 @@ export class FriendService {
         this._online.delete(status.id);
       }
     });
-    console.log(this._online);
   }
 }

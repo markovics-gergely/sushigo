@@ -11,7 +11,7 @@ import { RefreshService } from './refresh.service';
   providedIn: 'root',
 })
 export class FriendHubService {
-  private readonly baseUrl: string = `${environment.baseUrl}/friend-hub`;
+  private readonly baseUrl: string = `${environment.baseUrl}/user-hubs/friend-hub`;
   private _hubConnection: signalR.HubConnection | undefined;
   private _connected: boolean = false;
   private _connecting: boolean = false;
@@ -23,6 +23,7 @@ export class FriendHubService {
   ) {}
 
   public startConnection(): void {
+    this.refreshService.refreshUser();
     if (this._connected) return;
     this._connecting = true;
     this._hubConnection = new signalR.HubConnectionBuilder()
@@ -64,8 +65,7 @@ export class FriendHubService {
     );
     this._hubConnection?.on(
       'FriendStatuses',
-      (statuses: Array<IFriendStatusViewModel>) => { 
-        console.log(statuses);
+      (statuses: Array<IFriendStatusViewModel>) => {
         this.friendService.loadStatuses(statuses);
       }
     );
@@ -75,7 +75,9 @@ export class FriendHubService {
         this.friendService.loadStatuses([status]);
       }
     );
-    this._hubConnection?.on('RefreshUser', () => this.refreshService.refreshUser());
+    this._hubConnection?.on('RefreshUser', () => {
+      this.refreshService.refreshUser();
+    });
   }
 
   public get connected(): boolean {

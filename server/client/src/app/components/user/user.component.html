@@ -1,8 +1,9 @@
 <mat-card class="card">
   <div class="title">{{ "home.user.title" | translate }}</div>
   <mat-card-header>
-    <div class="avatar">
-      <img mat-card-xl-image [src]="avatarUrl" alt="avatar" />
+    <div class="avatar" *ngIf="user">
+      <img *ngIf="!user.avatarLoaded" mat-card-xl-image src="https://placehold.co/240x240?text=Sushi" alt="avatar" />
+      <img *ngIf="user.avatar" mat-card-xl-image [src]="user.avatar | imgPath" alt="avatar" (load)="user.avatarLoaded = true" />
     </div>
     <mat-card-title-group class="title-group">
       <mat-card-title>
@@ -20,15 +21,15 @@
       <mat-card-subtitle *ngIf="user">
         {{ "home.user.exp" | translate: { points: user.experience } }}
       </mat-card-subtitle>
-      <mat-card-subtitle *ngIf="user && user.mode">
-        {{ ("home.user." + user.mode) | translate }}
+      <mat-card-subtitle *ngIf="user">
+        {{ "home.user." + (partyClaimed ? 'party' : 'classic') | translate }}
       </mat-card-subtitle>
     </mat-card-title-group>
   </mat-card-header>
   <mat-card-content><mat-divider></mat-divider></mat-card-content>
   <mat-card-actions>
-    <button mat-flat-button color="accent" (click)="edit()">{{ "home.user.edit" | translate }}</button>
-    <button mat-flat-button color="accent" *can="'CanClaimParty'">{{ "home.user.logout" | translate }}</button>
     <button mat-flat-button color="warn" (click)="logout()">{{ "home.user.logout" | translate }}</button>
+    <button mat-flat-button color="accent" (click)="edit()">{{ "home.user.edit" | translate }}</button>
+    <button mat-flat-button color="primary" *can="'CanClaimParty'" (click)="claimParty()">{{ "home.user.claim-party" | translate }}</button>
   </mat-card-actions>
 </mat-card>

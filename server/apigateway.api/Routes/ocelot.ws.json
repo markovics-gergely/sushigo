@@ -9,7 +9,20 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/{catchAll}",
+      "UpstreamPathTemplate": "/api/user-hubs/{catchAll}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
+      "SwaggerKey": "user"
+    },
+    {
+      "DownstreamPathTemplate": "/{catchAll}",
+      "DownstreamScheme": "ws",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "lobby.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby-hubs/{catchAll}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
       "SwaggerKey": "user"
     }

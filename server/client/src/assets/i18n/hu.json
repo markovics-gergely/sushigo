@@ -13,6 +13,18 @@
     "title": "Oldal frissítése",
     "message": "A felhasználója {{sec}} másodpercen belül lejár. Frissíteni kívánja az oldalt?"
   },
+  "friends": {
+    "title": "Barátok",
+    "friends": "Barátok",
+    "sent": "Küldött kérések",
+    "received": "Beérkezett kérések",
+    "add-dialog": {
+      "title": "Barát hozzáadása",
+      "username": "Barát felhasználóneve",
+      "submit": "Hozzáadás",
+      "cancel": "Mégse"
+    }
+  },
   "login": {
     "title": "Belépés",
     "sign-up": "Regisztráljon",
@@ -44,6 +56,7 @@
       "party": "Party mód aktiválva",
       "edit": "Szerkesztés",
       "logout": "Kilépés",
+      "claim-party": "Party mód aktiválása",
       "edit-dialog": {
         "title": "Profil szerkesztése",
         "username": "Felhasználónév",
@@ -56,6 +69,48 @@
     },
     "history": {
       "title": "Történet"
+    }
+  },
+  "shop": {
+    "title": "Bolt",
+    "buy": "Vásárlás",
+    "owned": "Megvásárolt",
+    "lowexp": "Nincs elég pontod",
+    "nav": {
+      "home": "Főoldal",
+      "lobby": "Váróterem"
+    },
+    "SushiGo": {
+      "title": "Sushi Go!",
+      "description": "Az eredeti játék klasszikus menüje."
+    },
+    "MasterMenu": {
+      "title": "Mesteri menü",
+      "description": "Rutinos sushi-fogyasztók számára, akik szeretik a kihívásokat."
+    },
+    "PartySampler": {
+      "title": "Kísérletezős party",
+      "description": "Kóstoló a Sushi Go Party újdonságaiból."
+    },
+    "BigBanquet": {
+      "title": "Díszebéd",
+      "description": "6-8 fő számára ideális."
+    },
+    "MyFirstMeal": {
+      "title": "Első étkezés",
+      "description": "Egy könnyed menü, ami a kezdő játékosoknak is jól csúszik."
+    },
+    "CutThroatCombo": {
+      "title": "Verseny a legjobb falatokért",
+      "description": "Interaktív és konfrontatív."
+    },
+    "DinnerForTwo": {
+      "title": "Vacsora két főre",
+      "description": "Remek választás 2 fő számára."
+    },
+    "PointsPlatter": {
+      "title": "Bőségtál",
+      "description": "Hatalmas pontszámok."
     }
   }
 }

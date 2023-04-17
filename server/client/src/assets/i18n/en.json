@@ -13,6 +13,18 @@
     "title": "Refresh page",
     "message": "Your user session expires in {{sec}} seconds. Do you want to refresh the page?"
   },
+  "friends": {
+    "title": "Friends",
+    "friends": "Friends",
+    "sent": "Sent requests",
+    "received": "Received requests",
+    "add-dialog": {
+      "title": "Add a friend",
+      "username": "Friend's username",
+      "submit": "Add",
+      "cancel": "Cancel"
+    }
+  },
   "login": {
     "title": "Log in",
     "sign-up": "Sign up",
@@ -44,6 +56,7 @@
       "party": "Party mode enabled",
       "edit": "Edit",
       "logout": "Log out",
+      "claim-party": "Claim party mode",
       "edit-dialog": {
         "title": "Edit profile",
         "username": "Username",
@@ -56,6 +69,48 @@
     },
     "history": {
       "title": "History"
+    }
+  },
+  "shop": {
+    "title": "Shop",
+    "buy": "Buy",
+    "owned": "Owned",
+    "lowexp": "Not enough point",
+    "nav": {
+      "home": "Home",
+      "lobby": "Lobby"
+    },
+    "SushiGo": {
+      "title": "Sushi Go!",
+      "description": "The classic menu from the original game."
+    },
+    "MasterMenu": {
+      "title": "Master menu",
+      "description": " For seasoned Sushi Go! players who want to think!"
+    },
+    "PartySampler": {
+      "title": "Party sampler",
+      "description": "Taste what's new in Sushi Go Party!"
+    },
+    "BigBanquet": {
+      "title": "Big banquet",
+      "description": "Works well with 6-8 players."
+    },
+    "MyFirstMeal": {
+      "title": "My first meal",
+      "description": "A mellow menu that goes down easy for first time players."
+    },
+    "CutThroatCombo": {
+      "title": "Cut-throat combo",
+      "description": "Interactive and in your face!"
+    },
+    "DinnerForTwo": {
+      "title": "Dinner for two",
+      "description": "Works well with 2 players."
+    },
+    "PointsPlatter": {
+      "title": "Points platter",
+      "description": "Score big points!"
     }
   }
 }

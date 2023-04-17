@@ -4,6 +4,7 @@ import { AppRole, IUser, IUserTokenViewModel } from 'src/shared/user.models';
 import jwt_decode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { DeckType } from 'src/shared/deck.models';
 
 @Injectable({
   providedIn: 'root'
@@ -91,5 +92,9 @@ export class TokenService {
   public get roles(): AppRole[] {
     const values = this.user?.role ?? [];
     return Array.isArray(values) ? values : [values];
+  }
+
+  public get decks(): DeckType[] {
+    return this.user?.decks ?? [];
   }
 }

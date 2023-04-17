@@ -52,7 +52,9 @@
   }
   .add-button {
     width: 50px !important;
+    min-width: unset !important;
     height: 50px !important;
+    min-height: unset !important;
     background-color: var(--color-primary-dark) !important;
     border-radius: 10px;
     padding: 10px;
@@ -163,7 +165,7 @@
                   color: var(--color-accent);
                 }
               }
-              button {
+              .decline-button, .accept-button {
                 background: rgba(0, 0, 0, 0.3);
                 border-radius: 10px;
                 border: none;
@@ -171,8 +173,11 @@
                 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
                 color: white;
                 font-size: 16px;
-                width: 40px;
-                height: 40px;
+                width: 40px !important;
+                min-width: unset !important;
+                height: 40px !important;
+                min-height: unset !important;
+                cursor: pointer;
               }
             }
           }

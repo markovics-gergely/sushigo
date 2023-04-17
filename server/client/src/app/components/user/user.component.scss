@@ -2,7 +2,6 @@
   width: calc(100% - 20px);
   height: 100%;
   margin-left: 10px;
-  color: var(--color-text);
   padding: 10px 20px;
 
   .title {
@@ -64,6 +63,15 @@
     button {
       color: var(--color-text-light);
       margin-right: 5px;
+    }
+  }
+}
+.dark-theme {
+  .card {
+    mat-card-title, mat-card-subtitle {
+      .name, .value {
+        color: var(--color-text-light) !important;
+      }
     }
   }
 }

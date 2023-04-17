@@ -49,6 +49,8 @@ import { ThemeComponent } from './components/overlay/theme/theme.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { LobbyComponent } from './components/lobby/lobby.component';
 import { RefreshComponent } from './components/dialog/refresh/refresh.component';
+import { ImgPathPipe } from './pipes/img-path.pipe';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 export function jwtOptionsFactory(tokenService: TokenService) {
   return {
@@ -76,6 +78,7 @@ export function jwtOptionsFactory(tokenService: TokenService) {
     ThemeComponent,
     LobbyComponent,
     RefreshComponent,
+    ImgPathPipe,
   ],
   imports: [
     BrowserModule,
@@ -115,6 +118,7 @@ export function jwtOptionsFactory(tokenService: TokenService) {
         deps: [HttpClient],
       },
     }),
+    FontAwesomeModule,
   ],
   providers: [
     CookieService,

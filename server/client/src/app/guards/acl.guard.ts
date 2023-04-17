@@ -21,7 +21,7 @@ export const AclGuard: CanActivateFn = (
   if (!routeName) {
     return true;
   }
-  if (routeName === 'login') {
+  if (routeName === 'login' || routeName === 'register') {
     if (tokenService.loggedIn) {
       router.navigate(['home']);
       return false;

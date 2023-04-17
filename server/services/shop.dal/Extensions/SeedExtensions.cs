@@ -31,7 +31,8 @@ namespace shop.dal.Extensions
                             {
                                 Id = deckType.Value,
                                 DeckType = deckType.Key,
-                                Cost = RoleTypes.GameExp
+                                Cost = RoleTypes.DeckExp,
+                                ImagePath = $"/decks/{deckType.Key}.png"
                             }
                         );
                 foreach (var cardType in deckType.Key.GetCardTypes())

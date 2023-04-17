@@ -20,10 +20,12 @@
     <i class="bx bx-group"></i>
   </button>
   <div class="friend-header" [ngClass]="open ? 'open' : ''">
-    <button mat-flat-button class="add-button" (click)="openAddFriend()">
+    <button mat-flat-button color="none" class="add-button" (click)="openAddFriend()">
       <i class="bx bx-plus"></i>
     </button>
-    <div class="title" [ngClass]="open ? 'open' : ''">Friends</div>
+    <div class="title" [ngClass]="open ? 'open' : ''">
+      {{ "friends.title" | translate }}
+    </div>
   </div>
   <div class="foil" [ngClass]="open ? 'open' : ''">
     <mat-accordion
@@ -45,7 +47,7 @@
             [matBadgeHidden]="!friendsCount"
             matBadgeOverlap="true"
           >
-            Friends
+            {{ "friends.friends" | translate }}
           </mat-panel-title>
         </mat-expansion-panel-header>
         <div
@@ -61,7 +63,11 @@
               class="bx bxs-circle status"
               [ngClass]="friend.status ? 'ok' : ''"
             ></i>
-            <button class="decline-button" (click)="declineFriend(friend)">
+            <button
+              mat-flat-button color="none"
+              class="decline-button"
+              (click)="declineFriend(friend)"
+            >
               <i class="bx bx-x"></i>
             </button>
           </div>
@@ -77,7 +83,7 @@
             [matBadgeHidden]="!sentCount"
             matBadgeOverlap="true"
           >
-            Sent requests
+            {{ "friends.sent" | translate }}
           </mat-panel-title>
         </mat-expansion-panel-header>
         <div *ngFor="let request of sent" class="friend-wrapper">
@@ -89,7 +95,11 @@
               class="bx bxs-circle status"
               [ngClass]="request.status ? 'ok' : ''"
             ></i>
-            <button class="decline-button" (click)="declineFriend(request)">
+            <button
+              mat-flat-button color="none"
+              class="decline-button"
+              (click)="declineFriend(request)"
+            >
               <i class="bx bx-x"></i>
             </button>
           </div>
@@ -105,7 +115,7 @@
             [matBadgeHidden]="!receivedCount"
             matBadgeOverlap="true"
           >
-            Received requests
+            {{ "friends.received" | translate }}
           </mat-panel-title>
         </mat-expansion-panel-header>
         <div *ngFor="let request of received" class="friend-wrapper">
@@ -117,10 +127,18 @@
               class="bx bxs-circle status"
               [ngClass]="request.status ? 'ok' : ''"
             ></i>
-            <button class="accept-button" (click)="addFriend(request.userName)">
+            <button
+              mat-flat-button color="none"
+              class="accept-button"
+              (click)="addFriend(request.userName)"
+            >
               <i class="bx bx-check"></i>
             </button>
-            <button class="decline-button" (click)="declineFriend(request)">
+            <button
+              mat-flat-button
+              class="decline-button"
+              (click)="declineFriend(request)"
+            >
               <i class="bx bx-x"></i>
             </button>
           </div>

@@ -1,6 +1,6 @@
 import { DeckType } from "./deck.models";
 
-export type AppRole = 'Classic' | 'Party' | 'CanClaimParty';
+export type AppRole = 'Classic' | 'Party' | 'CanClaimParty' | 'CanClaimDeck';
 //export type DeckType = 'FirstMeal' | 'SushiGo' | 'ExperimentalParty' | 'MasterfulMenu' | 'BowlOfPlenty' | 'RaceForBestSnacks' | 'Banquet' | 'DinnerForTwo';
 
 export interface IUser {
@@ -47,8 +47,8 @@ export interface IUserViewModel {
     name: string;
     email: string;
     avatar: string;
+    avatarLoaded?: boolean;
     experience: number;
-    mode?: string;
 }
 
 export interface IEditUserDTO {

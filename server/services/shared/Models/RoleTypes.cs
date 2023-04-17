@@ -28,7 +28,7 @@
         /// <summary>
         /// Name of the claim for game types
         /// </summary>
-        public const string GameClaim = "games";
+        public const string DeckClaim = "decks";
 
         /// <summary>
         /// Experience needed to claim party role
@@ -38,6 +38,6 @@
         /// <summary>
         /// Experience needed to claim a game type
         /// </summary>
-        public const long GameExp = 50;
+        public const long DeckExp = 50;
     }
 }

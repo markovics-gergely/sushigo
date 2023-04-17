@@ -4,7 +4,6 @@ using user.bll.Infrastructure.Commands;
 using user.bll.Infrastructure.Pipelines;
 using user.bll.Infrastructure.Queries;
 using user.bll.Infrastructure.ViewModels;
-using user.bll.Settings;
 using user.dal.Repository.Implementations;
 using user.dal.Repository.Interfaces;
 using user.dal.UnitOfWork.Implementations;
@@ -26,8 +25,8 @@ namespace user.api.Extensions
             services.AddHttpClient();
             services.AddTransient<IRequestHandler<CreateUserCommand, bool>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<EditUserCommand, UserViewModel>, UserCommandHandler>();
-            services.AddTransient<IRequestHandler<ClaimPartyCommand>, UserCommandHandler>();
-            services.AddTransient<IRequestHandler<ClaimDeckCommand>, UserCommandHandler>();
+            services.AddTransient<IRequestHandler<ClaimPartyCommand, UserViewModel>, UserCommandHandler>();
+            services.AddTransient<IRequestHandler<ClaimDeckCommand, UserViewModel>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<EditUserRoleCommand>, UserCommandHandler>();
 
             services.AddTransient<IRequestHandler<AddFriendCommand, UserNameViewModel>, FriendCommandHandler>();

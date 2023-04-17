@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmService } from 'src/app/services/confirm.service';
 import { LoadingService } from 'src/app/services/loading.service';
+import { ShopService } from 'src/app/services/shop.service';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
 import { environment } from 'src/environments/environment';
@@ -20,15 +21,13 @@ export class UserComponent implements OnInit {
     private tokenService: TokenService,
     private confirmService: ConfirmService,
     private router: Router,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private shopService: ShopService
   ) { }
 
   ngOnInit(): void {
     this.userService.user.subscribe((user: IUserViewModel) => {
       this._user = user;
-      this._user.mode = this.tokenService.roles.includes('Party')
-        ? 'party'
-        : 'classic';
     });
   }
 
@@ -67,5 +66,14 @@ export class UserComponent implements OnInit {
       }
     })
       .add(() => this.loadingService.loading = false);
+  }
+
+  public claimParty() {
+    this.loadingService.loading = true;
+    this.shopService.claimParty().subscribe().add(() => this.loadingService.loading = false);
+  }
+
+  public get partyClaimed(): boolean {
+    return this.tokenService.roles.includes('Party');
   }
 }

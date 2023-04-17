@@ -22,7 +22,7 @@ namespace user.bll.Extensions
 
         public static IEnumerable<DeckType> GetUserDecksFromJwt(this ClaimsPrincipal claimsPrincipal)
         {
-            return claimsPrincipal.Claims.Where(x => x.Type == RoleTypes.GameClaim).Select(x => (DeckType)Enum.Parse(typeof(DeckType), x.Value));
+            return claimsPrincipal.Claims.Where(x => x.Type == RoleTypes.DeckClaim).Select(x => (DeckType)Enum.Parse(typeof(DeckType), x.Value));
         }
 
         public static bool GetUserHasDeck(this ClaimsPrincipal claimsPrincipal, DeckType deck)

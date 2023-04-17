@@ -19,8 +19,8 @@ namespace user.bll.Infrastructure
     public class UserCommandHandler :
         IRequestHandler<CreateUserCommand, bool>,
         IRequestHandler<EditUserCommand, UserViewModel>,
-        IRequestHandler<ClaimPartyCommand>,
-        IRequestHandler<ClaimDeckCommand>,
+        IRequestHandler<ClaimPartyCommand, UserViewModel>,
+        IRequestHandler<ClaimDeckCommand, UserViewModel>,
         IRequestHandler<EditUserRoleCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -158,7 +158,7 @@ namespace user.bll.Infrastructure
             }
         }
 
-        public async Task Handle(ClaimPartyCommand request, CancellationToken cancellationToken)
+        public async Task<UserViewModel> Handle(ClaimPartyCommand request, CancellationToken cancellationToken)
         {
             var userEntity = _unitOfWork.UserRepository.Get(filter: x => x.Id == request.PartyBoughtDTO.UserId).FirstOrDefault();
             if (userEntity == null)
@@ -178,17 +178,18 @@ namespace user.bll.Infrastructure
             userEntity.Experience -= RoleTypes.PartyExp;
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
-            await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() });
+            await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
+            return _mapper.Map<UserViewModel>(userEntity);
         }
 
-        public async Task Handle(ClaimDeckCommand request, CancellationToken cancellationToken)
+        public async Task<UserViewModel> Handle(ClaimDeckCommand request, CancellationToken cancellationToken)
         {
             var userEntity = _unitOfWork.UserRepository.Get(filter: x => x.Id == request.DeckBoughtDTO.UserId).FirstOrDefault();
             if (userEntity == null)
             {
                 throw new EntityNotFoundException("User not found");
             }
-            _validator = new ClaimValidator(RoleTypes.GameExp, userEntity.Experience);
+            _validator = new ClaimValidator(RoleTypes.DeckExp, userEntity.Experience);
             if (!_validator.Validate())
             {
                 throw new ValidationErrorException("Not enough experience");
@@ -199,10 +200,11 @@ namespace user.bll.Infrastructure
                 throw new ValidationErrorException("User already has the game");
             }
             userEntity.DeckClaims.Add(request.DeckBoughtDTO.DeckType);
-            userEntity.Experience -= RoleTypes.GameExp;
+            userEntity.Experience -= RoleTypes.DeckExp;
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
             await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
+            return _mapper.Map<UserViewModel>(userEntity);
         }
     }
 }

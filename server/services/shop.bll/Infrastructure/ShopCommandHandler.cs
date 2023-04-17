@@ -36,7 +36,7 @@ namespace shop.bll.Infrastructure
                 throw new EntityNotFoundException("User not found");
             }
             _validator = new AndCondition(
-                    new ClaimValidator(RoleTypes.GameExp, request.User?.GetUserExpFromJwt() ?? 0),
+                    new ClaimValidator(RoleTypes.DeckExp, request.User?.GetUserExpFromJwt() ?? 0),
                     new ClaimDeckValidator(request.User?.GetUserDecksFromJwt().ToList() ?? new List<DeckType>(), request.BuyDeckDTO.DeckType)
                 );
             if (!_validator.Validate())

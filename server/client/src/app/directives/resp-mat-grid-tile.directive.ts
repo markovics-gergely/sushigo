@@ -2,20 +2,27 @@ import { Directive, Input, OnInit } from '@angular/core';
 import { MatGridTile } from '@angular/material/grid-list';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 
-export interface IResponsiveColumnsMap {
-  xs?: number;
-  sm?: number;
-  md?: number;
-  lg?: number;
-  xl?: number;
-}
+export type Size = 'xl' | 'lg' | 'md' | 'sm' | 'xs';
+export type TResponsiveColumnsMap = Record<Size, number | undefined>;
 
 @Directive({
   selector: '[colspan]',
 })
 export class RespMatGridTileDirective implements OnInit {
-  private _colmap: IResponsiveColumnsMap = {};
-  private _rowmap: IResponsiveColumnsMap = {};
+  private _colmap: TResponsiveColumnsMap = {
+    xl: undefined,
+    lg: undefined,
+    md: undefined,
+    sm: undefined,
+    xs: undefined
+  };
+  private _rowmap: TResponsiveColumnsMap = {
+    xl: undefined,
+    lg: undefined,
+    md: undefined,
+    sm: undefined,
+    xs: undefined
+  };
   private _cols: number = 12;
   private _rows: number = 1;
 
@@ -74,18 +81,14 @@ export class RespMatGridTileDirective implements OnInit {
   ngOnInit(): void {
     this.initializeColsCount();
     this.media.asObservable().subscribe((changes: MediaChange[]) => {
-      this.grid.colspan = this.getActual(changes[0]?.mqAlias as keyof IResponsiveColumnsMap, this._colmap, this._cols);
-      this.grid.rowspan = this.getActual(changes[0]?.mqAlias as keyof IResponsiveColumnsMap, this._rowmap, this._rows);
+      this.grid.colspan = this.getActual(changes[0]?.mqAlias as keyof TResponsiveColumnsMap, this._colmap, this._cols);
+      this.grid.rowspan = this.getActual(changes[0]?.mqAlias as keyof TResponsiveColumnsMap, this._rowmap, this._rows);
     });
   }
 
-  private getActual(col: keyof IResponsiveColumnsMap, map: IResponsiveColumnsMap, defaultCol: number): number {
+  private getActual(col: keyof TResponsiveColumnsMap, map: TResponsiveColumnsMap, defaultCol: number): number {
     const index = Object.keys(map).indexOf(col);
-    let actual = defaultCol;
-    Object.keys(map).slice(0, index + 1).forEach((key: string) => {
-      actual = map[key as keyof IResponsiveColumnsMap] ?? actual;
-    });
-    return actual;
+    return Object.values(map).slice(0, index + 1).filter((v) => v !== undefined).slice(-1)[0] ?? defaultCol;
   }
 
   private initializeColsCount(): void {
@@ -93,7 +96,7 @@ export class RespMatGridTileDirective implements OnInit {
       (mqAlias: string): boolean => {
         return this.media.isActive(mqAlias);
       }
-    ) as keyof IResponsiveColumnsMap;
+    ) as keyof TResponsiveColumnsMap;
     
     this.grid.colspan = this.getActual(colType, this._colmap, this._cols);
     this.grid.rowspan = this.getActual(colType, this._rowmap, this._rows);

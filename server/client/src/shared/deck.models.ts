@@ -2,6 +2,8 @@ export interface IDeckViewModel {
   deckType: DeckType;
   cost: number;
   claimed?: boolean;
+  imagePath: string;
+  imageLoaded?: boolean;
   cardTypes: CardType[];
 }
 

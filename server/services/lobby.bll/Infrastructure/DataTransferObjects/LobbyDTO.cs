@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace lobby.bll.Infrastructure.DataTransferObjects
+﻿namespace lobby.bll.Infrastructure.DataTransferObjects
 {
-    internal class LobbyDTO
+    public class LobbyDTO
     {
+        public required string Name { get; set; }
+        public required string Password { get; set; }
+        public string CreatorImagePath { get; set; } = "";
     }
 }

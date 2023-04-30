@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace lobby.bll.Infrastructure.ViewModels
+﻿namespace lobby.bll.Infrastructure.ViewModels
 {
-    internal class PlayerViewModel
+    public class PlayerViewModel
     {
+        public required Guid Id { get; set; }
+        public required string UserName { get; set; }
     }
 }

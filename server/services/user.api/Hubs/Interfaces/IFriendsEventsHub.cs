@@ -11,28 +11,32 @@ namespace user.api.Hubs.Interfaces
         /// 
         /// </summary>
         /// <param name="friendStatuses"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task FriendStatuses(List<FriendStatusViewModel> friendStatuses);
+        Task FriendStatuses(List<FriendStatusViewModel> friendStatuses, CancellationToken cancellationToken);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="friendStatus"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task FriendStatus(FriendStatusViewModel friendStatus);
+        Task FriendStatus(FriendStatusViewModel friendStatus, CancellationToken cancellationToken);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="sender"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task FriendRequest(UserNameViewModel sender);
+        Task FriendRequest(UserNameViewModel sender, CancellationToken cancellationToken);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="sender"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task FriendRemove(UserNameViewModel sender);
+        Task FriendRemove(UserNameViewModel sender, CancellationToken cancellationToken);
     }
 }

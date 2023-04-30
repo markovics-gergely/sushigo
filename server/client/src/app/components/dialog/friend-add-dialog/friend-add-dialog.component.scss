@@ -1,16 +1,20 @@
-.friend-dialog-button {
-  height: 50px;
-  border-radius: 10px;
-  padding: 5px 10px;
-  border: none;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
-  font-size: 16px;
-  margin-right: 10px;
-}
-
 .spinner {
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 10px;
+}
+
+.mat-mdc-dialog-title {
+  background-color: var(--color-primary);
+  color: var(--color-text-light) !important;
+  margin-bottom: 10px !important;
+}
+
+.mat-primary:not(:disabled) {
+  color: var(--color-text-light) !important;
+}
+
+mat-dialog-content, mat-dialog-actions {
+  padding: 10px 20px !important;
 }

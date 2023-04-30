@@ -1,8 +1,8 @@
 ﻿namespace lobby.bll.Infrastructure.DataTransferObjects
 {
-    public class MessageDTO
+    public class RemovePlayerDTO
     {
-        public required string Text { get; set; }
+        public required Guid PlayerId { get; set; }
         public required Guid LobbyId { get; set; }
     }
 }

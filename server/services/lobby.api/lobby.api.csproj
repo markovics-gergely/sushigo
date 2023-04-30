@@ -40,4 +40,8 @@
     <ProjectReference Include="..\lobby.bll\lobby.bll.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>

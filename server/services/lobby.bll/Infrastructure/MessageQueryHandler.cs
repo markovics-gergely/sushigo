@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace lobby.bll.Infrastructure
 {
-    internal class MessageQueryHandler
+    public class MessageQueryHandler
     {
     }
 }

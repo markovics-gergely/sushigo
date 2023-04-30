@@ -1,14 +1,16 @@
-<h1 mat-dialog-title>Add a friend</h1>
+<h1 mat-dialog-title>{{ 'friends.add-dialog.title' | translate }}</h1>
 <mat-dialog-content [formGroup]="form" *ngIf="form" class="form">
   <mat-form-field appearance="outline">
-    <mat-label>Friend's username</mat-label>
+    <mat-label>{{ 'friends.add-dialog.username' | translate }}</mat-label>
     <input matInput placeholder="Username" formControlName="name" />
   </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions *ngIf="form">
-  <button mat-stroked-button (click)="add()" [disabled]="!valid" class="friend-dialog-button" cdkFocusInitial>
-    Add
+  <button mat-flat-button color="primary" (click)="add()" [disabled]="!valid">
+    {{ 'friends.add-dialog.submit' | translate }}
   </button>
-  <button mat-stroked-button (click)="cancel()" class="friend-dialog-button">Cancel</button>
+  <button mat-flat-button color="warn" (click)="cancel()">
+    {{ 'friends.add-dialog.cancel' | translate }}
+  </button>
 </mat-dialog-actions>
 <div class="spinner" *ngIf="!form"><mat-spinner></mat-spinner></div>

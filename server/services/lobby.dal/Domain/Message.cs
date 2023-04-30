@@ -3,10 +3,11 @@
     public class Message
     {
         public Guid Id { get; set; }
-        public required string UserName { get; set; }
+        public Guid UserId { get; set; }
+        public string UserName { get; set; } = string.Empty;
         public required string Text { get; set; }
         public required Guid LobbyId { get; set; }
-        public required Lobby Lobby { get; set; }
-        public required DateTime DateTime { get; set; }
+        public Lobby Lobby { get; set; } = null!;
+        public DateTime DateTime { get; set; }
     }
 }

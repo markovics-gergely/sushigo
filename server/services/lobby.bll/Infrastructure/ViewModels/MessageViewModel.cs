@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace lobby.bll.Infrastructure.ViewModels
+﻿namespace lobby.bll.Infrastructure.ViewModels
 {
-    internal class MessageViewModel
+    public class MessageViewModel
     {
+        public Guid Id { get; set; }
+        public required string UserName { get; set; }
+        public required string Text { get; set; }
+        public required DateTime DateTime { get; set; }
     }
 }

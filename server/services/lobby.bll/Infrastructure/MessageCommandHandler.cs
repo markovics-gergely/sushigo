@@ -51,7 +51,7 @@ namespace lobby.bll.Infrastructure
             _unitOfWork.MessageRepository.Insert(messageEntity);
             await _unitOfWork.Save();
             var messageViewModel = _mapper.Map<MessageViewModel>(messageEntity);
-            await _mediator.Publish(new AddMessageEvent(messageViewModel), cancellationToken);
+            await _mediator.Publish(new AddMessageEvent(messageViewModel, request.Message.LobbyId), cancellationToken);
             return messageViewModel;
         }
     }

@@ -1,0 +1,31 @@
+@use "sass:map";
+
+$sizes: (
+  xs: (
+    min: 0,
+    max: 599px,
+  ),
+  sm: (
+    min: 600px,
+    max: 959px,
+  ),
+  md: (
+    min: 960px,
+    max: 1279px,
+  ),
+  lg: (
+    min: 1280px,
+    max: 1919px,
+  ),
+  xl: (
+    min: 1920px,
+    max: 5000px,
+  ),
+);
+
+@mixin media-styles($style) {
+  $width: map.get($sizes, $style);
+  @media screen and (min-width: map.get($width, min)) and (max-width: map.get($width, max)) {
+    @content;
+  }
+}

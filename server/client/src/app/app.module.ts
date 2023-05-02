@@ -51,6 +51,8 @@ import { LobbyComponent } from './components/lobby/lobby.component';
 import { RefreshComponent } from './components/dialog/refresh/refresh.component';
 import { ImgPathPipe } from './pipes/img-path.pipe';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ChatComponent } from './components/chat/chat.component';
+import { LobbyListComponent } from './components/lobby-list/lobby-list.component';
 
 export function jwtOptionsFactory(tokenService: TokenService) {
   return {
@@ -79,6 +81,8 @@ export function jwtOptionsFactory(tokenService: TokenService) {
     LobbyComponent,
     RefreshComponent,
     ImgPathPipe,
+    ChatComponent,
+    LobbyListComponent,
   ],
   imports: [
     BrowserModule,

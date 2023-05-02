@@ -37,7 +37,7 @@ namespace lobby.api.Controllers
         public async Task<ActionResult<IEnumerable<LobbyItemViewModel>>> GetLobbiesAsync(CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
-            var query = new GetLobbiesQuery();
+            var query = new GetLobbiesQuery(user);
             return Ok(await _mediator.Send(query, cancellationToken));
         }
 
@@ -83,12 +83,32 @@ namespace lobby.api.Controllers
             return Ok(await _mediator.Send(command, cancellationToken));
         }
 
+        /// <summary>
+        /// Add player to lobby
+        /// </summary>
+        /// <param name="playerDTO">Player to add</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost("player")]
         public async Task<ActionResult<LobbyViewModel>> AddPlayerAsync(PlayerDTO playerDTO, CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
-            var command = new AddPlayerCommand(playerDTO);
-            return Ok(_mediator.Send(command, cancellationToken));
+            var command = new AddPlayerCommand(playerDTO, user);
+            return Ok(await _mediator.Send(command, cancellationToken));
+        }
+
+        /// <summary>
+        /// Remove player from lobby
+        /// </summary>
+        /// <param name="removePlayerDTO">Player to remove</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpDelete("player")]
+        public async Task<ActionResult<LobbyViewModel?>> RemovePlayerAsync(RemovePlayerDTO removePlayerDTO, CancellationToken cancellationToken)
+        {
+            var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
+            var command = new RemovePlayerCommand(removePlayerDTO, user);
+            return Ok(await _mediator.Send(command, cancellationToken));
         }
     }
 }

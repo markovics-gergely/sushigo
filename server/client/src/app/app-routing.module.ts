@@ -5,6 +5,8 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AclGuard } from './guards/acl.guard';
 import { StoreComponent } from './components/store/store.component';
+import { LobbyComponent } from './components/lobby/lobby.component';
+import { LobbyListComponent } from './components/lobby-list/lobby-list.component';
 
 const routes: Routes = [
   {
@@ -29,6 +31,18 @@ const routes: Routes = [
     path: 'shop',
     component: StoreComponent,
     data: { name: 'shop' },
+    canActivate: [AclGuard]
+  },
+  {
+    path: 'lobby',
+    component: LobbyListComponent,
+    data: { name: 'lobby-list' },
+    canActivate: [AclGuard]
+  },
+  {
+    path: 'lobby/:id',
+    component: LobbyComponent,
+    data: { name: 'lobby' },
     canActivate: [AclGuard]
   },
   {

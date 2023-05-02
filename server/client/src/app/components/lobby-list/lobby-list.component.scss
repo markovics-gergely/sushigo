@@ -1,0 +1,7 @@
+@import "../../../mixins";
+
+@include media-styles(md) {
+    .lobby-list {
+        margin: 0 100px;
+    }
+}

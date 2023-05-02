@@ -24,7 +24,7 @@
       ],
       "UpstreamPathTemplate": "/api/lobby-hubs/{catchAll}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
-      "SwaggerKey": "user"
+      "SwaggerKey": "lobby"
     }
   ]
 }

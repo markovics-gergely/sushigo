@@ -19,6 +19,16 @@
           "Url": "http://shop.api/swagger/v1/swagger.json"
         }
       ]
+    },
+    {
+      "Key": "lobby",
+      "Config": [
+        {
+          "Name": "Lobby API",
+          "Version": "v1",
+          "Url": "http://lobby.api/swagger/v1/swagger.json"
+        }
+      ]
     }
   ]
 }

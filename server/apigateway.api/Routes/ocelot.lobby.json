@@ -1,0 +1,106 @@
+﻿{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/lobby",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "lobby.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "lobby",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/lobby/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "lobby.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby/{id}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "lobby",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/lobby",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "lobby.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "lobby",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/lobby/deck",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "lobby.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby/deck",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "lobby",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/lobby/player",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "lobby.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby/player",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "lobby",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/lobby/player",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "lobby.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby/player",
+      "UpstreamHttpMethod": [ "Delete" ],
+      "SwaggerKey": "lobby",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    }
+  ]
+}

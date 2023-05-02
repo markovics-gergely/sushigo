@@ -1,5 +1,6 @@
 using Hellang.Middleware.ProblemDetails;
 using lobby.api.Extensions;
+using lobby.api.Hubs;
 using lobby.bll.Settings;
 using lobby.dal;
 using lobby.dal.Configurations.Interfaces;
@@ -86,5 +87,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<LobbyListEventsHub>("/lobby-list-hub").RequireCors("CorsPolicy");
+app.MapHub<LobbyEventsHub>("/lobby-hub").RequireCors("CorsPolicy");
 
 app.Run();

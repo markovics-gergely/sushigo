@@ -1,4 +1,5 @@
 ﻿using lobby.bll.Infrastructure.Commands.Cache;
+using lobby.bll.Infrastructure.DataTransferObjects;
 using lobby.bll.Infrastructure.ViewModels;
 using MediatR;
 using shared.Models;
@@ -9,17 +10,15 @@ namespace lobby.bll.Infrastructure.Commands
     public class UpdateLobbyDeckCommand : IRequest<LobbyViewModel>, ICacheableMediatrCommandResponse
     {
         public ClaimsPrincipal? User { get; private set; }
-        public Guid LobbyId { get; private set; }
-        public DeckType DeckType { get; private set; }
+        public UpdateLobbyDTO UpdateLobbyDTO { get; private set; }
         public bool BypassCache { get; set; } = false;
-        public string CacheKey => $"lobby-{LobbyId}";
+        public string CacheKey => $"lobby-{UpdateLobbyDTO.LobbyId}";
         public TimeSpan? SlidingExpiration { get; set; }
 
-        public UpdateLobbyDeckCommand(Guid lobbyId, DeckType deckType, ClaimsPrincipal? user = null)
+        public UpdateLobbyDeckCommand(UpdateLobbyDTO updateLobbyDTO, ClaimsPrincipal? user = null)
         {
             User = user;
-            LobbyId = lobbyId;
-            DeckType = deckType;
+            UpdateLobbyDTO = updateLobbyDTO;
         }
     }
 }

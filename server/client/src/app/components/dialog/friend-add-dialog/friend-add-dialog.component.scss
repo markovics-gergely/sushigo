@@ -4,17 +4,3 @@
   align-items: center;
   margin: 10px;
 }
-
-.mat-mdc-dialog-title {
-  background-color: var(--color-primary);
-  color: var(--color-text-light) !important;
-  margin-bottom: 10px !important;
-}
-
-.mat-primary:not(:disabled) {
-  color: var(--color-text-light) !important;
-}
-
-mat-dialog-content, mat-dialog-actions {
-  padding: 10px 20px !important;
-}

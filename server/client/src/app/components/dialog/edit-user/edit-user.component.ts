@@ -30,6 +30,10 @@ export class EditUserComponent implements OnInit {
     return this._editForm;
   }
 
+  public get valid(): boolean {
+    return this._editForm?.valid || false;
+  }
+
   public submit() {
     this.dialogRef.close(this._editForm?.value);
   }

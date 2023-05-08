@@ -36,6 +36,7 @@ namespace user.api.Extensions
             services.AddTransient<IRequestHandler<GetFriendsQuery, FriendListViewModel>, FriendQueryHandler>();
 
             services.AddTransient<IRequestHandler<GetUserQuery, UserViewModel>, UserQueryHandler>();
+            services.AddTransient<IRequestHandler<GetUserByIdQuery, UserViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>, UserQueryHandler>();
 
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));

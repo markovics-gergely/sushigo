@@ -1,25 +1,40 @@
-import { Component, OnInit } from '@angular/core';
-import { LobbyListHubService } from 'src/app/services/lobby-list-hub.service';
+import { Component, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
 import { LobbyService } from 'src/app/services/lobby.service';
-import { ILobbyItemViewModel } from 'src/shared/lobby.models';
+import { ILobbyItemViewModel, ILobbyViewModel } from 'src/shared/lobby.models';
 
 @Component({
   selector: 'app-lobby-list',
   templateUrl: './lobby-list.component.html',
-  styleUrls: ['./lobby-list.component.scss']
+  styleUrls: ['./lobby-list.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
-export class LobbyListComponent implements OnInit {
+export class LobbyListComponent {
 
   constructor(
     private lobbyService: LobbyService,
-    private lobbyListHubService: LobbyListHubService
+    private router: Router,
   ) { }
-
-  ngOnInit(): void {
-    this.lobbyListHubService.startConnection();
-  }
 
   public get lobbies(): ILobbyItemViewModel[] {
     return this.lobbyService.lobbies;
+  }
+
+  public create() {
+    this.lobbyService.startLobbyCreate().subscribe({
+      next: (lobby: ILobbyViewModel | undefined) => {
+        if (!lobby) return;
+        this.router.navigate([`/lobby/${lobby.id}`]);
+      }
+    });
+  }
+
+  public join(lobby: ILobbyItemViewModel) {
+    this.lobbyService.startJoinLobby(lobby).subscribe({
+      next: (lobby: ILobbyViewModel | undefined) => {
+        if (!lobby) return;
+        this.router.navigate([`/lobby/${lobby.id}`]);
+      }
+    });
   }
 }

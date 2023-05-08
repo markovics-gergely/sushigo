@@ -23,9 +23,23 @@ $sizes: (
   ),
 );
 
-@mixin media-styles($style) {
+@mixin media-style($style) {
   $width: map.get($sizes, $style);
   @media screen and (min-width: map.get($width, min)) and (max-width: map.get($width, max)) {
+    @content;
+  }
+}
+
+@mixin media-style-below($style) {
+  $width: map.get($sizes, $style);
+  @media screen and (max-width: map.get($width, max)) {
+    @content;
+  }
+}
+
+@mixin media-style-above($style) {
+  $width: map.get($sizes, $style);
+  @media screen and (min-width: map.get($width, min)) {
     @content;
   }
 }

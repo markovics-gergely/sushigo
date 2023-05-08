@@ -17,6 +17,7 @@ namespace user.api.Extensions
             services.AddMassTransit(options =>
             {
                 options.AddConsumer<DeckBoughtConsumer>();
+                options.AddConsumer<LobbyJoinedConsumer>();
                 options.SetKebabCaseEndpointNameFormatter();
 
                 options.UsingRabbitMq((context, cfg) =>

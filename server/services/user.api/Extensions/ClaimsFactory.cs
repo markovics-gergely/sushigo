@@ -1,8 +1,12 @@
-﻿using IdentityModel;
+﻿using AutoMapper;
+using IdentityModel;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using shared.Models;
 using System.Security.Claims;
+using user.bll.Infrastructure.Queries;
+using user.bll.Infrastructure.ViewModels;
 using user.dal.Domain;
 using user.dal.Types;
 
@@ -14,17 +18,21 @@ namespace user.api.Extensions
     public class ClaimsFactory : UserClaimsPrincipalFactory<ApplicationUser>
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IMediator _mediator;
 
         /// <summary>
         /// Add dependencies to factory
         /// </summary>
         /// <param name="userManager"></param>
+        /// <param name="mediator"></param>
         /// <param name="optionsAccessor"></param>
         public ClaimsFactory(
             UserManager<ApplicationUser> userManager,
+            IMediator mediator,
             IOptions<IdentityOptions> optionsAccessor) : base(userManager, optionsAccessor)
         {
             _userManager = userManager;
+            _mediator = mediator;
         }
 
         /// <summary>
@@ -48,6 +56,10 @@ namespace user.api.Extensions
             }
             identity.AddClaim(new Claim(RoleTypes.ExpClaim, user.Experience.ToString()));
             identity.AddClaims(user.DeckClaims.Select(g => new Claim(RoleTypes.DeckClaim, g.ToString())));
+            identity.AddClaim(new Claim(RoleTypes.LobbyClaim, user.ActiveLobby?.ToString() ?? ""));
+
+            var userVM = await _mediator.Send(new GetUserByIdQuery(user.Id.ToString()));
+            identity.AddClaim(new Claim(RoleTypes.AvatarClaim, userVM.Avatar ?? ""));
 
             return identity;
         }

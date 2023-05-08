@@ -18,7 +18,7 @@ namespace lobby.bll.Validators.Implementations
 
         public bool Validate()
         {
-            return _lobby.CreatorId.ToString() == _user?.GetUserIdFromJwt();
+            return _lobby.CreatorUserId.ToString() == _user?.GetUserIdFromJwt();
         }
     }
 }

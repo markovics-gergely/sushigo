@@ -40,3 +40,8 @@ export interface IUpdateLobbyDTO {
     lobbyId: string;
     deckType: DeckType;
 }
+
+export interface IJoinLobbyDTO {
+    id: string;
+    password: string;
+}

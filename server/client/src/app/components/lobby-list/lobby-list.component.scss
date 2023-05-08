@@ -1,7 +1,78 @@
 @import "../../../mixins";
 
-@include media-styles(md) {
-    .lobby-list {
-        margin: 0 100px;
+.lobby-list {
+  width: 100%;
+  height: 100%;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+  @include media-style-above(md) {
+    margin: 0 10%;
+    width: 80%;
+  }
+
+  .card {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    border: var(--color-primary-dark) 2px solid;
+    h1 {
+      width: 100%;
+      margin: auto auto 15px 10%;
+      font-size: 46px;
     }
+    &.lobby-items {
+      padding-top: 5px;
+      overflow-y: auto;
+      .lobby-item {
+        background-color: rgba($color: var(--color-primary-rgb), $alpha: 0.4);
+        color: var(--color-text-light);
+        width: calc(100% - 20px);
+        margin: 5px 10px;
+        padding: 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        &:hover {
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+        &:active {
+          box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+  }
+}
+
+.light-theme {
+  .card {
+    background-color: rgba($color: white, $alpha: 0.6);
+  }
+  .banner {
+    background: radial-gradient(
+        circle,
+        transparent 90%,
+        var(--color-primary) 100%
+      ),
+      radial-gradient(
+        circle,
+        rgba($color: white, $alpha: 0.6) 40%,
+        var(--color-primary-light) 100%
+      );
+  }
+}
+.dark-theme {
+  .card {
+    background-color: rgba($color: black, $alpha: 0.6);
+  }
+  .banner {
+    background: radial-gradient(
+        circle,
+        transparent 90%,
+        var(--color-primary) 100%
+      ),
+      radial-gradient(
+        circle,
+        rgba($color: black, $alpha: 0.6) 40%,
+        var(--color-primary-dark) 100%
+      );
+  }
 }

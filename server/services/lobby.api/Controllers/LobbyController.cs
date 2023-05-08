@@ -86,6 +86,20 @@ namespace lobby.api.Controllers
         /// <summary>
         /// Add player to lobby
         /// </summary>
+        /// <param name="joinLobbyDTO">Lobby to join</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost("join")]
+        public async Task<ActionResult<LobbyViewModel>> AddPlayerAsync(JoinLobbyDTO joinLobbyDTO, CancellationToken cancellationToken)
+        {
+            var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
+            var command = new JoinLobbyCommand(joinLobbyDTO, user);
+            return Ok(await _mediator.Send(command, cancellationToken));
+        }
+
+        /// <summary>
+        /// Add player to lobby
+        /// </summary>
         /// <param name="playerDTO">Player to add</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>

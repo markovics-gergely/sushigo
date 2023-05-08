@@ -24,6 +24,16 @@ namespace lobby.api.Extensions
         {
             services.AddHttpClient();
 
+            services.AddTransient<IRequestHandler<CreateLobbyCommand, LobbyViewModel>, LobbyCommandHandler>();
+            services.AddTransient<IRequestHandler<JoinLobbyCommand, LobbyViewModel>, LobbyCommandHandler>();
+            services.AddTransient<IRequestHandler<AddPlayerCommand, LobbyViewModel>, LobbyCommandHandler>();
+            services.AddTransient<IRequestHandler<RemovePlayerCommand, LobbyViewModel?>, LobbyCommandHandler>();
+
+            services.AddTransient<IRequestHandler<CreateMessageCommand, MessageViewModel>, MessageCommandHandler>();
+
+            services.AddTransient<IRequestHandler<GetLobbiesQuery, IEnumerable<LobbyItemViewModel>>, LobbyQueryHandler>();
+            services.AddTransient<IRequestHandler<GetLobbyQuery, LobbyViewModel>, LobbyQueryHandler>();
+
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IFileRepository, FileRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();

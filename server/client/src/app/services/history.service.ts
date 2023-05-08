@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IHistoryViewModel } from 'src/shared/history.models';
 
@@ -14,6 +14,7 @@ export class HistoryService {
   constructor(private client: HttpClient) { }
 
   public get history(): Observable<IHistoryViewModel[]> {
-    return this.client.get<IHistoryViewModel[]>(`${this.baseUrl}`);
+    return of([]);
+    //return this.client.get<IHistoryViewModel[]>(`${this.baseUrl}`);
   }
 }

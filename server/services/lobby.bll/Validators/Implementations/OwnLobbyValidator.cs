@@ -18,7 +18,7 @@ namespace lobby.bll.Validators.Implementations
 
         public bool Validate()
         {
-            return _lobby.Players.Any(p => p.Id.ToString() == _user?.GetUserIdFromJwt());
+            return _lobby.Players.Any(p => p.UserId.ToString() == _user?.GetUserIdFromJwt());
         }
     }
 }

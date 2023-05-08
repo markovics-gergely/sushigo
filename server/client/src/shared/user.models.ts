@@ -16,6 +16,8 @@ export interface IUserTokenViewModel {
     experience: number;
     decks?: Array<DeckType>;
     exp: number;
+    avatar?: string;
+    lobby?: string;
 }
 
 export interface ILoginUserDTO {

@@ -21,6 +21,7 @@ namespace user.bll.Infrastructure
         IRequestHandler<EditUserCommand, UserViewModel>,
         IRequestHandler<ClaimPartyCommand, UserViewModel>,
         IRequestHandler<ClaimDeckCommand, UserViewModel>,
+        IRequestHandler<JoinLobbyCommand, UserViewModel>,
         IRequestHandler<EditUserRoleCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -201,6 +202,20 @@ namespace user.bll.Infrastructure
             }
             userEntity.DeckClaims.Add(request.DeckBoughtDTO.DeckType);
             userEntity.Experience -= RoleTypes.DeckExp;
+            _unitOfWork.UserRepository.Update(userEntity);
+            await _unitOfWork.Save();
+            await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
+            return _mapper.Map<UserViewModel>(userEntity);
+        }
+
+        public async Task<UserViewModel> Handle(JoinLobbyCommand request, CancellationToken cancellationToken)
+        {
+            var userEntity = _unitOfWork.UserRepository.Get(filter: x => x.Id == request.LobbyJoinedDTO.UserId).FirstOrDefault();
+            if (userEntity == null)
+            {
+                throw new EntityNotFoundException("User not found");
+            }
+            userEntity.ActiveLobby = request.LobbyJoinedDTO.LobbyId;
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
             await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() }, cancellationToken);

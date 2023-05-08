@@ -31,8 +31,15 @@ namespace lobby.dal.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatorId")
+                    b.Property<Guid>("CreatorUserId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("DeckType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -59,6 +66,9 @@ namespace lobby.dal.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -82,6 +92,12 @@ namespace lobby.dal.Migrations
                     b.Property<Guid>("LobbyId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Ready")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -90,7 +106,7 @@ namespace lobby.dal.Migrations
 
                     b.HasIndex("LobbyId");
 
-                    b.ToTable("Decks");
+                    b.ToTable("Players");
                 });
 
             modelBuilder.Entity("lobby.dal.Domain.Message", b =>

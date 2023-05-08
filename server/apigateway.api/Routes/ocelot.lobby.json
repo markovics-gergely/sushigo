@@ -69,6 +69,23 @@
       }
     },
     {
+      "DownstreamPathTemplate": "/lobby/join",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "lobby.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby/join",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "lobby",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
       "DownstreamPathTemplate": "/lobby/player",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

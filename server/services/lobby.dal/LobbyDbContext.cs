@@ -6,7 +6,7 @@ namespace lobby.dal
     public class LobbyDbContext : DbContext
     {
         public DbSet<Lobby> Lobbies => Set<Lobby>();
-        public DbSet<Player> Decks => Set<Player>();
+        public DbSet<Player> Players => Set<Player>();
         public DbSet<Message> Messages => Set<Message>();
         public LobbyDbContext(DbContextOptions<LobbyDbContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder builder)

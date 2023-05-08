@@ -7,7 +7,6 @@ import {
 } from '@angular/router';
 import { AclService } from '../services/acl.service';
 import { TokenService } from '../services/token.service';
-import { FriendHubService } from '../services/friend-hub.service';
 
 export const AclGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
@@ -15,27 +14,18 @@ export const AclGuard: CanActivateFn = (
   ) => {
   const aclService = inject(AclService);
   const tokenService = inject(TokenService);
-  const friendHubService = inject(FriendHubService);
   const router = inject(Router);
-  const routeName = route.data['name'];
-  if (!routeName) {
-    return true;
-  }
+  const routeName = route.data['name'];  
+  if (!routeName) return true;
   if (routeName === 'login' || routeName === 'register') {
     if (tokenService.loggedIn) {
-      router.navigate(['home']);
-      return false;
-    } else {
-      friendHubService.stopConnection();
-      return true;
+      router.navigateByUrl(route.queryParams['returnUrl'] || 'home');
     }
+    return !tokenService.loggedIn;
   }
   if (!aclService.can(routeName)) {
-    friendHubService.stopConnection();
     router.navigate(['login'], { queryParams: { returnUrl: state.url } });
     return false;
-  } else {
-    friendHubService.startConnection();
   }
   return true;
 }

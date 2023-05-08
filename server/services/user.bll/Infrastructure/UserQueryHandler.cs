@@ -14,6 +14,7 @@ namespace user.bll.Infrastructure
 {
     public class UserQueryHandler :
         IRequestHandler<GetUserQuery, UserViewModel>,
+        IRequestHandler<GetUserByIdQuery, UserViewModel>,
         IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -47,6 +48,22 @@ namespace user.bll.Infrastructure
             }
             var userEntity = _unitOfWork.UserRepository.Get(
                 filter: x => x.Id.ToString() == (request.Id ?? request.User.GetUserIdFromJwt()),
+                includeProperties: nameof(ApplicationUser.Avatar),
+                transform: x => x.AsNoTracking())
+                .FirstOrDefault();
+
+            if (userEntity == null)
+            {
+                throw new EntityNotFoundException("Requested user not found");
+            }
+            var userViewModel = _mapper.Map<UserViewModel>(userEntity);
+            return Task.FromResult(userViewModel);
+        }
+
+        public Task<UserViewModel> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+        {
+            var userEntity = _unitOfWork.UserRepository.Get(
+                filter: x => x.Id.ToString() == request.Id,
                 includeProperties: nameof(ApplicationUser.Avatar),
                 transform: x => x.AsNoTracking())
                 .FirstOrDefault();

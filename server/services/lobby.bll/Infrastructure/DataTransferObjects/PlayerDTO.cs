@@ -4,7 +4,6 @@
     {
         public required Guid UserId { get; set; }
         public required string UserName { get; set; }
-        public string? ImagePath { get; set; }
         public required Guid LobbyId { get; set; }
     }
 }

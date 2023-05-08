@@ -31,6 +31,16 @@
         public const string DeckClaim = "decks";
 
         /// <summary>
+        /// Name of the claim for avatar url
+        /// </summary>
+        public const string AvatarClaim = "avatar";
+
+        /// <summary>
+        /// Name of the claim for active lobby
+        /// </summary>
+        public const string LobbyClaim = "lobby";
+
+        /// <summary>
         /// Experience needed to claim party role
         /// </summary>
         public const long PartyExp = 100;

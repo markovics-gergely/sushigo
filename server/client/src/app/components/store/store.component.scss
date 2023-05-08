@@ -81,17 +81,3 @@
     -webkit-text-stroke-color: var(--color-primary);
   }
 }
-
-.nav-button {
-  margin: 10px;
-  width: 100%;
-  height: 100%;
-  color: var(--color-text) !important;
-  font-size: large;
-  &.left {
-    background-image: linear-gradient(to right, rgba($color: #000000, $alpha: 0.2), transparent) !important;
-  }
-  &.right {
-    background-image: linear-gradient(to left, rgba($color: #000000, $alpha: 0.2), transparent) !important;
-  }
-}

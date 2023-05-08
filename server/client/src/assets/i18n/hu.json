@@ -112,5 +112,27 @@
       "title": "Bőségtál",
       "description": "Hatalmas pontszámok."
     }
+  },
+  "lobby-list": {
+    "title": "Várótermek",
+    "nav": {
+      "create": "Új váróterem",
+      "home": "Főoldal",
+      "shop": "Bolt"
+    },
+    "create-dialog": {
+      "title": "Új váróterem",
+      "name": "Név",
+      "password": "Jelszó",
+      "submit": "Létrehozás",
+      "cancel": "Mégse"
+    },
+    "join-dialog": {
+      "title": "Csatlakozás váróteremhez",
+      "name": "Név",
+      "password": "Jelszó",
+      "submit": "Csatlakozás",
+      "cancel": "Mégse"
+    }
   }
 }

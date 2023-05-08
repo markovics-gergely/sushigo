@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from 'src/app/services/loading.service';
 import { LobbyHubService } from 'src/app/services/lobby-hub.service';
@@ -8,7 +8,8 @@ import { ILobbyViewModel } from 'src/shared/lobby.models';
 @Component({
   selector: 'app-lobby',
   templateUrl: './lobby.component.html',
-  styleUrls: ['./lobby.component.scss']
+  styleUrls: ['./lobby.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class LobbyComponent {
 
@@ -25,6 +26,8 @@ export class LobbyComponent {
         this.loadingService.loading = true;
         this.lobbyService.loadLobby(params['id']).add(() => {
           this.loadingService.loading = false;
+          console.log(this.lobbyService.lobby);
+          
         });
       }
     });

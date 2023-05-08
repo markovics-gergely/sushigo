@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
         next: (response) => {
           this.loginForm?.reset();
           this.tokenService.userToken = response;
-          this.router.navigate(this.route.snapshot.queryParams['returnUrl'] || ['home']);
+          this.router.navigateByUrl(this.route.snapshot.queryParams['returnUrl'] || 'home');
         },
         error: (err) => {
           console.log(err);

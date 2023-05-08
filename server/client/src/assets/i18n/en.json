@@ -112,5 +112,27 @@
       "title": "Points platter",
       "description": "Score big points!"
     }
+  },
+  "lobby-list": {
+    "title": "Lobbies",
+    "nav": {
+      "create": "New lobby",
+      "home": "Home",
+      "shop": "Shop"
+    },
+    "create-dialog": {
+      "title": "New lobby",
+      "name": "Name",
+      "password": "Password",
+      "submit": "Create",
+      "cancel": "Cancel"
+    },
+    "join-dialog": {
+      "title": "Join lobby",
+      "name": "Name",
+      "password": "Password",
+      "submit": "Join",
+      "cancel": "Cancel"
+    }
   }
 }

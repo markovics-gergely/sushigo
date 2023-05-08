@@ -86,3 +86,37 @@ input[type="number"] {
   --mdc-snackbar-container-color: var(--color-primary);
   //--mdc-snackbar-supporting-text-color: var(--color-text-light);
 }
+
+.nav-button {
+  margin: 10px !important;
+  width: 100% !important;
+  height: 100% !important;
+  color: var(--color-text) !important;
+  font-size: large;
+  &.left {
+    background-image: linear-gradient(to right, rgba($color: #000000, $alpha: 0.2), transparent) !important;
+  }
+  &.right {
+    background-image: linear-gradient(to left, rgba($color: #000000, $alpha: 0.2), transparent) !important;
+  }
+}
+
+.dark-theme {
+  .nav-button {
+    color: var(--color-text-light) !important;
+  }
+}
+
+mat-dialog-content, mat-dialog-actions {
+  padding: 10px 20px !important;
+}
+
+.mat-mdc-dialog-title {
+  background-color: var(--color-primary);
+  color: var(--color-text-light) !important;
+  margin-bottom: 10px !important;
+}
+
+.mat-primary:not(:disabled) {
+  color: var(--color-text-light) !important;
+}

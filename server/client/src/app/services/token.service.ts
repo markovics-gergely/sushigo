@@ -74,7 +74,7 @@ export class TokenService {
   public clearCookies() {
     this.cookieService.delete(this.cookieName);
     this.cookieService.delete(this.rCookieName);
-    this.router.navigate(['login']);
+    this.router.navigateByUrl('login');
   }
 
   public clearAllCookies() {

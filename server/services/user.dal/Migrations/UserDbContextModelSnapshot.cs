@@ -184,6 +184,9 @@ namespace user.dal.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("ActiveLobby")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("AvatarId")
                         .HasColumnType("uniqueidentifier");
 

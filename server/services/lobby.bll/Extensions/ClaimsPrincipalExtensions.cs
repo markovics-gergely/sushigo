@@ -25,6 +25,11 @@ namespace lobby.bll.Extensions
             return claimsPrincipal.Claims.Where(x => x.Type == RoleTypes.DeckClaim).Select(x => (DeckType)Enum.Parse(typeof(DeckType), x.Value));
         }
 
+        public static string GetUserAvatarFromJwt(this ClaimsPrincipal claimsPrincipal)
+        {
+            return claimsPrincipal.Claims.First(x => x.Type == RoleTypes.AvatarClaim).Value;
+        }
+
         public static bool GetUserHasDeck(this ClaimsPrincipal claimsPrincipal, DeckType deck)
         {
             return claimsPrincipal.GetUserDecksFromJwt().Any(x => x == deck);

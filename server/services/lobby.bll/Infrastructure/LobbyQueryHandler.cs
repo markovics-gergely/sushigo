@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using lobby.bll.Exceptions;
+using lobby.bll.Extensions;
 using lobby.bll.Infrastructure.Queries;
 using lobby.bll.Infrastructure.ViewModels;
 using lobby.bll.Validators.Implementations;

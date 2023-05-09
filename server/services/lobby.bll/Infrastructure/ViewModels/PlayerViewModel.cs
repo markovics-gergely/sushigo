@@ -5,5 +5,6 @@
         public required Guid Id { get; set; }
         public required string UserName { get; set; }
         public string? ImagePath { get; set; }
+        public bool Ready { get; set; }
     }
 }

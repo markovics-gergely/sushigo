@@ -124,5 +124,19 @@ namespace lobby.api.Controllers
             var command = new RemovePlayerCommand(removePlayerDTO, user);
             return Ok(await _mediator.Send(command, cancellationToken));
         }
+
+        /// <summary>
+        /// Set player ready status
+        /// </summary>
+        /// <param name="playerReadyDTO">Player to update</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPut("player/ready")]
+        public async Task<ActionResult<LobbyViewModel>> UpdatePlayerReadyAsync(PlayerReadyDTO playerReadyDTO, CancellationToken cancellationToken)
+        {
+            var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
+            var command = new PlayerReadyCommand(playerReadyDTO, user);
+            return Ok(await _mediator.Send(command, cancellationToken));
+        }
     }
 }

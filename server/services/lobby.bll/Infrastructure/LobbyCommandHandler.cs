@@ -13,7 +13,7 @@ using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using shared.Models;
-using System;
+using System.Numerics;
 
 namespace lobby.bll.Infrastructure
 {
@@ -21,7 +21,9 @@ namespace lobby.bll.Infrastructure
         IRequestHandler<CreateLobbyCommand, LobbyViewModel>,
         IRequestHandler<AddPlayerCommand, LobbyViewModel>,
         IRequestHandler<RemovePlayerCommand, LobbyViewModel?>,
-        IRequestHandler<JoinLobbyCommand, LobbyViewModel>
+        IRequestHandler<JoinLobbyCommand, LobbyViewModel>,
+        IRequestHandler<UpdateLobbyDeckCommand, LobbyViewModel>,
+        IRequestHandler<PlayerReadyCommand, LobbyViewModel>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMediator _mediator;
@@ -71,11 +73,7 @@ namespace lobby.bll.Infrastructure
                     includeProperties: nameof(Lobby.Players),
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.PlayerDTO.LobbyId
-                ).FirstOrDefault();
-            if (lobby == null)
-            {
-                throw new EntityNotFoundException(nameof(AddPlayerCommand));
-            }
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(AddPlayerCommand));
             var playerEntity = _mapper.Map<Player>(request.PlayerDTO);
             _unitOfWork.PlayerRepository.Insert(playerEntity);
             lobby.Players.Add(playerEntity);
@@ -96,16 +94,8 @@ namespace lobby.bll.Infrastructure
                     includeProperties: nameof(Lobby.Players),
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.RemovePlayerDTO.LobbyId
-                ).FirstOrDefault();
-            if (lobby == null)
-            {
-                throw new EntityNotFoundException(nameof(Lobby));
-            }
-            var player = lobby.Players.FirstOrDefault(p => p.Id == request.RemovePlayerDTO.PlayerId);
-            if (player == null)
-            {
-                throw new EntityNotFoundException(nameof(Player));
-            }
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Lobby));
+            var player = lobby.Players.FirstOrDefault(p => p.Id == request.RemovePlayerDTO.PlayerId) ?? throw new EntityNotFoundException(nameof(Player));
             _validator = new AndCondition(
                 new OwnLobbyValidator(lobby, request.User),
                 new OrCondition(
@@ -165,11 +155,7 @@ namespace lobby.bll.Infrastructure
                     includeProperties: nameof(Lobby.Players),
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.JoinLobbyDTO.Id
-                ).FirstOrDefault();
-            if (lobby == null)
-            {
-                throw new EntityNotFoundException(nameof(Lobby));
-            }
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Lobby));
             var guid = Guid.Parse(request.User?.GetUserIdFromJwt() ?? "");
             if (lobby.Players.Any(p => p.UserId == guid))
             {
@@ -194,6 +180,50 @@ namespace lobby.bll.Infrastructure
                 LobbyId = request.JoinLobbyDTO.Id
             }, cancellationToken);
             return _mapper.Map<LobbyViewModel>(lobby);
+        }
+
+        public async Task<LobbyViewModel> Handle(UpdateLobbyDeckCommand request, CancellationToken cancellationToken)
+        {
+            var lobby = _unitOfWork.LobbyRepository.Get(
+                    includeProperties: nameof(Lobby.Players),
+                    transform: x => x.AsNoTracking(),
+                    filter: x => x.Id == request.UpdateLobbyDTO.LobbyId
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Lobby));
+            _validator = new AndCondition(
+                new OwnLobbyValidator(lobby, request.User),
+                new LobbyCreatorValidator(lobby, request.User)
+            );
+            if (!_validator.Validate()) throw new ValidationErrorException(nameof(UpdateLobbyDeckCommand));
+            lobby.DeckType = request.UpdateLobbyDTO.DeckType;
+            _unitOfWork.LobbyRepository.Update(lobby);
+            foreach(var player in lobby.Players)
+            {
+                player.Ready = false;
+                _unitOfWork.PlayerRepository.Update(player);
+            }
+            await _unitOfWork.Save();
+            var lobbyViewModel = _mapper.Map<LobbyViewModel>(lobby);
+            await _mediator.Publish(new UpdateDeckTypeEvent(lobbyViewModel), cancellationToken);
+            return lobbyViewModel;
+        }
+
+        public async Task<LobbyViewModel> Handle(PlayerReadyCommand request, CancellationToken cancellationToken)
+        {
+            var guid = Guid.Parse(request.User?.GetUserIdFromJwt() ?? "");
+            var player = _unitOfWork.PlayerRepository.Get(
+                    filter: x => x.Id == request.PlayerReadyDTO.PlayerId && x.UserId == guid
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(PlayerReadyCommand));
+            player.Ready = request.PlayerReadyDTO.Ready;
+            _unitOfWork.PlayerRepository.Update(player);
+            await _unitOfWork.Save();
+            var lobby = _unitOfWork.LobbyRepository.Get(
+                    includeProperties: nameof(Lobby.Players),
+                    transform: x => x.AsNoTracking(),
+                    filter: x => x.Id == player.LobbyId
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Lobby));
+            var lobbyViewModel = _mapper.Map<LobbyViewModel>(lobby);
+            await _mediator.Publish(new PlayerReadyEvent(lobbyViewModel), cancellationToken);
+            return lobbyViewModel;
         }
     }
 }

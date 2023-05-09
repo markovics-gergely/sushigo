@@ -7,10 +7,12 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using shared.Models;
-using System.Runtime.CompilerServices;
 
 namespace lobby.api.Controllers
 {
+    /// <summary>
+    /// Route for lobby endpoints
+    /// </summary>
     [Route("[controller]")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]

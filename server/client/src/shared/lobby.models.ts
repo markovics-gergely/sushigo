@@ -37,7 +37,7 @@ export interface IPlayerDTO {
     lobbyId: string;
 }
 
-export interface RemovePlayerDTO {
+export interface IRemovePlayerDTO {
     playerId: string;
     lobbyId: string;
 }
@@ -50,4 +50,9 @@ export interface IUpdateLobbyDTO {
 export interface IJoinLobbyDTO {
     id: string;
     password: string;
+}
+
+export interface IPlayerReadyDTO {
+    playerId: string;
+    ready: boolean;
 }

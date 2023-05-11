@@ -49,6 +49,22 @@
   &.true {
     background-color: rgba($color: var(--color-warning-rgb), $alpha: 0.9) !important;
   }
+
+  &.back {
+    background-color: rgba($color: gray, $alpha: 0.9) !important;
+  }
+
+  &.start {
+    background-color: rgba($color: var(--color-ok-rgb), $alpha: 0.9) !important;
+    @include media-style-below(sm) {
+      width: 100% !important;
+    }
+  }
+}
+.hideable {
+  @include media-style-below(sm) {
+    display: none !important;
+  }
 }
 
 .lobby-list {
@@ -152,8 +168,12 @@
         width: 100%;
         display: flex;
         flex-direction: row;
+        padding: 10px !important;
 
         .image {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
           mat-card-title {
             animation: 1s ease-out 0s 1 slideFromBelow;
             overflow: hidden !important;
@@ -162,6 +182,10 @@
             border-radius: 5px 5px 0 0;
             padding-left: 15px;
             margin-bottom: -5px;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
           }
 
           .cover {
@@ -171,7 +195,7 @@
             width: 244px;
             height: 244px;
             position: relative;
-            z-index: 100;
+            z-index: 2;
 
             img {
               background-color: rgba($color: black, $alpha: 0.2);
@@ -192,10 +216,12 @@
           .data {
             width: 100%;
             height: 100%;
-            padding: 5px;
+            padding-bottom: 5px;
             display: flex;
             font-size: 24px;
-
+            &:last-child {
+              padding-bottom: 0;
+            }
             .name {
               width: 200px;
               height: 100%;

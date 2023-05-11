@@ -31,5 +31,26 @@
        
             return NigiriList.Concat(DeckCards[deckType].Select(d => (CardType)d)).ToList();
         }
+
+        public static int GetMinPlayer(this DeckType deckType)
+        {
+            return deckType switch
+            {
+                DeckType.BigBanquet => 6,
+                DeckType.MasterMenu or DeckType.PointsPlatter or DeckType.CutThroatCombo => 3,
+                _ => 2,
+            };
+        }
+
+        public static int GetMaxPlayer(this DeckType deckType)
+        {
+            return deckType switch
+            {
+                DeckType.DinnerForTwo => 2,
+                DeckType.MyFirstMeal or DeckType.SushiGo => 5,
+                DeckType.PartySampler or DeckType.PointsPlatter => 6,
+                _ => 8,
+            };
+        }
     }
 }

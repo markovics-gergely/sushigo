@@ -10,7 +10,9 @@ namespace lobby.api.Hubs
     /// </summary>
     public class LobbyEventsClientDispatcher :
         INotificationHandler<AddPlayerEvent>,
-        INotificationHandler<RemovePlayerEvent>
+        INotificationHandler<RemovePlayerEvent>,
+        INotificationHandler<PlayerReadyEvent>,
+        INotificationHandler<RemoveLobbyEvent>
     {
         private readonly IHubContext<LobbyEventsHub, ILobbyEventsHub> _context;
 
@@ -43,6 +45,29 @@ namespace lobby.api.Hubs
         public async Task Handle(RemovePlayerEvent notification, CancellationToken cancellationToken)
         {
             await _context.Clients.Group(notification.LobbyId.ToString()).RemovePlayer(notification.PlayerId, cancellationToken);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="notification"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task Handle(PlayerReadyEvent notification, CancellationToken cancellationToken)
+        {
+            await _context.Clients.Group(notification.LobbyViewModel.Id.ToString()).PlayerReady(notification.LobbyViewModel, cancellationToken);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="notification"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task Handle(RemoveLobbyEvent notification, CancellationToken cancellationToken)
+        {
+            await _context.Clients.Group(notification.LobbyId.ToString()).Removelobby(cancellationToken);
         }
     }
 }

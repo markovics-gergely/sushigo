@@ -30,7 +30,7 @@ namespace lobby.api.Hubs
         /// <returns></returns>
         public override Task OnConnectedAsync()
         {
-            var group = Context.GetHttpContext()?.Request.Query["lobby"].SingleOrDefault();
+            var group = Context.User?.GetUserLobbyFromJwt() ?? Context.GetHttpContext()?.Request.Query["lobby"].SingleOrDefault();
             if (group != null)
             {
                 string id = Context.User?.GetUserIdFromJwt() ?? "";

@@ -18,7 +18,7 @@ export class ShopService {
   }
 
   public getDeck(deckType: DeckType): Observable<IDeckItemViewModel> {
-    return this.client.get<IDeckViewModel>(`${this.baseUrl}/${deckType}`);
+    return this.client.get<IDeckItemViewModel>(`${this.baseUrl}/${deckType}`);
   }
 
   public claimParty(): Observable<Object> {

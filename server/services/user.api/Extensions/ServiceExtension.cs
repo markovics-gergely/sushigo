@@ -28,6 +28,7 @@ namespace user.api.Extensions
             services.AddTransient<IRequestHandler<ClaimPartyCommand, UserViewModel>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<ClaimDeckCommand, UserViewModel>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<EditUserRoleCommand>, UserCommandHandler>();
+            services.AddTransient<IRequestHandler<JoinLobbyCommand, UserViewModel>, UserCommandHandler>();
 
             services.AddTransient<IRequestHandler<AddFriendCommand, UserNameViewModel>, FriendCommandHandler>();
             services.AddTransient<IRequestHandler<RemoveFriendCommand>, FriendCommandHandler>();

@@ -63,8 +63,8 @@ namespace lobby.api.Controllers
         /// <param name="lobby">Lobby to create</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [HttpPost]
-        public async Task<ActionResult<LobbyViewModel>> CreateLobbyAsync(LobbyDTO lobby, CancellationToken cancellationToken)
+        [HttpPost("create")]
+        public async Task<ActionResult<LobbyViewModel>> CreateLobbyAsync([FromBody] LobbyDTO lobby, CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
             var command = new CreateLobbyCommand(lobby, user);
@@ -92,7 +92,7 @@ namespace lobby.api.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost("join")]
-        public async Task<ActionResult<LobbyViewModel>> AddPlayerAsync(JoinLobbyDTO joinLobbyDTO, CancellationToken cancellationToken)
+        public async Task<ActionResult<LobbyViewModel>> AddPlayerAsync([FromBody] JoinLobbyDTO joinLobbyDTO, CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
             var command = new JoinLobbyCommand(joinLobbyDTO, user);
@@ -106,7 +106,7 @@ namespace lobby.api.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost("player")]
-        public async Task<ActionResult<LobbyViewModel>> AddPlayerAsync(PlayerDTO playerDTO, CancellationToken cancellationToken)
+        public async Task<ActionResult<LobbyViewModel>> AddPlayerAsync([FromBody] PlayerDTO playerDTO, CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
             var command = new AddPlayerCommand(playerDTO, user);
@@ -120,7 +120,7 @@ namespace lobby.api.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpDelete("player")]
-        public async Task<ActionResult<LobbyViewModel?>> RemovePlayerAsync(RemovePlayerDTO removePlayerDTO, CancellationToken cancellationToken)
+        public async Task<ActionResult<LobbyViewModel?>> RemovePlayerAsync([FromBody] RemovePlayerDTO removePlayerDTO, CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
             var command = new RemovePlayerCommand(removePlayerDTO, user);
@@ -134,7 +134,7 @@ namespace lobby.api.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPut("player/ready")]
-        public async Task<ActionResult<LobbyViewModel>> UpdatePlayerReadyAsync(PlayerReadyDTO playerReadyDTO, CancellationToken cancellationToken)
+        public async Task<ActionResult<LobbyViewModel>> UpdatePlayerReadyAsync([FromBody] PlayerReadyDTO playerReadyDTO, CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
             var command = new PlayerReadyCommand(playerReadyDTO, user);

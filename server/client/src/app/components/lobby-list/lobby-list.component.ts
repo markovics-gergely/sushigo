@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
+import { LoadingService } from 'src/app/services/loading.service';
 import { LobbyService } from 'src/app/services/lobby.service';
 import { ILobbyItemViewModel, ILobbyViewModel } from 'src/shared/lobby.models';
 
@@ -14,6 +15,7 @@ export class LobbyListComponent {
   constructor(
     private lobbyService: LobbyService,
     private router: Router,
+    private loadingService: LoadingService,
   ) { }
 
   public get lobbies(): ILobbyItemViewModel[] {
@@ -30,11 +32,14 @@ export class LobbyListComponent {
   }
 
   public join(lobby: ILobbyItemViewModel) {
+    this.loadingService.start();
     this.lobbyService.startJoinLobby(lobby).subscribe({
       next: (lobby: ILobbyViewModel | undefined) => {
         if (!lobby) return;
-        this.router.navigate([`/lobby/${lobby.id}`]);
+        this.router.navigate([`lobby/${lobby.id}`]);
       }
+    }).add(() => {
+      this.loadingService.stop();
     });
   }
 }

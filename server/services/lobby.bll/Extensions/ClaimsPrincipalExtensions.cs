@@ -30,6 +30,11 @@ namespace lobby.bll.Extensions
             return claimsPrincipal.Claims.First(x => x.Type == RoleTypes.AvatarClaim).Value;
         }
 
+        public static string GetUserLobbyFromJwt(this ClaimsPrincipal claimsPrincipal)
+        {
+            return claimsPrincipal.Claims.First(x => x.Type == RoleTypes.LobbyClaim).Value;
+        }
+
         public static bool GetUserHasDeck(this ClaimsPrincipal claimsPrincipal, DeckType deck)
         {
             return claimsPrincipal.GetUserDecksFromJwt().Any(x => x == deck);

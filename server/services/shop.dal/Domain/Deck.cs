@@ -9,6 +9,5 @@ namespace shop.dal.Domain
         public long Cost { get; set; }
         public required string ImagePath { get; set; }
         public ICollection<DeckCard> Cards { get; set; } = new HashSet<DeckCard>();
-
     }
 }

@@ -11,6 +11,8 @@ export interface IDeckItemViewModel {
   deckType: DeckType;
   imagePath: string;
   imageLoaded?: boolean;
+  minPlayer: number;
+  maxPlayer: number;
 }
 
 export interface IBuyDeckDTO {

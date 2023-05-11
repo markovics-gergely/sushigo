@@ -32,7 +32,7 @@ namespace lobby.bll.Infrastructure
         {
             var options = new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(_settings.SlidingExpiration) };
             var serializedData = Encoding.Default.GetBytes(JsonConvert.SerializeObject(notification.LobbyViewModel));
-            await _cache.SetAsync($"lobbies-{notification.LobbyViewModel.Id}", serializedData, options, cancellationToken);
+            await _cache.SetAsync($"lobby-{notification.LobbyViewModel.Id}", serializedData, options, cancellationToken);
         }
     }
 }

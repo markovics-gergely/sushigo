@@ -56,7 +56,7 @@ export class StoreComponent implements OnInit {
   }
 
   public buy(deck: IDeckViewModel): void {
-    this.loadingService.loading = true;
+    this.loadingService.start();
     this.shopService
       .claimDeck({ deckType: deck.deckType })
       .subscribe({
@@ -64,6 +64,6 @@ export class StoreComponent implements OnInit {
           console.error(err);
         },
       })
-      .add(() => (this.loadingService.loading = false));
+      .add(() => (this.loadingService.stop()));
   }
 }

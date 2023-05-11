@@ -1,9 +1,10 @@
 import { Injectable, Injector } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '../loading.service';
 import { LobbyService } from '../lobby.service';
 import { HubService } from './abstract/hub.service';
+import { ILobbyViewModel, IPlayerViewModel } from 'src/shared/lobby.models';
 
 @Injectable({
   providedIn: 'root',
@@ -15,14 +16,22 @@ export class LobbyHubService extends HubService {
     injector: Injector,
     private lobbyService: LobbyService,
     private route: ActivatedRoute,
+    private router: Router,
     private loadingService: LoadingService
   ) {
     super(injector);
+    route.params.subscribe((params) => {
+      if (params['id']) {
+        this.baseUrl = `${environment.baseUrl}/lobby-hubs/lobby-hub?lobby=${params['id']}`;
+      }
+    });
   }
 
   protected override addListeners(): void {
-    this.hubConnection?.on('AddPlayer', this.lobbyService.addPlayer);
-    this.hubConnection?.on('RemovePlayer', this.lobbyService.removePlayer);
+    this.hubConnection?.on('AddPlayer', (player: IPlayerViewModel) => { this.lobbyService.addPlayer(player); });
+    this.hubConnection?.on('RemovePlayer', (playerId: string) => { this.lobbyService.removePlayer(playerId); });
+    this.hubConnection?.on('PlayerReady', (lobby: ILobbyViewModel) => { console.log(lobby); this.lobbyService.lobbyEventEmitter.next(lobby); });
+    this.hubConnection?.on('RemoveLobby', () => { this.router.navigate(['lobby']); });
   }
   protected override onHubConnected?(): void {
     this.route.params.subscribe((params) => {

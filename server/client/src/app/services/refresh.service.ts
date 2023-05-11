@@ -91,7 +91,7 @@ export class RefreshService {
   }
 
   public refreshUser(): void {
-    this.loadingService.loading = true;
+    this.loadingService.start();
     this.refreshToken()
       .subscribe({
         next: (response) => {
@@ -106,7 +106,7 @@ export class RefreshService {
         },
       })
       .add(() => {
-        this.loadingService.loading = false;
+        this.loadingService.stop();
       });
   }
 }

@@ -13,6 +13,6 @@ export class LoadingComponent implements OnInit {
   ngOnInit(): void {}
 
   get loading() {
-    return this.loadingService.loading;
+    return this.loadingService.load;
   }
 }

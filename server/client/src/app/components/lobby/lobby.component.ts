@@ -46,8 +46,6 @@ export class LobbyComponent {
   }
 
   private processLobby(lobby: ILobbyViewModel | undefined) {
-    console.log(lobby);
-    
     this._lobby = lobby;
     if (lobby) {
       this.shopService.getDeck(lobby.deckType).subscribe((deck: IDeckItemViewModel) => {
@@ -72,5 +70,33 @@ export class LobbyComponent {
 
   public get isCreator(): boolean {
     return this._lobby?.creatorUserName === this.tokenService.user?.name;
+  }
+
+  public get validCount(): boolean {
+    return Boolean(
+      this._lobby &&
+      this._deck &&
+      this._lobby.players.length >= this._deck.minPlayer &&
+      this._lobby.players.length <= this._deck.maxPlayer
+    );
+  }
+
+  public leave(): void {
+    if (!this.own || !this._lobby) return;
+    this.lobbyService.leave({ playerId: this.own.id, lobbyId: this._lobby.id });
+  }
+
+  public removePlayer(player: IPlayerViewModel): void {
+    this.lobbyService.removePlayer(player.id);
+  }
+
+  public ready(): void {
+    if (!this.own) return;
+    this.loadingService.start();
+    this.lobbyService.ready({ playerId: this.own.id, ready: !this.own.ready }).subscribe({
+      next: (lobby: ILobbyViewModel) => { this.processLobby(lobby); }
+    }).add(() => {
+      this.loadingService.stop();
+    });
   }
 }

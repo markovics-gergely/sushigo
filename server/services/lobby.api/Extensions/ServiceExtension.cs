@@ -8,6 +8,7 @@ using lobby.dal.Repository.Implementations;
 using lobby.dal.Repository.Interfaces;
 using lobby.dal.UnitOfWork.Implementations;
 using lobby.dal.UnitOfWork.Interfaces;
+using lobby.bll.Infrastructure.Events;
 
 namespace lobby.api.Extensions
 {
@@ -35,6 +36,8 @@ namespace lobby.api.Extensions
 
             services.AddTransient<IRequestHandler<GetLobbiesQuery, IEnumerable<LobbyItemViewModel>>, LobbyQueryHandler>();
             services.AddTransient<IRequestHandler<GetLobbyQuery, LobbyViewModel>, LobbyQueryHandler>();
+
+            services.AddTransient<INotificationHandler<PlayerReadyEvent>, LobbyEventHandler>();
 
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IFileRepository, FileRepository>();

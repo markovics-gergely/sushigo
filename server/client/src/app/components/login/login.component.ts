@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
 
   public login(): void {
     if (!this.loginForm?.valid) { return; }
-    this.loadingService.loading = true;
+    this.loadingService.start();
     const loginUserDTO = this.loginForm.value as ILoginUserDTO;
     this.userService
       .login(loginUserDTO)
@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
         },
       })
       .add(() => {
-        this.loadingService.loading = false;
+        this.loadingService.stop();
       });
   }
 }

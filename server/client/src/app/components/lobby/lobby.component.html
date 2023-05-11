@@ -1,12 +1,23 @@
 <mat-grid-list cols="12" rowHeight="100px" gutterSize="5px" class="lobby-list" *ngIf="lobby">
-  <mat-grid-tile [colspan]="12" [rowspan]="1">
-    <button class="ready-button" mat-flat-button [ngClass]="own.ready ? 'true' : 'false'" *ngIf="own">
+  <mat-grid-tile [colspan]="12" [rowspan]="1" class="banner-row">
+    <button class="ready-button back" mat-flat-button color="accent" (click)="leave()">
+      <i class='bx bx-arrow-back'></i>
+    </button>
+    <button class="ready-button" mat-flat-button [ngClass]="own.ready ? 'true' : 'false'" *ngIf="own" (click)="ready()">
       <i class='bx bx-check' *ngIf="!own.ready"></i>
       <i class='bx bx-x' *ngIf="own.ready"></i>
     </button>
     <button class="ready-button" mat-flat-button color="accent" *ngIf="isCreator">
       <i class='bx bx-edit'></i>
     </button>
+    <button class="ready-button start" mat-flat-button *ngIf="isCreator">
+      <i class='bx bx-send'></i>
+    </button>
+    <mat-card class="card banner hideable">
+      <h1>{{ lobby.name }}</h1>
+    </mat-card>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="0" [rowspan]="1" [sm]="12">
     <mat-card class="card banner">
       <h1>{{ lobby.name }}</h1>
     </mat-card>

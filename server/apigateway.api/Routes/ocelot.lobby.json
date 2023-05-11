@@ -35,7 +35,7 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/lobby",
+      "DownstreamPathTemplate": "/lobby/create",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -43,7 +43,7 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/lobby",
+      "UpstreamPathTemplate": "/api/lobby/create",
       "UpstreamHttpMethod": [ "Post" ],
       "SwaggerKey": "lobby",
       "AuthenticationOptions": {

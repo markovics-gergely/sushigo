@@ -53,7 +53,7 @@ export class UserComponent implements OnInit {
 
   public edit() {
     if (!this._user) return;
-    this.loadingService.loading = true;
+    this.loadingService.start();
     this.userService.startEdit({
       userName: this._user.userName,
       firstName: this._user.name.split(" ")[0],
@@ -65,12 +65,12 @@ export class UserComponent implements OnInit {
         this._user = user;
       }
     })
-      .add(() => this.loadingService.loading = false);
+      .add(() => this.loadingService.stop());
   }
 
   public claimParty() {
-    this.loadingService.loading = true;
-    this.shopService.claimParty().subscribe().add(() => this.loadingService.loading = false);
+    this.loadingService.start();
+    this.shopService.claimParty().subscribe().add(() => this.loadingService.stop());
   }
 
   public get partyClaimed(): boolean {

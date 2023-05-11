@@ -35,7 +35,7 @@ export class RegisterComponent implements OnInit {
    */
   register(): void {
     if (this.registerForm) {
-      this.loadingService.loading = true;
+      this.loadingService.start();
       const registerUserDTO = this.registerForm.value as IRegisterUserDTO;
       this.userService
         .registration(registerUserDTO)
@@ -49,7 +49,7 @@ export class RegisterComponent implements OnInit {
           },
         })
         .add(() => {
-          this.loadingService.loading = false;
+          this.loadingService.stop();
         });
     }
   }

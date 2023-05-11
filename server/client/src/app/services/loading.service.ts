@@ -5,12 +5,17 @@ import { Injectable } from '@angular/core';
 })
 export class LoadingService {
   /** Flag to display loading screen */
-  private _loading: boolean = false;
+  private _counter: number = 0;
 
-  get loading() {
-    return this._loading;
+  public start() {
+    this._counter++;
   }
-  set loading(value: boolean) {
-    this._loading = value;
+
+  public stop() {
+    this._counter--;
+  }
+
+  public get load() {
+    return this._counter > 0;
   }
 }

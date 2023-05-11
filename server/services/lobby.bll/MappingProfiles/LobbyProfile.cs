@@ -9,7 +9,8 @@ namespace lobby.bll.MappingProfiles
     {
         public LobbyProfile() {
             CreateMap<Lobby, LobbyItemViewModel>();
-            CreateMap<Lobby, LobbyViewModel>();
+            CreateMap<Lobby, LobbyViewModel>()
+                .ForMember(d => d.CreatorUserName, opt => opt.MapFrom(v => v.Players.First(p => p.UserId == v.CreatorUserId).UserName));
             CreateMap<LobbyDTO, Lobby>().ReverseMap();
         }
     }

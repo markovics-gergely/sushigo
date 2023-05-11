@@ -6,6 +6,7 @@ import { LobbyService } from 'src/app/services/lobby.service';
 import { ILobbyViewModel, IPlayerViewModel } from 'src/shared/lobby.models';
 import { IDeckItemViewModel } from 'src/shared/deck.models';
 import { ShopService } from 'src/app/services/shop.service';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-lobby',
@@ -21,7 +22,8 @@ export class LobbyComponent {
     private route: ActivatedRoute,
     private loadingService: LoadingService,
     private lobbyService: LobbyService,
-    private shopService: ShopService
+    private shopService: ShopService,
+    private tokenService: TokenService
   ) { }
 
   ngOnInit(): void {
@@ -56,11 +58,19 @@ export class LobbyComponent {
     }
   }
 
-  public get creator(): IPlayerViewModel | undefined {
-    return this._lobby?.players.find((p) => p.userId === this._lobby?.creatorUserId);
+  public get creator(): string | undefined {
+    return this._lobby?.creatorUserName;
   }
 
   public get players(): IPlayerViewModel[] | undefined {
     return this._lobby?.players;
+  }
+
+  public get own(): IPlayerViewModel | undefined {
+    return this._lobby?.players.find((p) => p.userName === this.tokenService.user?.name);
+  }
+
+  public get isCreator(): boolean {
+    return this._lobby?.creatorUserName === this.tokenService.user?.name;
   }
 }

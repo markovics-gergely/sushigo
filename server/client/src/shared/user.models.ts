@@ -12,6 +12,7 @@ export interface IUser {
 
 export interface IUserTokenViewModel {
     sub: string;
+    name: string;
     role?: Array<AppRole> | AppRole;
     experience: number;
     decks?: Array<DeckType>;

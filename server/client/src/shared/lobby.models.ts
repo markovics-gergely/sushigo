@@ -3,7 +3,6 @@ import { DeckType } from "./deck.models";
 export interface IPlayerViewModel {
     id: string;
     userName: string;
-    userId: string;
     imagePath?: string;
     imageLoaded?: boolean;
     ready: boolean;
@@ -14,6 +13,7 @@ export interface ILobbyViewModel {
     name: string;
     password: string;
     creatorUserId: string;
+    creatorUserName: string;
     created: Date;
     deckType: DeckType;
     players: Array<IPlayerViewModel>;

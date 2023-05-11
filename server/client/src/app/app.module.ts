@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -21,7 +21,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HomeComponent } from './components/home/home.component';
 import { FriendComponent } from './components/overlay/friend/friend.component';
@@ -54,12 +54,15 @@ import { ChatComponent } from './components/chat/chat.component';
 import { LobbyListComponent } from './components/lobby-list/lobby-list.component';
 import { CreateLobbyComponent } from './components/dialog/create-lobby/create-lobby.component';
 import { JoinLobbyComponent } from './components/dialog/join-lobby/join-lobby.component';
+import localeHu from '@angular/common/locales/hu';
 
 export function jwtOptionsFactory(tokenService: TokenService) {
   return {
     tokenGetter: () => tokenService.token,
   };
 }
+
+registerLocaleData(localeHu);
 
 @NgModule({
   declarations: [
@@ -134,10 +137,14 @@ export function jwtOptionsFactory(tokenService: TokenService) {
       multi: true,
     },
     TokenService,
+    {
+      provide: LOCALE_ID,
+      useValue: navigator.language
+    }
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');

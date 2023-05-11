@@ -51,6 +51,10 @@ export class TokenService {
     return this.user?.sub;
   }
 
+  public get userName(): string | undefined {
+    return this.user?.name;
+  }
+
   public get language(): string | undefined {
     return this.cookieService.get(this.langCookieName);
   }

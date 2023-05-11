@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, Subscription, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, of, switchMap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import {
   ICreateLobbyDTO,
@@ -12,6 +12,8 @@ import {
 } from 'src/shared/lobby.models';
 import { CreateLobbyComponent } from '../components/dialog/create-lobby/create-lobby.component';
 import { JoinLobbyComponent } from '../components/dialog/join-lobby/join-lobby.component';
+import { TokenService } from './token.service';
+import { LoadingService } from './loading.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,8 +22,13 @@ export class LobbyService {
   private readonly baseUrl: string = `${environment.baseUrl}/lobby`;
   private _lobbies: ILobbyItemViewModel[] = [];
   private _lobby: ILobbyViewModel | undefined;
+  private _lobbyEventEmitter = new BehaviorSubject<ILobbyViewModel | undefined>(undefined);
 
-  constructor(private client: HttpClient, private dialog: MatDialog) {}
+  constructor(
+    private client: HttpClient,
+    private dialog: MatDialog,
+    private loadingService: LoadingService
+    ) {}
 
   public loadLobbies(): Subscription {
     return this.client
@@ -31,17 +38,20 @@ export class LobbyService {
       });
   }
 
-  public loadLobby(lobbyId: string): Subscription {
-    this._lobby = undefined;
-    return this.client
+  public loadLobby(lobbyId: string): void {
+    this.loadingService.loading = true;
+    this._lobbyEventEmitter.next(undefined);
+    this.client
       .get<ILobbyViewModel>(`${this.baseUrl}/${lobbyId}`)
       .subscribe((lobby: ILobbyViewModel) => {
-        this._lobby = lobby;
+        this._lobbyEventEmitter.next(lobby);
+      }).add(() => {
+        this.loadingService.loading = false;
       });
   }
 
-  public get lobby(): ILobbyViewModel | undefined {
-    return this._lobby;
+  public get lobbyEventEmitter(): BehaviorSubject<ILobbyViewModel | undefined> {
+    return this._lobbyEventEmitter;
   }
 
   public get lobbies(): ILobbyItemViewModel[] {

@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { HubService } from './abstract/hub.service';
+import { HubService } from './hubs/abstract/hub.service';
 import { environment } from 'src/environments/environment';
 
 @Injectable({

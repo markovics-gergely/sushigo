@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FriendHubService } from 'src/app/services/friend-hub.service';
+import { FriendHubService } from 'src/app/services/hubs/friend-hub.service';
 import { FriendService } from 'src/app/services/friend.service';
 import { IFriendListCounter } from 'src/shared/friend.models';
 import { IUserNameViewModel } from 'src/shared/user.models';

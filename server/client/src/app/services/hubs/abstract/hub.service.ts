@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { TokenService } from '../token.service';
+import { TokenService } from '../../token.service';
 import * as signalR from '@microsoft/signalr';
 
 @Injectable({

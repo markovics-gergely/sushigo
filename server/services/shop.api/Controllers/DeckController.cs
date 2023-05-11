@@ -10,6 +10,9 @@ using shop.bll.Infrastructure.ViewModels;
 
 namespace shop.api.Controllers
 {
+    /// <summary>
+    /// Deck related endpoints
+    /// </summary>
     [Route("[controller]")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
@@ -22,7 +25,6 @@ namespace shop.api.Controllers
         /// Constructor for dependency injection
         /// </summary>
         /// <param name="mediator"></param>
-        /// <param name="config"></param>
         public DeckController(IMediator mediator)
         {
             _mediator = mediator;
@@ -34,10 +36,23 @@ namespace shop.api.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns>List of decks</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DeckViewModel>>> GetUserAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<DeckViewModel>>> GetDecksAsync(CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
             var query = new GetDecksQuery(user);
+            return Ok(await _mediator.Send(query, cancellationToken));
+        }
+
+        /// <summary>
+        /// Get a deck
+        /// </summary>
+        /// <param name="deckType"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpGet("{deckType}")]
+        public async Task<ActionResult<IEnumerable<DeckViewModel>>> GetDeckAsync([FromRoute] DeckType deckType, CancellationToken cancellationToken)
+        {
+            var query = new GetDeckQuery(deckType);
             return Ok(await _mediator.Send(query, cancellationToken));
         }
 
@@ -58,6 +73,7 @@ namespace shop.api.Controllers
         /// <summary>
         /// Claim a deck for the user logged in
         /// </summary>
+        /// <param name="dto"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost("deck")]

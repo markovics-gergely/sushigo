@@ -1,9 +1,9 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot } from '@angular/router';
-import { FriendHubService } from '../services/friend-hub.service';
-import { HubService } from '../services/abstract/hub.service';
-import { LobbyHubService } from '../services/lobby-hub.service';
-import { LobbyListHubService } from '../services/lobby-list-hub.service';
+import { FriendHubService } from '../services/hubs/friend-hub.service';
+import { HubService } from '../services/hubs/abstract/hub.service';
+import { LobbyHubService } from '../services/hubs/lobby-hub.service';
+import { LobbyListHubService } from '../services/hubs/lobby-list-hub.service';
 
 export const HubGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,

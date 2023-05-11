@@ -1,8 +1,8 @@
 import { Injectable, Injector } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HubService } from './abstract/hub.service';
-import { LobbyService } from './lobby.service';
 import { ILobbyItemViewModel } from 'src/shared/lobby.models';
+import { LobbyService } from '../lobby.service';
+import { HubService } from './abstract/hub.service';
 
 @Injectable({
   providedIn: 'root',

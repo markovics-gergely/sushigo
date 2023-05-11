@@ -7,6 +7,12 @@ export interface IDeckViewModel {
   cardTypes: CardType[];
 }
 
+export interface IDeckItemViewModel {
+  deckType: DeckType;
+  imagePath: string;
+  imageLoaded?: boolean;
+}
+
 export interface IBuyDeckDTO {
   deckType: DeckType;
 }

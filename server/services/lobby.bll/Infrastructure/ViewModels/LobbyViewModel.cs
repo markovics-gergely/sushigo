@@ -1,9 +1,4 @@
-﻿using lobby.dal.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using shared.Models;
 
 namespace lobby.bll.Infrastructure.ViewModels
 {
@@ -11,9 +6,10 @@ namespace lobby.bll.Infrastructure.ViewModels
     {
         public Guid Id { get; set; }
         public required string Name { get; set; }
-        public Guid CreatorId { get; set; }
+        public required string Password { get; set; }
+        public Guid CreatorUserId { get; set; }
         public DateTime Created { get; set; }
+        public DeckType DeckType { get; set; }
         public IEnumerable<PlayerViewModel> Players { get; set; } = new List<PlayerViewModel>();
-        public IEnumerable<MessageViewModel> Messages { get; set; } = new List<MessageViewModel>();
     }
 }

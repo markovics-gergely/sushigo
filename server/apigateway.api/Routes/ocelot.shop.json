@@ -18,6 +18,23 @@
       }
     },
     {
+      "DownstreamPathTemplate": "/Deck/{deckType}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "shop.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/shop/{deckType}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "shop",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
       "DownstreamPathTemplate": "/Deck/deck",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

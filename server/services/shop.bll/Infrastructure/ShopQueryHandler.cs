@@ -12,7 +12,8 @@ using shop.dal.UnitOfWork.Interfaces;
 namespace shop.bll.Infrastructure
 {
     public class ShopQueryHandler :
-        IRequestHandler<GetDecksQuery, IEnumerable<DeckViewModel>>
+        IRequestHandler<GetDecksQuery, IEnumerable<DeckViewModel>>,
+        IRequestHandler<GetDeckQuery, DeckItemViewModel>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -35,6 +36,16 @@ namespace shop.bll.Infrastructure
                     transform: x => x.AsNoTracking()
                 ).ToList();
             var deckViewModel = _mapper.Map<IEnumerable<DeckViewModel>>(decks);
+            return Task.FromResult(deckViewModel);
+        }
+
+        public Task<DeckItemViewModel> Handle(GetDeckQuery request, CancellationToken cancellationToken)
+        {
+            var deck = _unitOfWork.DeckRepository.Get(
+                    includeProperties: nameof(Deck.Cards),
+                    transform: x => x.AsNoTracking()
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(GetDeckQuery));
+            var deckViewModel = _mapper.Map<DeckItemViewModel>(deck);
             return Task.FromResult(deckViewModel);
         }
     }

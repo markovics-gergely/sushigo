@@ -25,6 +25,7 @@ namespace shop.api.Extensions
             services.AddHttpClient();
 
             services.AddTransient<IRequestHandler<GetDecksQuery, IEnumerable<DeckViewModel>>, ShopQueryHandler>();
+            services.AddTransient<IRequestHandler<GetDeckQuery, DeckItemViewModel>, ShopQueryHandler>();
 
             services.AddTransient<IRequestHandler<BuyDeckCommand>, ShopCommandHandler>();
             services.AddTransient<IRequestHandler<BuyPartyCommand>, ShopCommandHandler>();

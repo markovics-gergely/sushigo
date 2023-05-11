@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { IBuyDeckDTO, IDeckViewModel } from 'src/shared/deck.models';
+import { DeckType, IBuyDeckDTO, IDeckItemViewModel, IDeckViewModel } from 'src/shared/deck.models';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,10 @@ export class ShopService {
 
   public get decks(): Observable<IDeckViewModel[]> {
     return this.client.get<IDeckViewModel[]>(`${this.baseUrl}`);
+  }
+
+  public getDeck(deckType: DeckType): Observable<IDeckItemViewModel> {
+    return this.client.get<IDeckViewModel>(`${this.baseUrl}/${deckType}`);
   }
 
   public claimParty(): Observable<Object> {

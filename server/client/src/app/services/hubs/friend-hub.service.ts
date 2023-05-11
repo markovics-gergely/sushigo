@@ -2,8 +2,8 @@ import { Injectable, Injector } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { IFriendStatusViewModel } from 'src/shared/friend.models';
 import { IUserNameViewModel } from 'src/shared/user.models';
-import { FriendService } from './friend.service';
-import { RefreshService } from './refresh.service';
+import { FriendService } from '../friend.service';
+import { RefreshService } from '../refresh.service';
 import { HubService } from './abstract/hub.service';
 
 @Injectable({

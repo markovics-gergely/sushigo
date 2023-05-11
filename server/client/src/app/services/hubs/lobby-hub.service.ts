@@ -1,9 +1,9 @@
 import { Injectable, Injector } from '@angular/core';
-import { HubService } from './abstract/hub.service';
 import { environment } from 'src/environments/environment';
-import { LobbyService } from './lobby.service';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingService } from './loading.service';
+import { LoadingService } from '../loading.service';
+import { LobbyService } from '../lobby.service';
+import { HubService } from './abstract/hub.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +24,12 @@ export class LobbyHubService extends HubService {
     this.hubConnection?.on('AddPlayer', this.lobbyService.addPlayer);
     this.hubConnection?.on('RemovePlayer', this.lobbyService.removePlayer);
   }
-  protected override onHubConnected?(): void {}
+  protected override onHubConnected?(): void {
+    this.route.params.subscribe((params) => {
+      if (params['id']) {
+        this.lobbyService.loadLobby(params['id']);
+      }
+    });
+  }
   protected override onStartConnection?(): void {}
 }

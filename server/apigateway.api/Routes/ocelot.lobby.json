@@ -152,6 +152,23 @@
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
       }
+    },
+    {
+      "DownstreamPathTemplate": "/message",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "lobby.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/message",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "lobby",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
     }
   ]
 }

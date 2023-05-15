@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ACL } from 'src/shared/acl.models';
+import { ACL, AclPage } from 'src/shared/acl.models';
 import { AppRole } from 'src/shared/user.models';
 import { TokenService } from './token.service';
 import { DeckType } from 'src/shared/deck.models';
@@ -11,7 +11,7 @@ export class AclService {
 
   constructor(private tokenService: TokenService) { }
 
-  public can(role: AppRole | '*'): boolean {
+  public can(role: AclPage | '*'): boolean {
     const roles = ACL[role];
     if (!roles || roles.length === 0 || roles.includes('*')) {
       return true;

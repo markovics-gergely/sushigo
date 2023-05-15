@@ -10,7 +10,7 @@
     <button class="ready-button" mat-flat-button color="accent" *ngIf="isCreator">
       <i class='bx bx-edit'></i>
     </button>
-    <button class="ready-button start" mat-flat-button *ngIf="isCreator">
+    <button class="ready-button start" mat-flat-button *ngIf="isCreator" [disabled]="!valid">
       <i class='bx bx-send'></i>
     </button>
     <mat-card class="card banner hideable">
@@ -75,7 +75,7 @@
       </mat-card-content>
     </mat-card>
   </mat-grid-tile>
-  <mat-grid-tile [colspan]="12" [rowspan]="6">
+  <mat-grid-tile [colspan]="12" [rowspan]="4">
     <app-chat style="width: 100%; height: 100%"></app-chat>
   </mat-grid-tile>
 </mat-grid-list>

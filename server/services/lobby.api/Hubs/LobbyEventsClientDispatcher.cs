@@ -12,7 +12,8 @@ namespace lobby.api.Hubs
         INotificationHandler<AddPlayerEvent>,
         INotificationHandler<RemovePlayerEvent>,
         INotificationHandler<PlayerReadyEvent>,
-        INotificationHandler<RemoveLobbyEvent>
+        INotificationHandler<RemoveLobbyEvent>,
+        INotificationHandler<AddMessageEvent>
     {
         private readonly IHubContext<LobbyEventsHub, ILobbyEventsHub> _context;
 
@@ -68,6 +69,17 @@ namespace lobby.api.Hubs
         public async Task Handle(RemoveLobbyEvent notification, CancellationToken cancellationToken)
         {
             await _context.Clients.Group(notification.LobbyId.ToString()).Removelobby(cancellationToken);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="notification"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task Handle(AddMessageEvent notification, CancellationToken cancellationToken)
+        {
+            await _context.Clients.Group(notification.LobbyId.ToString()).AddMessage(notification.Message, cancellationToken);
         }
     }
 }

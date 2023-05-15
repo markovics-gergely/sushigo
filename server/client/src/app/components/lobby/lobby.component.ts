@@ -50,6 +50,7 @@ export class LobbyComponent {
     if (lobby) {
       this.shopService.getDeck(lobby.deckType).subscribe((deck: IDeckItemViewModel) => {
         this._deck = deck;
+        this._deck.imageLoaded = true;
       });
     } else {
       this._deck = undefined;
@@ -79,6 +80,10 @@ export class LobbyComponent {
       this._lobby.players.length >= this._deck.minPlayer &&
       this._lobby.players.length <= this._deck.maxPlayer
     );
+  }
+
+  public get valid(): boolean {
+    return Boolean(this.validCount && this._lobby?.players.every((p) => p.ready));
   }
 
   public leave(): void {

@@ -38,6 +38,7 @@ namespace lobby.api.Extensions
             services.AddTransient<IRequestHandler<GetLobbyQuery, LobbyViewModel>, LobbyQueryHandler>();
 
             services.AddTransient<INotificationHandler<PlayerReadyEvent>, LobbyEventHandler>();
+            services.AddTransient<INotificationHandler<AddMessageEvent>, MessageEventHandler>();
 
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IFileRepository, FileRepository>();

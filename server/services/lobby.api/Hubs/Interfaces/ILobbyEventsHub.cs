@@ -1,5 +1,4 @@
-﻿using lobby.bll.Infrastructure.Events;
-using lobby.bll.Infrastructure.ViewModels;
+﻿using lobby.bll.Infrastructure.ViewModels;
 
 namespace lobby.api.Hubs.Interfaces
 {
@@ -38,5 +37,13 @@ namespace lobby.api.Hubs.Interfaces
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task Removelobby(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task AddMessage(MessageViewModel message, CancellationToken cancellationToken);
     }
 }

@@ -1,15 +1,39 @@
+.message-form {
+  width: calc(100% - 20px);
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  margin: 0 10px;
+  position: sticky;
+  bottom: 0;
+  background-color: rgba($color: black, $alpha: 0.4);
+  padding: 10px;
+  border-radius: 5px;
+  .message-text {
+    width: 100%;
+    margin-right: 5px;
+    margin-bottom: -1.25em;
+    input {
+      color: var(--color-primary-dark) !important;
+    }
+  }
+  .message-button {
+    height: 56px;
+  }
+}
+
 .card {
   width: 100%;
   height: 100%;
-  border-radius: 20px;
+  border-radius: 5px;
   border: var(--color-primary-dark) 2px solid;
   h1 {
     width: 100%;
     margin: auto auto 15px 10%;
     font-size: 46px;
   }
-  &.lobby-items {
-    padding-top: 5px;
+  &.message-items {
+    padding: 5px 0;
     overflow-y: auto;
     .lobby-item {
       background-color: rgba($color: var(--color-primary-rgb), $alpha: 0.4);
@@ -17,7 +41,7 @@
       width: calc(100% - 20px);
       margin: 5px 10px;
       padding: 20px;
-      border-radius: 20px;
+      border-radius: 5px;
       cursor: pointer;
       &:hover {
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -31,11 +55,11 @@
 
 .light-theme {
   .card {
-    background-color: rgba($color: white, $alpha: 0.6);
+    background-color: rgba($color: white, $alpha: 0.6) !important;
   }
 }
 .dark-theme {
   .card {
-    background-color: rgba($color: black, $alpha: 0.6);
+    background-color: rgba($color: black, $alpha: 0.6) !important;
   }
 }

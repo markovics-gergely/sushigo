@@ -94,10 +94,18 @@ input[type="number"] {
   color: var(--color-text) !important;
   font-size: large;
   &.left {
-    background-image: linear-gradient(to right, rgba($color: #000000, $alpha: 0.2), transparent) !important;
+    background-image: linear-gradient(
+      to right,
+      rgba($color: #000000, $alpha: 0.2),
+      transparent
+    ) !important;
   }
   &.right {
-    background-image: linear-gradient(to left, rgba($color: #000000, $alpha: 0.2), transparent) !important;
+    background-image: linear-gradient(
+      to left,
+      rgba($color: #000000, $alpha: 0.2),
+      transparent
+    ) !important;
   }
 }
 
@@ -107,7 +115,8 @@ input[type="number"] {
   }
 }
 
-mat-dialog-content, mat-dialog-actions {
+mat-dialog-content,
+mat-dialog-actions {
   padding: 10px 20px !important;
 }
 
@@ -120,3 +129,4 @@ mat-dialog-content, mat-dialog-actions {
 .mat-primary:not(:disabled) {
   color: var(--color-text-light) !important;
 }
+

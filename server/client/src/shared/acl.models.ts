@@ -10,3 +10,5 @@ export const ACL: AclType = {
     'shop': ['Party'],
     'lobby': ['Classic'],
 };
+
+export type AclPage = keyof typeof ACL;

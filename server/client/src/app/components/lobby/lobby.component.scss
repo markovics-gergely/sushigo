@@ -55,7 +55,9 @@
   }
 
   &.start {
-    background-color: rgba($color: var(--color-ok-rgb), $alpha: 0.9) !important;
+    &:not(:disabled) {
+      background-color: rgba($color: var(--color-ok-rgb), $alpha: 0.9) !important;
+    }
     @include media-style-below(sm) {
       width: 100% !important;
     }

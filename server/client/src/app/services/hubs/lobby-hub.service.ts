@@ -5,6 +5,8 @@ import { LoadingService } from '../loading.service';
 import { LobbyService } from '../lobby.service';
 import { HubService } from './abstract/hub.service';
 import { ILobbyViewModel, IPlayerViewModel } from 'src/shared/lobby.models';
+import { IMessageViewModel } from 'src/shared/message.models';
+import { MessageService } from '../message.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +19,7 @@ export class LobbyHubService extends HubService {
     private lobbyService: LobbyService,
     private route: ActivatedRoute,
     private router: Router,
+    private messageService: MessageService,
     private loadingService: LoadingService
   ) {
     super(injector);
@@ -32,6 +35,7 @@ export class LobbyHubService extends HubService {
     this.hubConnection?.on('RemovePlayer', (playerId: string) => { this.lobbyService.removePlayer(playerId); });
     this.hubConnection?.on('PlayerReady', (lobby: ILobbyViewModel) => { console.log(lobby); this.lobbyService.lobbyEventEmitter.next(lobby); });
     this.hubConnection?.on('RemoveLobby', () => { this.router.navigate(['lobby']); });
+    this.hubConnection?.on('AddMessage', (message: IMessageViewModel) => { this.messageService.messageEventEmitter.next(message); });
   }
   protected override onHubConnected?(): void {
     this.route.params.subscribe((params) => {

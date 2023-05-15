@@ -1,2 +1,30 @@
-<mat-card class="card lobby-items">
+<mat-card class="card message-items">
+    <div class="name" *ngFor="let message of messages">
+        {{ message.text }}
+    </div>
+  <form
+    *ngIf="messageForm"
+    method="post"
+    class="message-form"
+    [formGroup]="messageForm"
+    (ngSubmit)="sendMessage()"
+  >
+    <mat-form-field appearance="outline" class="message-text">
+      <input
+        id="text"
+        type="text"
+        matInput
+        [placeholder]="'lobby-list.create-dialog.name' | translate"
+        formControlName="text"
+      />
+    </mat-form-field>
+    <button
+      class="message-button"
+      mat-flat-button
+      [disabled]="!valid"
+      color="primary"
+    >
+      <i class="bx bx-send"></i>
+    </button>
+  </form>
 </mat-card>

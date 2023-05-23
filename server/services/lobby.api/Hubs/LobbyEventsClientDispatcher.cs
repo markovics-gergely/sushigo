@@ -13,7 +13,8 @@ namespace lobby.api.Hubs
         INotificationHandler<RemovePlayerEvent>,
         INotificationHandler<PlayerReadyEvent>,
         INotificationHandler<RemoveLobbyEvent>,
-        INotificationHandler<AddMessageEvent>
+        INotificationHandler<AddMessageEvent>,
+        INotificationHandler<UpdateDeckTypeEvent>
     {
         private readonly IHubContext<LobbyEventsHub, ILobbyEventsHub> _context;
 
@@ -80,6 +81,17 @@ namespace lobby.api.Hubs
         public async Task Handle(AddMessageEvent notification, CancellationToken cancellationToken)
         {
             await _context.Clients.Group(notification.LobbyId.ToString()).AddMessage(notification.Message, cancellationToken);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="notification"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task Handle(UpdateDeckTypeEvent notification, CancellationToken cancellationToken)
+        {
+            await _context.Clients.Group(notification.LobbyViewModel.Id.ToString()).UpdateDeckType(notification.LobbyViewModel, cancellationToken);
         }
     }
 }

@@ -63,6 +63,7 @@
             [src]="deck.imagePath | imgPath"
             alt="cover"
             (load)="deck.imageLoaded = true"
+            [ngStyle]="deck.imageLoaded ? {} : { display: 'none' }"
           />
         </div>
         <div class="description">

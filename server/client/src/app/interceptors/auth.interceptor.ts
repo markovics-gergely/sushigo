@@ -29,7 +29,6 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(authReq)
       .pipe(
         catchError((err: HttpErrorResponse) => {
-          console.log(err);
           if (err.status === 401 || err.status === 403) {
             this.tokenService.clearCookies();
           }

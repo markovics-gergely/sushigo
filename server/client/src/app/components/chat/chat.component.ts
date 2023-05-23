@@ -1,8 +1,9 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { LoadingService } from 'src/app/services/loading.service';
 import { LobbyService } from 'src/app/services/lobby.service';
 import { MessageService } from 'src/app/services/message.service';
+import { TokenService } from 'src/app/services/token.service';
 import { IMessageDTO, IMessageViewModel } from 'src/shared/message.models';
 
 @Component({
@@ -12,29 +13,20 @@ import { IMessageDTO, IMessageViewModel } from 'src/shared/message.models';
   encapsulation: ViewEncapsulation.None,
 })
 export class ChatComponent implements OnInit {
-  @Input() private lobbyId: string | undefined;
+  @Input() public lobbyId: string | undefined;
   private _messages: IMessageViewModel[] = [];
   private _messageForm: FormGroup | undefined;
 
   constructor(
     private messageService: MessageService,
     private lobbyService: LobbyService,
+    private tokenService: TokenService,
     private loadingService: LoadingService,
     ) {}
 
   ngOnInit(): void {
     this._messageForm = new FormGroup({
-      message: new FormControl('', Validators.required),
-    });
-    this._messages = Array.from(Array(40).keys()).map((i) => {
-      return {
-        id: i.toString(),
-        lobbyId: '1',
-        text: 'test',
-        userName: 'test',
-        userId: '1',
-        dateTime: new Date(),
-      } as IMessageViewModel;
+      text: new FormControl(''),
     });
     this.lobbyService.lobbyEventEmitter.subscribe({
       next: (lobby) => {
@@ -50,6 +42,17 @@ export class ChatComponent implements OnInit {
         }
       }
     });
+    this.messageService.messageEventEmitter.subscribe({
+      next: (message) => {
+        if (message) {
+          this._messages.unshift(message);
+          document.getElementById('msgwrapper')?.scroll({
+            behavior: 'smooth',
+            top: 0,
+          });
+        }
+      }
+    });
   }
 
   public get messages(): IMessageViewModel[] {
@@ -61,7 +64,7 @@ export class ChatComponent implements OnInit {
   }
 
   public get valid(): boolean {
-    return this.messageForm?.valid || false;
+    return this.messageForm?.value.text || false;
   }
 
   public sendMessage(): void {
@@ -73,5 +76,13 @@ export class ChatComponent implements OnInit {
       this.messageForm?.reset();
       this.loadingService.stop();
     });
+  }
+
+  public get timezone(): string {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }
+
+  public ownMessage(message: IMessageViewModel): boolean {
+    return message.userName === this.tokenService.userName;
   }
 }

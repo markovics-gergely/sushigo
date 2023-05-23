@@ -3,11 +3,11 @@ import { TokenService } from './token.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RefreshComponent } from '../components/dialog/refresh/refresh.component';
 import { Observable } from 'rxjs';
-import { UserService } from './user.service';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { IUser } from 'src/shared/user.models';
+import { HttpBackend, HttpClient, HttpHeaders } from '@angular/common/http';
+import { IRefreshViewModel } from 'src/shared/user.models';
 import { LoadingService } from './loading.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -16,41 +16,21 @@ export class RefreshService {
   /** Route of the user related endpoints */
   private readonly baseUrl: string = `${environment.baseUrl}/user`;
   /** Flag to display refresh needed screen */
-  private _refresh: boolean = false;
-  private _counter: number = 30;
+  //private _refresh: boolean = false;
+  //private _counter: number = 30;W
+  private client: HttpClient;
 
   constructor(
     private tokenService: TokenService,
     private dialog: MatDialog,
-    private client: HttpClient,
-    private loadingService: LoadingService
-  ) {}
-
-  get refresh() {
-    return this._refresh;
-  }
-  set refresh(value: boolean) {
-    this._refresh = value;
-    if (this._refresh) {
-      this._counter = 30;
-      this.openRefresh().subscribe((result) => {
-        this._refresh = false;
-        if (result) {
-          this.refreshUser();
-        } else {
-          this.tokenService.clearCookies();
-        }
-      });
-    } else {
-      this.dialog.closeAll();
-    }
+    handler: HttpBackend,
+    private loadingService: LoadingService,
+    private router: Router
+  ) {
+    this.client = new HttpClient(handler);
   }
 
-  get counter() {
-    return this._counter;
-  }
-
-  private decrementCounter() {
+  /*private decrementCounter() {
     if (!this._refresh) return;
     this._counter--;
     if (this._counter <= 0 || !this.tokenService.loggedIn) {
@@ -66,17 +46,17 @@ export class RefreshService {
       width: size,
     });
     return dialogRef.afterClosed();
-  }
+  }*/
 
   /**
    * Refresh stored token with refresh token
    * @returns
    */
-  private refreshToken(): Observable<IUser> {
+  private refreshToken(): Observable<IRefreshViewModel> {
     let headers = new HttpHeaders().set(
       'Content-Type',
       'application/x-www-form-urlencoded'
-    );
+    ).set('Authorization', 'Bearer ' + this.tokenService.token);
     let body = new URLSearchParams();
 
     const token = this.tokenService.refreshToken;
@@ -85,7 +65,7 @@ export class RefreshService {
     body.set('client_id', environment.client_id);
     body.set('client_secret', environment.client_secret);
 
-    return this.client.post<IUser>(`${this.baseUrl}/refresh`, body.toString(), {
+    return this.client.post<IRefreshViewModel>(`${this.baseUrl}/refresh`, body.toString(), {
       headers: headers,
     });
   }
@@ -96,9 +76,6 @@ export class RefreshService {
       .subscribe({
         next: (response) => {
           this.tokenService.userToken = response;
-          setTimeout(() => {
-            this._refresh = true;
-          }, (response.expires_in - 30) * 1000);
         },
         error: (err) => {
           console.log(err);

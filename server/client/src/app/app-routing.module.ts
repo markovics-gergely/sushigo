@@ -8,19 +8,21 @@ import { StoreComponent } from './components/store/store.component';
 import { LobbyComponent } from './components/lobby/lobby.component';
 import { LobbyListComponent } from './components/lobby-list/lobby-list.component';
 import { HubGuard } from './guards/hub.guard';
+import { LoginGuard } from './guards/login.guard';
+import { LobbyGuard } from './guards/lobby.guard';
 
 const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
     data: { name: 'login', hub: [] },
-    canActivate: [AclGuard, HubGuard]
+    canActivate: [LoginGuard, HubGuard]
   },
   {
     path: 'register',
     component: RegisterComponent,
     data: { name: 'register', hub: [] },
-    canActivate: [AclGuard, HubGuard]
+    canActivate: [LoginGuard, HubGuard]
   },
   {
     path: 'home',
@@ -44,7 +46,7 @@ const routes: Routes = [
     path: 'lobby/:id',
     component: LobbyComponent,
     data: { name: 'lobby', hub: ['friend', 'lobby', 'lobbyList'] },
-    canActivate: [AclGuard, HubGuard]
+    canActivate: [AclGuard, LobbyGuard, HubGuard]
   },
   {
     path: '**',

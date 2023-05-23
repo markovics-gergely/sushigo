@@ -9,21 +9,6 @@ import { AclService } from '../services/acl.service';
 import { TokenService } from '../services/token.service';
 import { AclPage } from 'src/shared/acl.models';
 
-function isActiveLobby(route: ActivatedRouteSnapshot, router: Router) {
-  const tokenService = inject(TokenService);
-  const aclService = inject(AclService);
-  const lobbyId = route.params['id'];
-  if (lobbyId !== tokenService.user?.lobby) {
-    router.navigate(['lobby', tokenService.user?.lobby]);
-    return false;
-  }
-  if (!aclService.can('lobby')) {
-    router.navigate(['home']);
-    return false;
-  }
-  return true;
-}
-
 export const AclGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
@@ -31,22 +16,18 @@ export const AclGuard: CanActivateFn = (
   const aclService = inject(AclService);
   const tokenService = inject(TokenService);
   const router = inject(Router);
-  const routeName = route.data['name'] as AclPage;  
+  const routeName = route.data['name'] as AclPage;
   if (!routeName) return true;
-  console.log(route.params['id']);
-  
-  if (routeName === 'login' || routeName === 'register') {
-    if (tokenService.loggedIn) {
-      router.navigateByUrl(route.queryParams['returnUrl'] || 'home');
+  if (tokenService.lobby) {
+    if (routeName === 'lobby' && route.params['id'] === tokenService.lobby) {
+      return true;
     }
-    return !tokenService.loggedIn;
-  }
-  if (tokenService.user?.lobby) {
-    return isActiveLobby(route, router);
+    return router.parseUrl(`/lobby/${tokenService.lobby}`);
   }
   if (!aclService.can(routeName)) {
-    router.navigate(['login'], { queryParams: { returnUrl: state.url } });
-    return false;
+    const url = router.parseUrl('login');
+    url.queryParams = { returnUrl: state.url };
+    return url;
   }
   return true;
 }

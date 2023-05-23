@@ -7,7 +7,7 @@
       <i class='bx bx-check' *ngIf="!own.ready"></i>
       <i class='bx bx-x' *ngIf="own.ready"></i>
     </button>
-    <button class="ready-button" mat-flat-button color="accent" *ngIf="isCreator">
+    <button class="ready-button" mat-flat-button color="accent" *ngIf="isCreator" (click)="edit()">
       <i class='bx bx-edit'></i>
     </button>
     <button class="ready-button start" mat-flat-button *ngIf="isCreator" [disabled]="!valid">
@@ -31,7 +31,7 @@
             [ngStyle]="player.imageLoaded ? {} : { display: 'none' }" />
         </div>
         <div class="name">{{ player.userName }}</div>
-        <div class="ready" [ngClass]="player.ready ? 'true' : 'false'">
+        <div class="ready" [ngClass]="player.ready ? 'true' : 'false'" (click)="remove(player)">
           <i class='bx bx-check' *ngIf="player.ready"></i>
           <i class='bx bx-x' *ngIf="!player.ready"></i>
         </div>
@@ -43,19 +43,19 @@
       <mat-card-content>
         <div class="content">
           <div class="data">
-            <div class="name creator">Creator</div>
+            <div class="name creator">{{ 'lobby.creator' | translate }}</div>
             <div class="value">
               <p>{{ creator }}</p>
             </div>
           </div>
           <div class="data">
-            <div class="name password">Password</div>
+            <div class="name password">{{ 'lobby.password' | translate }}</div>
             <div class="value">
               <p>{{ lobby.password }}</p>
             </div>
           </div>
           <div class="data">
-            <div class="name date">Date</div>
+            <div class="name date">{{ 'lobby.date' | translate }}</div>
             <div class="value">
               <p>{{ lobby.created | date: 'YYYY.MM.dd HH:mm' }}</p>
             </div>
@@ -76,6 +76,6 @@
     </mat-card>
   </mat-grid-tile>
   <mat-grid-tile [colspan]="12" [rowspan]="4">
-    <app-chat style="width: 100%; height: 100%"></app-chat>
+    <app-chat style="width: 100%; height: 100%" [lobbyId]="lobby.id"></app-chat>
   </mat-grid-tile>
 </mat-grid-list>

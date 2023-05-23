@@ -2,6 +2,7 @@ using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using System.Text.Json.Serialization;
 using user.api.Extensions;
 using user.api.Hubs;
 using user.bll.Settings;
@@ -35,7 +36,10 @@ builder.Services.Configure<CacheSettings>(configuration.GetSection("CacheSetting
 builder.Services.AddSwaggerExtension(configuration);
 
 builder.Services.AddSignalR();
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(opt =>
+{
+    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Services.AddMemoryCache();
 builder.Services.AddStackExchangeRedisCache(options => {

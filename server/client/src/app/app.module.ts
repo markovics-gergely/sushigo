@@ -55,6 +55,8 @@ import { LobbyListComponent } from './components/lobby-list/lobby-list.component
 import { CreateLobbyComponent } from './components/dialog/create-lobby/create-lobby.component';
 import { JoinLobbyComponent } from './components/dialog/join-lobby/join-lobby.component';
 import localeHu from '@angular/common/locales/hu';
+import { EditLobbyComponent } from './components/dialog/edit-lobby/edit-lobby.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 export function jwtOptionsFactory(tokenService: TokenService) {
   return {
@@ -89,6 +91,7 @@ registerLocaleData(localeHu);
     LobbyListComponent,
     CreateLobbyComponent,
     JoinLobbyComponent,
+    EditLobbyComponent,
   ],
   imports: [
     BrowserModule,
@@ -113,6 +116,7 @@ registerLocaleData(localeHu);
     MatButtonModule,
     MatProgressSpinnerModule,
     MatToolbarModule,
+    MatRadioModule,
     JwtModule.forRoot({
       jwtOptionsProvider: {
         provide: JWT_OPTIONS,
@@ -139,12 +143,12 @@ registerLocaleData(localeHu);
     TokenService,
     {
       provide: LOCALE_ID,
-      useValue: navigator.language
-    }
+      useValue: navigator.language,
+    },
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');

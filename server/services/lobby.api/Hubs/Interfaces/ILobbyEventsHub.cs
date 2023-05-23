@@ -45,5 +45,13 @@ namespace lobby.api.Hubs.Interfaces
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task AddMessage(MessageViewModel message, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lobbyViewModel"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task UpdateDeckType(LobbyViewModel lobbyViewModel, CancellationToken cancellationToken);
     }
 }

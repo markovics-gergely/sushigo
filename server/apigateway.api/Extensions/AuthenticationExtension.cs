@@ -31,9 +31,17 @@ namespace apigateway.api.Extensions
                         OnMessageReceived = context =>
                         {
                             var accessToken = context.Request.Query["token"];
-                            if (string.IsNullOrEmpty(accessToken) == false)
+                            if (!string.IsNullOrEmpty(accessToken))
                             {
                                 context.Token = accessToken;
+                            }
+                            else
+                            {
+                                accessToken = context.Request.Query["access_token"];
+                                if (!string.IsNullOrEmpty(accessToken))
+                                {
+                                    context.Token = accessToken;
+                                }
                             }
 
                             return Task.CompletedTask;
@@ -65,20 +73,22 @@ namespace apigateway.api.Extensions
         /// <returns></returns>
         public static async Task AuthQueryStringToHeader(HttpContext context, Func<Task> next)
         {
-            var qs = context.Request.QueryString;
-
-            if (string.IsNullOrWhiteSpace(context.Request.Headers["Authorization"]) && qs.HasValue)
+            if (string.IsNullOrWhiteSpace(context.Request.Headers["Authorization"]) && context.Request.QueryString.HasValue)
             {
-                var token = (from pair in qs.Value?.TrimStart('?').Split('&')
-                             where pair.StartsWith("token=")
-                             select pair[6..]).FirstOrDefault();
-
-                if (!string.IsNullOrWhiteSpace(token))
+                var accessToken = context.Request.Query["token"];
+                if (!string.IsNullOrEmpty(accessToken))
                 {
-                    context.Request.Headers.Add("Authorization", "Bearer " + token);
+                    context.Request.Headers.Add("Authorization", "Bearer " + accessToken);
+                }
+                else
+                {
+                    accessToken = context.Request.Query["access_token"];
+                    if (!string.IsNullOrEmpty(accessToken))
+                    {
+                        context.Request.Headers.Add("Authorization", "Bearer " + accessToken);
+                    }
                 }
             }
-
             await next.Invoke();
         }
     }

@@ -3,8 +3,9 @@ import { CookieService } from 'ngx-cookie-service';
 import { AppRole, IUser, IUserTokenViewModel } from 'src/shared/user.models';
 import jwt_decode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { DeckType } from 'src/shared/deck.models';
+import { AclPage } from 'src/shared/acl.models';
 
 @Injectable({
   providedIn: 'root'
@@ -14,17 +15,27 @@ export class TokenService {
   private readonly rCookieName = environment.refresh_token_name;
   private readonly langCookieName = environment.language_token_name;
   private readonly themeCookieName = environment.theme_token_name;
-  private readonly DEFAULT_REFRESH_TIME = 30;
 
-  constructor(private cookieService: CookieService, private router: Router) { }
+  constructor(
+    private cookieService: CookieService,
+    private router: Router,
+    private route: ActivatedRoute
+    ) { }
 
   public set userToken(user: IUser) {
-    this.setToken(user.access_token, user.expires_in);
+    this.token = user.access_token;
     this.refreshToken = user.refresh_token;
+    console.log(this.router.url);
+    
+    if (this.user?.lobby) {
+      this.router.navigateByUrl(`/lobby/${this.user.lobby}`);
+    } else if(this.router.url.startsWith('/lobby/')) {
+      this.router.navigateByUrl('/lobby');
+    }
   }
 
-  private setToken(token: string, expires_in: number) {
-    this.cookieService.set(this.cookieName, token, new Date(Date.now() + expires_in * 1000));
+  private set token(token: string) {
+    this.cookieService.set(this.cookieName, token);
   }
 
   public get token(): string {
@@ -32,7 +43,7 @@ export class TokenService {
   }
 
   private set refreshToken(token: string) {
-    this.cookieService.set(this.rCookieName, token, this.DEFAULT_REFRESH_TIME);
+    this.cookieService.set(this.rCookieName, token);
   }
 
   public get refreshToken(): string {
@@ -100,5 +111,14 @@ export class TokenService {
 
   public get decks(): DeckType[] {
     return this.user?.decks ?? [];
+  }
+
+  public get lobby(): string | undefined {
+    return this.user?.lobby;
+  }
+
+  public isOwnLobby(lobbyId?: string): boolean {
+    if (!lobbyId || !this.user?.lobby) return false;
+    return this.user.lobby === lobbyId;
   }
 }

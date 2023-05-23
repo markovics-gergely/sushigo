@@ -1,7 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from 'src/app/services/loading.service';
-import { LobbyHubService } from 'src/app/services/hubs/lobby-hub.service';
 import { LobbyService } from 'src/app/services/lobby.service';
 import { ILobbyViewModel, IPlayerViewModel } from 'src/shared/lobby.models';
 import { IDeckItemViewModel } from 'src/shared/deck.models';
@@ -48,7 +47,11 @@ export class LobbyComponent {
   private processLobby(lobby: ILobbyViewModel | undefined) {
     this._lobby = lobby;
     if (lobby) {
+      console.log(lobby);
+      
       this.shopService.getDeck(lobby.deckType).subscribe((deck: IDeckItemViewModel) => {
+        console.log(deck);
+        
         this._deck = deck;
         this._deck.imageLoaded = true;
       });
@@ -88,7 +91,12 @@ export class LobbyComponent {
 
   public leave(): void {
     if (!this.own || !this._lobby) return;
-    this.lobbyService.leave({ playerId: this.own.id, lobbyId: this._lobby.id });
+    this.lobbyService.leave({ playerId: this.own.id, lobbyId: this._lobby.id }, this.isCreator);
+  }
+
+  public remove(player: IPlayerViewModel) {
+    if (!this._lobby || !this.isCreator || this._lobby.creatorUserName === player.userName) return;
+    this.lobbyService.remove({ playerId: player.id, lobbyId: this._lobby.id });
   }
 
   public removePlayer(player: IPlayerViewModel): void {
@@ -103,5 +111,10 @@ export class LobbyComponent {
     }).add(() => {
       this.loadingService.stop();
     });
+  }
+
+  public edit(): void {
+    if (!this._lobby) return;
+    this.lobbyService.startEditLobbyDeck(this._lobby.deckType, this._lobby.id).subscribe();
   }
 }

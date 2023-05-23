@@ -64,6 +64,11 @@ namespace lobby.bll.Infrastructure
             lobbyEntity.Players.Add(playerEntity);
             await _unitOfWork.Save();
             await _mediator.Publish(new AddLobbyEvent(_mapper.Map<LobbyItemViewModel>(lobbyEntity)), cancellationToken);
+            await _endpoint.Publish(new LobbyJoinedDTO
+            {
+                UserId = guid,
+                LobbyId = lobbyEntity.Id
+            }, cancellationToken);
             return _mapper.Map<LobbyViewModel>(lobbyEntity);
         }
 

@@ -25,7 +25,7 @@ export abstract class HubService {
     if (this._connected) return;
     this._connecting = true;
     this._hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${this.baseUrl}?token=${this.tokenService.token}`, {
+      .withUrl(this.baseUrl, {
         skipNegotiation: true,
         transport: signalR.HttpTransportType.WebSockets,
         accessTokenFactory: () => this.tokenService.token,

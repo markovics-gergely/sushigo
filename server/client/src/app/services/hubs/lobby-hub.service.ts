@@ -33,9 +33,10 @@ export class LobbyHubService extends HubService {
   protected override addListeners(): void {
     this.hubConnection?.on('AddPlayer', (player: IPlayerViewModel) => { this.lobbyService.addPlayer(player); });
     this.hubConnection?.on('RemovePlayer', (playerId: string) => { this.lobbyService.removePlayer(playerId); });
-    this.hubConnection?.on('PlayerReady', (lobby: ILobbyViewModel) => { console.log(lobby); this.lobbyService.lobbyEventEmitter.next(lobby); });
+    this.hubConnection?.on('PlayerReady', (lobby: ILobbyViewModel) => { this.lobbyService.lobbyEventEmitter.next(lobby); });
     this.hubConnection?.on('RemoveLobby', () => { this.router.navigate(['lobby']); });
     this.hubConnection?.on('AddMessage', (message: IMessageViewModel) => { this.messageService.messageEventEmitter.next(message); });
+    this.hubConnection?.on('UpdateDeckType', (lobby: ILobbyViewModel) => { this.lobbyService.lobbyEventEmitter.next(lobby); });
   }
   protected override onHubConnected?(): void {
     this.route.params.subscribe((params) => {

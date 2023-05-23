@@ -7,6 +7,20 @@
     "logout": {
       "title": "Kilépés",
       "message": "Biztosan ki akar lépni?"
+    },
+    "lobby": {
+      "leave": {
+        "title": "Váróterem elhagyása",
+        "message": "Biztosan el akarja hagyni a várótermet?"
+      },
+      "delete": {
+        "title": "Váróterem törlése",
+        "message": "Biztosan törölni akarja a várótermet?"
+      },
+      "remove": {
+        "title": "Játékos eltávolítása",
+        "message": "Biztosan el akarja távolítani a játékost?"
+      }
     }
   },
   "refresh": {
@@ -132,6 +146,19 @@
       "name": "Név",
       "password": "Jelszó",
       "submit": "Csatlakozás",
+      "cancel": "Mégse"
+    }
+  },
+  "lobby": {
+    "creator": "Létrehozó",
+    "password": "Jelszó",
+    "date": "Dátum",
+    "chat": {
+      "text": "Üzenet küldése..."
+    },
+    "edit-dialog": {
+      "title": "Váróterem szerkesztése",
+      "submit": "Mentés",
       "cancel": "Mégse"
     }
   }

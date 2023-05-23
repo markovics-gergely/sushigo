@@ -6,7 +6,12 @@ export type AppRole = 'Classic' | 'Party' | 'CanClaimParty' | 'CanClaimDeck';
 export interface IUser {
     access_token: string;
     refresh_token: string;
-    detail: string;
+    expires_in: number;
+}
+
+export interface IRefreshViewModel {
+    access_token: string;
+    refresh_token: string;
     expires_in: number;
 }
 

@@ -42,9 +42,10 @@ namespace shop.bll.Infrastructure
         public Task<DeckItemViewModel> Handle(GetDeckQuery request, CancellationToken cancellationToken)
         {
             var deck = _unitOfWork.DeckRepository.Get(
-                    includeProperties: nameof(Deck.Cards),
-                    transform: x => x.AsNoTracking()
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(GetDeckQuery));
+                filter: x => x.DeckType == request.DeckType,
+                includeProperties: nameof(Deck.Cards),
+                transform: x => x.AsNoTracking()
+            ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(GetDeckQuery));
             var deckViewModel = _mapper.Map<DeckItemViewModel>(deck);
             return Task.FromResult(deckViewModel);
         }

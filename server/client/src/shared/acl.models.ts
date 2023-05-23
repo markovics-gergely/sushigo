@@ -9,6 +9,7 @@ export const ACL: AclType = {
     'home.claim.party': ['CanClaimParty'],
     'shop': ['Party'],
     'lobby': ['Classic'],
+    'lobby-list': ['Classic'],
 };
 
 export type AclPage = keyof typeof ACL;

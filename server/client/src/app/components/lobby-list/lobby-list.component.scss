@@ -10,10 +10,10 @@
     width: 80%;
   }
 
-  .card {
+  .lobby-list-card {
     width: 100%;
     height: 100%;
-    border-radius: 20px;
+    border-radius: 5px;
     border: var(--color-primary-dark) 2px solid;
     h1 {
       width: 100%;
@@ -24,12 +24,12 @@
       padding-top: 5px;
       overflow-y: auto;
       .lobby-item {
-        background-color: rgba($color: var(--color-primary-rgb), $alpha: 0.4);
+        background-color: rgba($color: var(--color-primary-dark-rgb), $alpha: 0.5);
         color: var(--color-text-light);
         width: calc(100% - 20px);
         margin: 5px 10px;
         padding: 20px;
-        border-radius: 20px;
+        border-radius: 5px;
         cursor: pointer;
         &:hover {
           box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -42,11 +42,35 @@
   }
 }
 
+.lobby-nav-button {
+  margin-top: 10px;
+  width: 100% !important;
+  height: 100% !important;
+  font-size: large;
+  &.left {
+    background-image: linear-gradient(
+      to right,
+      rgba($color: #000000, $alpha: 0.2),
+      transparent
+    ) !important;
+  }
+  &.right {
+    background-image: linear-gradient(
+      to left,
+      rgba($color: #000000, $alpha: 0.2),
+      transparent
+    ) !important;
+  }
+}
+
 .light-theme {
-  .card {
+  .lobby-list-card {
     background-color: rgba($color: white, $alpha: 0.6);
   }
-  .banner {
+  .lobby-nav-button {
+    color: var(--color-text) !important;
+  }
+  .lobby-list-banner {
     background: radial-gradient(
         circle,
         transparent 90%,
@@ -60,10 +84,13 @@
   }
 }
 .dark-theme {
-  .card {
+  .lobby-list-card {
     background-color: rgba($color: black, $alpha: 0.6);
   }
-  .banner {
+  .lobby-nav-button {
+    color: var(--color-text-light) !important;
+  }
+  .lobby-list-banner {
     background: radial-gradient(
         circle,
         transparent 90%,

@@ -32,12 +32,15 @@ namespace lobby.api.Extensions
             services.AddTransient<IRequestHandler<UpdateLobbyDeckCommand, LobbyViewModel>, LobbyCommandHandler>();
             services.AddTransient<IRequestHandler<PlayerReadyCommand, LobbyViewModel>, LobbyCommandHandler>();
 
+            services.AddTransient<IRequestHandler<GetMessagesQuery, IEnumerable<MessageViewModel>>, MessageQueryHandler>();
             services.AddTransient<IRequestHandler<CreateMessageCommand, MessageViewModel>, MessageCommandHandler>();
 
             services.AddTransient<IRequestHandler<GetLobbiesQuery, IEnumerable<LobbyItemViewModel>>, LobbyQueryHandler>();
             services.AddTransient<IRequestHandler<GetLobbyQuery, LobbyViewModel>, LobbyQueryHandler>();
 
             services.AddTransient<INotificationHandler<PlayerReadyEvent>, LobbyEventHandler>();
+            services.AddTransient<INotificationHandler<AddLobbyEvent>, LobbyEventHandler>();
+            services.AddTransient<INotificationHandler<RemoveLobbyEvent>, LobbyEventHandler>();
             services.AddTransient<INotificationHandler<AddMessageEvent>, MessageEventHandler>();
 
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));

@@ -7,6 +7,20 @@
     "logout": {
       "title": "Log out",
       "message": "Are you sure you want to log out?"
+    },
+    "lobby": {
+      "leave": {
+        "title": "Leave lobby",
+        "message": "Are you sure you want to leave the lobby?"
+      },
+      "delete": {
+        "title": "Delete lobby",
+        "message": "Are you sure you want to delete the lobby?"
+      },
+      "remove": {
+        "title": "Remove player",
+        "message": "Are you sure you want to remove the player?"
+      }
     }
   },
   "refresh": {
@@ -132,6 +146,19 @@
       "name": "Name",
       "password": "Password",
       "submit": "Join",
+      "cancel": "Cancel"
+    }
+  },
+  "lobby": {
+    "creator": "Creator",
+    "password": "Password",
+    "date": "Date",
+    "chat": {
+      "text": "Type a message..."
+    },
+    "edit-dialog": {
+      "title": "Edit lobby",
+      "submit": "Save",
       "cancel": "Cancel"
     }
   }

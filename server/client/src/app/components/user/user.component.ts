@@ -53,7 +53,6 @@ export class UserComponent implements OnInit {
 
   public edit() {
     if (!this._user) return;
-    this.loadingService.start();
     this.userService.startEdit({
       userName: this._user.userName,
       firstName: this._user.name.split(" ")[0],
@@ -64,8 +63,7 @@ export class UserComponent implements OnInit {
         if (!user) return;
         this._user = user;
       }
-    })
-      .add(() => this.loadingService.stop());
+    });
   }
 
   public claimParty() {

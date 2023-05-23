@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, Observable, Subscription, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, map, of, switchMap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import {
   ICreateLobbyDTO,
@@ -17,6 +17,8 @@ import { JoinLobbyComponent } from '../components/dialog/join-lobby/join-lobby.c
 import { LoadingService } from './loading.service';
 import { ConfirmService } from 'src/app/services/confirm.service';
 import { Router } from '@angular/router';
+import { DeckType } from 'src/shared/deck.models';
+import { EditLobbyComponent } from '../components/dialog/edit-lobby/edit-lobby.component';
 
 @Injectable({
   providedIn: 'root',
@@ -87,12 +89,15 @@ export class LobbyService {
     return this.client.delete<ILobbyViewModel | undefined>(`${this.baseUrl}/player`, options);
   }
 
-  public leave(dto: IRemovePlayerDTO) {
+  public leave(dto: IRemovePlayerDTO, own: boolean) {
     this.confirmService
-      .confirm('lobby.leave', '250px')
+      .confirm(`lobby.${own ? 'delete' : 'leave'}`, '250px')
       .subscribe((result: boolean) => {
         if (result) {
-          this.leaveLobby(dto).subscribe(() => { this.router.navigate(['lobby']); });
+          this.loadingService.start();
+          this.leaveLobby(dto).subscribe(() => { this.router.navigate(['lobby']); }).add(() => {
+            this.loadingService.stop();
+          });
         }
       });
   }
@@ -102,18 +107,19 @@ export class LobbyService {
       .confirm('lobby.remove', '250px')
       .subscribe((result: boolean) => {
         if (result) {
+          this.loadingService.start();
           this.leaveLobby(dto).subscribe((lobby: ILobbyViewModel | undefined) => {
             if (lobby) {
               this._lobbyEventEmitter.next(lobby);
             }
+          }).add(() => {
+            this.loadingService.stop();
           });
         }
       });
   }
 
   public addLobby(lobby: ILobbyItemViewModel): void {
-    console.log(lobby);
-    
     if (this._lobbies.some((l) => l.id === lobby.id)) {
       return;
     }
@@ -147,7 +153,7 @@ export class LobbyService {
     return dialogRef.afterClosed().pipe(
       switchMap((result: ICreateLobbyDTO | undefined) => {
         if (result) {
-          return this.client.post<ILobbyViewModel>(this.baseUrl, result);
+          return this.client.post<ILobbyViewModel>(`${this.baseUrl}/create`, result);
         } else return of(undefined);
       })
     );
@@ -162,6 +168,21 @@ export class LobbyService {
       switchMap((result: IJoinLobbyDTO | undefined) => {
         if (result) {
           return this.joinLobby({ ...result, id: lobby.id });
+        } else return of(undefined);
+      }
+    ));
+  }
+
+  public startEditLobbyDeck(deck: DeckType, lobbyId: string): Observable<ILobbyViewModel | undefined> {
+    const dialogRef = this.dialog.open(EditLobbyComponent, {
+      width: '40%',
+      data: deck,
+    });
+    return dialogRef.afterClosed().pipe(
+      switchMap((result: { deckType: DeckType}) => {
+        console.log(result);
+        if (result) {
+          return this.client.post<ILobbyViewModel>(`${this.baseUrl}/deck`, { deckType: result.deckType, lobbyId });
         } else return of(undefined);
       }
     ));

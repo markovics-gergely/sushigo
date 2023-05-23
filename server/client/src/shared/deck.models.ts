@@ -4,6 +4,8 @@ export interface IDeckViewModel {
   claimed?: boolean;
   imagePath: string;
   imageLoaded?: boolean;
+  minPlayer: number;
+  maxPlayer: number;
   cardTypes: CardType[];
 }
 

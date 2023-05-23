@@ -11,6 +11,7 @@ import {
   IUserViewModel,
 } from 'src/shared/user.models';
 import { EditUserComponent } from '../components/dialog/edit-user/edit-user.component';
+import { LoadingService } from './loading.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +22,8 @@ export class UserService {
 
   constructor(
     private client: HttpClient,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private loadingService: LoadingService
   ) { }
 
   /**
@@ -64,9 +66,15 @@ export class UserService {
     return dialogRef.afterClosed().pipe(
       switchMap((result: IEditUserDTO | undefined) => {
         if (result) {
+          this.loadingService.start();
           return this.client.put<IUserViewModel>(
             `${this.baseUrl}/edit`,
             this.getFormData(result)
+          ).pipe(
+            switchMap((user: IUserViewModel) => {
+              this.loadingService.stop();
+              return of(user);
+            })
           );
         } else return of(undefined);
       })

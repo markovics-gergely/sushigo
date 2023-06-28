@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using user.dal.Configurations.Interfaces;
-using user.dal.Domain;
+using shared.dal.Configurations.Interfaces;
+using shared.dal.Models;
 
 namespace user.bll.ValueConverters
 {
     public class ImageDisplayUrlConverter : IValueConverter<Image?, string?>
     {
-        private readonly IUserConfigurationService _config;
+        private readonly IFileConfigurationService _config;
 
-        public ImageDisplayUrlConverter(IUserConfigurationService config)
+        public ImageDisplayUrlConverter(IFileConfigurationService config)
         {
             _config = config;
         }

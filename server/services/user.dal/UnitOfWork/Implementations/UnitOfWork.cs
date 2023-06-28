@@ -1,5 +1,5 @@
-﻿using user.dal.Domain;
-using user.dal.Repository.Interfaces;
+﻿using shared.dal.Repository.Interfaces;
+using user.dal.Domain;
 using user.dal.UnitOfWork.Interfaces;
 
 namespace user.dal.UnitOfWork.Implementations

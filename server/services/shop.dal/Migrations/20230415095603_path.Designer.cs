@@ -13,7 +13,7 @@ namespace shop.dal.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
     [Migration("20230415095603_path")]
-    partial class path
+    partial class Path
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

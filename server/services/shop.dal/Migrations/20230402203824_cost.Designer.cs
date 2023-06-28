@@ -13,7 +13,7 @@ namespace shop.dal.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
     [Migration("20230402203824_cost")]
-    partial class cost
+    partial class Cost
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

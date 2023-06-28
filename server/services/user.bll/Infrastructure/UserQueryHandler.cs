@@ -2,11 +2,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using user.bll.Exceptions;
-using user.bll.Extensions;
+using shared.bll.Exceptions;
+using shared.bll.Extensions;
+using shared.bll.Validators.Interfaces;
 using user.bll.Infrastructure.Queries;
 using user.bll.Infrastructure.ViewModels;
-using user.bll.Validators.Interfaces;
 using user.dal.Domain;
 using user.dal.UnitOfWork.Interfaces;
 
@@ -20,7 +20,6 @@ namespace user.bll.Infrastructure
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
-        private IValidator? _validator;
 
         public UserQueryHandler(IMapper mapper, IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
         {

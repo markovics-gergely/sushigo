@@ -5,7 +5,7 @@
 namespace user.dal.Migrations
 {
     /// <inheritdoc />
-    public partial class claim : Migration
+    public partial class Claim : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

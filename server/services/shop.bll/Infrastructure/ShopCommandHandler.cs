@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
 using MassTransit;
 using MediatR;
-using shared.Models;
-using shop.bll.Exceptions;
-using shop.bll.Extensions;
+using shared.dal.Models;
 using shop.bll.Infrastructure.Commands;
-using shop.bll.Validators.Implementations;
-using shop.bll.Validators.Interfaces;
+using shared.bll.Validators.Implementations;
+using shared.bll.Validators.Interfaces;
 using shop.dal.UnitOfWork.Interfaces;
+using shop.bll.Validators;
+using shared.bll.Exceptions;
+using shared.bll.Extensions;
 
 namespace shop.bll.Infrastructure
 {

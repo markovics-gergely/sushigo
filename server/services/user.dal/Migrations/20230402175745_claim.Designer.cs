@@ -13,7 +13,7 @@ namespace user.dal.Migrations
 {
     [DbContext(typeof(UserDbContext))]
     [Migration("20230402175745_claim")]
-    partial class claim
+    partial class Claim
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

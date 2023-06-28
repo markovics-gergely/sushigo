@@ -1,0 +1,170 @@
+@import "src/mixins";
+
+@keyframes profile-banner-pulsate {
+  0%   { box-shadow: inset 0 0 10px var(--color-accent-dark); }
+  25% { box-shadow: inset 0 0 15px var(--color-accent-dark); }
+  50% { box-shadow: inset 0 0 20px var(--color-accent-dark); }
+  75% { box-shadow: inset 0 0 15px var(--color-accent-dark); }
+  100%   { box-shadow: inset 0 0 10px var(--color-accent-dark); }
+}
+
+@keyframes profile-detail-shrink {
+  0% { width: 100%; }
+  100% { width: 200px; }
+}
+
+.profile-banner {
+  width: calc(100% - 20px);
+  margin: 0 10px 5px 10px;
+  background-color: rgba($color: var(--color-accent-rgb), $alpha: 1.0);
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  color: var(--color-text-light);
+  text-align: center;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: var(--color-accent);
+  animation: profile-banner-pulsate linear 2s infinite;
+  h1 {
+    font-size: 50px;
+    padding-left: 20px;
+    white-space: nowrap;
+    width: 100%;
+    overflow-x: hidden;
+    text-overflow: clip;
+    text-align: start;
+    @include media-style-below(xs) {
+      font-size: 40px;
+    }
+  }
+}
+
+.profile-detail {
+  width: 100%;
+  height: calc(100% - 63px);
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-left: 10px;
+  @include media-style-below(sm) {
+    flex-direction: column;
+    height: calc(100% - 53px);
+  }
+  .avatar-and-exp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 244px;
+    @include media-style-below(sm) {
+      flex-direction: row;
+      width: 100%;
+      height: auto;
+    }
+    .avatar {
+      height: 244px;
+      width: 244px;
+      background-color: rgba($color: #000000, $alpha: 0.2);
+      border: 2px solid var(--color-accent-dark);
+      margin-bottom: 5px;
+      img {
+        object-fit: contain;
+      }
+      @include media-style-below(sm) {
+        margin-right: 5px;
+      }
+    }
+    .exp {
+      width: 100%;
+      height: 100%;
+      @include media-style-below(sm) {
+        height: 244px;
+        width: calc(100% - 244px - 25px);
+        margin-bottom: 5px;
+      }
+      .home-exp {
+        width: 100%;
+        height: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 40px;
+        -webkit-text-stroke-width: 2px;
+        -webkit-text-stroke-color: var(--color-accent);
+        animation: profile-banner-pulsate linear 2s infinite;
+        color: var(--color-text-light);
+        background-color: rgba($color: var(--color-accent-rgb), $alpha: 1.0);
+        padding: 0;
+        margin: 0;
+        span {
+          vertical-align: middle;
+          display: flex;
+          align-items: center;
+        }
+      }
+      .home-claim-party {
+        width: 100%;
+        height: calc(50% - 5px);
+        margin-top: 5px;
+        &.claim-mode {
+          background-color: var(--color-primary);
+          color: var(--color-text-light);
+          font-size: 20px;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+  
+  .detail {
+    width: calc(100% - 264px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0 10px;
+    padding-right: 10px;
+    @include media-style-below(sm) {
+      width: calc(100% - 10px);
+      margin: 0;
+    }
+    .detail-item {
+      width: 100%;
+      height: 100%;
+      border: 2px solid var(--color-accent-dark);
+      &:not(:last-child) {
+        margin-bottom: 5px;
+      }
+      .name {
+        background-color: rgba($color: var(--color-accent-rgb), $alpha: 1.0);
+        color: var(--color-text-light);
+        font-size: 20px;
+        font-weight: 800;
+        margin-right: 10px;
+        border-radius: 2px;
+        padding: 5px 10px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        animation: 2s ease-out 0s 1 profile-detail-shrink;
+        height: 100%;
+        width: 200px;
+        text-align: end;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        overflow-x: hidden;
+        word-wrap: break-word;
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: var(--color-accent-dark);
+      }
+      .value {
+        padding-left: 210px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100%;
+      }
+    }
+  }
+}

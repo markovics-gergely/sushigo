@@ -1,12 +1,13 @@
 using Hellang.Middleware.ProblemDetails;
 using lobby.api.Extensions;
 using lobby.api.Hubs;
-using lobby.bll.Settings;
+using shared.bll.Settings;
 using lobby.dal;
-using lobby.dal.Configurations.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.Text.Json.Serialization;
+using shared.dal.Configurations.Interfaces;
+using shared.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -73,7 +74,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-var configService = app.Services.GetRequiredService<ILobbyConfigurationService>();
+var configService = app.Services.GetRequiredService<IFileConfigurationService>();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(configService.GetStaticFilePhysicalPath()),

@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './components/home/home.component';
-import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
+import { HomeComponent } from './components/pages/home/home.component';
+import { LoginComponent } from './components/pages/login/login.component';
+import { RegisterComponent } from './components/pages/register/register.component';
 import { AclGuard } from './guards/acl.guard';
-import { StoreComponent } from './components/store/store.component';
-import { LobbyComponent } from './components/lobby/lobby.component';
-import { LobbyListComponent } from './components/lobby-list/lobby-list.component';
+import { StoreComponent } from './components/pages/store/store.component';
+import { LobbyComponent } from './components/pages/lobby/lobby.component';
+import { LobbyListComponent } from './components/pages/lobby-list/lobby-list.component';
 import { HubGuard } from './guards/hub.guard';
 import { LoginGuard } from './guards/login.guard';
 import { LobbyGuard } from './guards/lobby.guard';

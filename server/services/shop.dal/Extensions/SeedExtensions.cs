@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using shared.Models;
+using shared.dal.Models;
 using shop.dal.Domain;
 
 namespace shop.dal.Extensions
@@ -17,7 +17,7 @@ namespace shop.dal.Extensions
                         {
                             Id = type.Value,
                             Type = type.Key,
-                            SushiType = type.Key.GetSushiType(),
+                            SushiType = type.Key.SushiType(),
                             ImagePath = $"/cards/{type.Key}.png"
                         }
                     );

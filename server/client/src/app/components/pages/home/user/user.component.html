@@ -1,0 +1,60 @@
+<mat-card class="profile-banner">
+  <h1>{{ "home.user.title" | translate }}</h1>
+</mat-card>
+<div class="profile-detail" *ngIf="user">
+  <div class="avatar-and-exp">
+    <mat-card class="avatar">
+      <img
+          *ngIf="!user.avatarLoaded"
+          mat-card-xl-image
+          src="https://placehold.co/240x240?text=Sushi"
+          alt="avatar"
+        />
+        <img
+          *ngIf="user.avatar"
+          mat-card-xl-image
+          [src]="user.avatar | imgPath"
+          alt="avatar"
+          (load)="user.avatarLoaded = true"
+          [ngStyle]="user.avatarLoaded ? {} : { display: 'none' }"
+        />
+    </mat-card>
+    <div class="exp">
+      <mat-card class="home-exp" *ngIf="user">
+        <span>{{ user.experience || 0 }} <i class="bx bx-sushi"></i></span>
+      </mat-card>
+      <button
+        class="home-claim-party claim-mode"
+        mat-flat-button
+        color="primary"
+        *can="['CanClaimParty', '!']"
+        disabled
+      >
+        {{ "home.user." + (partyClaimed ? "party" : "classic") | translate }}
+      </button>
+      <button
+        class="home-claim-party"
+        mat-flat-button
+        color="primary"
+        *can="'CanClaimParty'"
+        (click)="claimParty()"
+      >
+        {{ "home.user.claim-party" | translate }}
+      </button>
+    </div>
+  </div>
+  <div class="detail">
+    <mat-card class="detail-item">
+      <div class="name">{{ "home.user.username" | translate }}</div>
+      <mat-card-title class="value">{{ user.userName }}</mat-card-title>
+    </mat-card>
+    <mat-card class="detail-item">
+      <div class="name">{{ "home.user.name" | translate }}</div>
+      <mat-card-title class="value" [matTooltip]="user.name">{{ user.name }}</mat-card-title>
+    </mat-card>
+    <mat-card class="detail-item">
+      <div class="name">{{ "home.user.email" | translate }}</div>
+      <mat-card-title class="value" [matTooltip]="user.email">{{ user.email }}</mat-card-title>
+    </mat-card>
+  </div>
+</div>

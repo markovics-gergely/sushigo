@@ -5,7 +5,7 @@
 namespace lobby.dal.Migrations
 {
     /// <inheritdoc />
-    public partial class iii : Migration
+    public partial class Iii : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

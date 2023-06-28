@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using lobby.bll.Infrastructure.Queries;
 using lobby.bll.Infrastructure.ViewModels;
-using lobby.bll.Validators.Interfaces;
 using lobby.dal.UnitOfWork.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using shared.bll.Validators.Interfaces;
 
 namespace lobby.bll.Infrastructure
 {
@@ -13,7 +13,6 @@ namespace lobby.bll.Infrastructure
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private IValidator? _validator;
 
         public MessageQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {

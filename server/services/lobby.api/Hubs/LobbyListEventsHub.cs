@@ -1,5 +1,5 @@
 ﻿using lobby.api.Hubs.Interfaces;
-using lobby.bll.Extensions;
+using shared.bll.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

@@ -1,14 +1,11 @@
 using Hellang.Middleware.ProblemDetails;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using shared.Api.Extensions;
+using shared.bll.Settings;
+using shared.dal.Configurations.Interfaces;
 using shop.api.Extensions;
-using shop.bll.Settings;
 using shop.dal;
-using shop.dal.Configurations.Interfaces;
-using shop.dal.Domain;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -76,7 +73,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-var configService = app.Services.GetRequiredService<IShopConfigurationService>();
+var configService = app.Services.GetRequiredService<IFileConfigurationService>();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(configService.GetStaticFilePhysicalPath()),

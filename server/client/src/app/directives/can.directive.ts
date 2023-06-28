@@ -12,7 +12,7 @@ import { AclService } from '../services/acl.service';
   selector: '[can]',
 })
 export class CanDirective {
-  private _roles: (AppRole | '*')[] = [];
+  private _roles: (AppRole | '*' | '!')[] = [];
 
   constructor(
     private aclService: AclService,
@@ -22,7 +22,7 @@ export class CanDirective {
   ) {}
 
   @Input()
-  set can(val: (AppRole | '*') | Array<(AppRole | '*')>) {
+  set can(val: (AppRole | '*') | Array<(AppRole | '*' | '!')>) {
     this._roles = Array.isArray(val) ? val : [val];
     this.updateView();
   }

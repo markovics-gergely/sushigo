@@ -5,7 +5,7 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using user.dal.Domain;
 using user.dal;
-using shared.Models;
+using shared.dal.Models;
 
 namespace user.api.Extensions
 {

@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 using MediatR;
-using shared.Models;
+using shared.dal.Models;
 using user.bll.Infrastructure.Commands;
 
 namespace user.bll.Infrastructure.Consumers

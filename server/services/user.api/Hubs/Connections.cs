@@ -1,4 +1,4 @@
-﻿using user.api.Extensions;
+﻿using shared.Api.Extensions;
 
 namespace user.api.Hubs
 {

@@ -1,6 +1,6 @@
-﻿using lobby.bll.Infrastructure.Queries.Cache;
-using lobby.bll.Infrastructure.ViewModels;
+﻿using lobby.bll.Infrastructure.ViewModels;
 using MediatR;
+using shared.bll.Infrastructure.Queries;
 using System.Security.Claims;
 
 namespace lobby.bll.Infrastructure.Queries

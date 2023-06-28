@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace shop.dal.Migrations
 {
     /// <inheritdoc />
-    public partial class cost : Migration
+    public partial class Cost : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

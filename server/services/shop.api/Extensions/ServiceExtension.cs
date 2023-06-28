@@ -1,11 +1,12 @@
 ﻿using MediatR;
+using shared.bll.Infrastructure.Pipelines;
+using shared.dal.Repository.Implementations;
+using shared.dal.Repository.Interfaces;
 using shop.bll.Infrastructure;
 using shop.bll.Infrastructure.Commands;
-using shop.bll.Infrastructure.Pipelines;
 using shop.bll.Infrastructure.Queries;
 using shop.bll.Infrastructure.ViewModels;
-using shop.dal.Repository.Implementations;
-using shop.dal.Repository.Interfaces;
+using shop.dal;
 using shop.dal.UnitOfWork.Implementations;
 using shop.dal.UnitOfWork.Interfaces;
 
@@ -30,6 +31,7 @@ namespace shop.api.Extensions
             services.AddTransient<IRequestHandler<BuyDeckCommand>, ShopCommandHandler>();
             services.AddTransient<IRequestHandler<BuyPartyCommand>, ShopCommandHandler>();
 
+            services.AddTransient(typeof(IDbContextProvider), typeof(DbContextProvider<ShopDbContext>));
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IFileRepository, FileRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();

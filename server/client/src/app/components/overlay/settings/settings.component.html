@@ -1,0 +1,7 @@
+<div class="settings-buttons" [ngStyle]="closeStyle">
+  <div class="open-icon" (click)="switchOpen()">
+    <i class="bx" [ngClass]="open ? 'bx-chevron-right' : 'bx-chevron-left'"></i
+    ><i class="bx bx-cog"></i>
+  </div>
+  <button mat-flat-button class="setting-button" *ngFor="let setting of settings" [value]="setting" (click)="onSelect(setting.settings)"><i [ngClass]="setting.icon"></i></button>
+</div>

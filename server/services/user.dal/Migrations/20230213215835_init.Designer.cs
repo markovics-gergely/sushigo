@@ -13,7 +13,7 @@ namespace user.dal.Migrations
 {
     [DbContext(typeof(UserDbContext))]
     [Migration("20230213215835_init")]
-    partial class init
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

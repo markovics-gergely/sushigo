@@ -35,6 +35,14 @@ services:
     depends_on:
         - sushisqlserver
 
+  game.api:
+    image: ${DOCKER_REGISTRY-}shopapi
+    build:
+      context: .
+      dockerfile: services/game.api/Dockerfile
+    depends_on:
+        - sushisqlserver
+
 #  client:
 #    image: ${DOCKER_REGISTRY-}client
 #    build:

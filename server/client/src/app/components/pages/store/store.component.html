@@ -1,0 +1,104 @@
+<mat-grid-list class="shop-list" cols="12" rowHeight="100px" gutterSize="5px">
+  <mat-grid-tile [colspan]="12" [rowspan]="1">
+    <mat-card class="shop-banner">
+      <img src="/assets/shop-icon.png" alt="banner" />
+      <h1>{{ "shop.title" | translate }}</h1>
+    </mat-card>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="6" [rowspan]="1">
+    <button
+      mat-flat-button
+      color="none"
+      routerLink="/home"
+      class="shop-link left"
+    >
+      <div class="shop-link-content">
+        <img src="/assets/home-icon.png" alt="shop-logo" />
+        <span class="label">{{ "shop.nav.home" | translate }}</span>
+      </div>
+    </button>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="6" [rowspan]="1">
+    <button
+      mat-flat-button
+      color="none"
+      routerLink="/lobby"
+      class="shop-link right"
+    >
+      <div class="shop-link-content">
+        <span class="label">{{ "shop.nav.lobby" | translate }}</span>
+        <img src="/assets/lobby-icon.png" alt="lobby-logo" />
+      </div>
+    </button>
+  </mat-grid-tile>
+  <mat-grid-tile
+    class="shop-tile"
+    [rowspan]="height"
+    [colspan]="3"
+    [md]="6"
+    [sm]="12"
+    *ngFor="let deck of decks"
+  >
+    <mat-card class="shop-item-banner">
+      <h1>{{ "shop." + deck.deckType + ".title" | translate }}</h1>
+    </mat-card>
+    <mat-card class="shop-item-content">
+      <mat-card-content>
+        <div class="cover">
+          <img
+            *ngIf="!deck.imageLoaded"
+            mat-card-xl-image
+            src="https://placehold.co/240x240?text=Sushi"
+            alt="cover"
+          />
+          <img
+            mat-card-xl-image
+            [src]="deck.imagePath | imgPath"
+            alt="cover"
+            (load)="deck.imageLoaded = true"
+            [ngStyle]="deck.imageLoaded ? {} : { display: 'none' }"
+          />
+        </div>
+        <div class="description">
+          {{ "shop." + deck.deckType + ".description" | translate }}
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <button
+      class="shop-item-button"
+      mat-flat-button
+      color="primary"
+      [disabled]="!canBuy(deck)"
+      (click)="buy(deck)"
+    >
+      {{ getButtonText(deck) | translate }} ({{ deck.cost
+      }}<i class="bx bx-sushi"></i>)
+    </button>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="6" [rowspan]="1" *ngIf="decks.length">
+    <button
+      mat-flat-button
+      color="none"
+      routerLink="/home"
+      class="shop-link left"
+    >
+      <div class="shop-link-content">
+        <img src="/assets/home-icon.png" alt="shop-logo" />
+        <span class="label">{{ "shop.nav.home" | translate }}</span>
+      </div>
+    </button>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="6" [rowspan]="1" *ngIf="decks.length">
+    <button
+      mat-flat-button
+      color="none"
+      routerLink="/lobby"
+      class="shop-link right"
+    >
+      <div class="shop-link-content">
+        <span class="label">{{ "shop.nav.lobby" | translate }}</span>
+        <img src="/assets/lobby-icon.png" alt="lobby-logo" />
+      </div>
+    </button>
+  </mat-grid-tile>
+</mat-grid-list>

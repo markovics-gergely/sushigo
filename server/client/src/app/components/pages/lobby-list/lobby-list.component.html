@@ -1,0 +1,53 @@
+<mat-grid-list cols="12" rowHeight="100px" gutterSize="5px" class="lobby-list-list">
+  <mat-grid-tile [colspan]="12" [rowspan]="1">
+    <mat-card class="lobby-list-banner">
+      <img src="/assets/lobby-icon.png" alt="banner" />
+      <h1>{{ "lobby-list.title" | translate }}</h1>
+    </mat-card>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="12" [rowspan]="6">
+    <mat-card class="lobby-list-card">
+      <button mat-flat-button class="lobby-item" *ngFor="let lobby of lobbies" (click)="join(lobby)">
+        <div class="name">{{ lobby.name }}</div>
+      </button>
+    </mat-card>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="12" [rowspan]="1">
+    <button
+      mat-flat-button
+      color="none"
+      class="lobby-list-link"
+      (click)="create()"
+    >
+      <div class="lobby-list-link-content">
+        <span class="label lobby-add">{{ "lobby-list.nav.create" | translate }}</span>
+      </div>
+    </button>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="6" [rowspan]="1">
+    <button
+      mat-flat-button
+      color="none"
+      routerLink="/home"
+      class="lobby-list-link left"
+    >
+      <div class="lobby-list-link-content">
+        <img src="/assets/home-icon.png" alt="home-logo" />
+        <span class="label">{{ "lobby-list.nav.home" | translate }}</span>
+      </div>
+    </button>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="6" [rowspan]="1">
+    <button
+      mat-flat-button
+      color="none"
+      routerLink="/shop"
+      class="lobby-list-link right"
+    >
+      <div class="lobby-list-link-content">
+        <span class="label">{{ "lobby-list.nav.shop" | translate }}</span>
+        <img src="/assets/shop-icon.png" alt="shop-logo" />
+      </div>
+    </button>
+  </mat-grid-tile>
+</mat-grid-list>

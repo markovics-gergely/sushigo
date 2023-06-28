@@ -1,14 +1,11 @@
-﻿using AutoMapper;
-using IdentityModel;
+﻿using IdentityModel;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using shared.Models;
+using shared.dal.Models;
 using System.Security.Claims;
 using user.bll.Infrastructure.Queries;
-using user.bll.Infrastructure.ViewModels;
 using user.dal.Domain;
-using user.dal.Types;
 
 namespace user.api.Extensions
 {

@@ -11,7 +11,7 @@ export class ThemeService {
 
   constructor(private tokenService: TokenService, rendererFactory: RendererFactory2, @Inject(DOCUMENT) private document: Document) {
     this.renderer = rendererFactory.createRenderer(null, null);
-   }
+  }
 
   public get theme(): string | undefined {
     return this.tokenService.theme;
@@ -36,6 +36,6 @@ export class ThemeService {
   }
 
   public init() {
-    this.theme = this.tokenService.theme || this.themes[0].theme;
+    this.theme = this.tokenService.theme ?? this.themes[0].theme;
   }
 }

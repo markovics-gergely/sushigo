@@ -13,7 +13,7 @@ namespace user.dal.Migrations
 {
     [DbContext(typeof(UserDbContext))]
     [Migration("20230315123013_avatar")]
-    partial class avatar
+    partial class Avatar
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

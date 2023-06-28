@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using shared.Models;
+using shared.dal.Models;
 using user.bll.Infrastructure.Commands.Cache;
 using user.bll.Infrastructure.ViewModels;
 

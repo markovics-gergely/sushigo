@@ -1,8 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
+import { Injectable, Injector } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, Observable, Subscription, map, of, switchMap } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { BehaviorSubject, Observable, Subscription, of, switchMap } from 'rxjs';
 import {
   ICreateLobbyDTO,
   IJoinLobbyDTO,
@@ -19,28 +18,30 @@ import { ConfirmService } from 'src/app/services/confirm.service';
 import { Router } from '@angular/router';
 import { DeckType } from 'src/shared/deck.models';
 import { EditLobbyComponent } from '../components/dialog/edit-lobby/edit-lobby.component';
+import { BaseServiceService } from './abstract/base-service.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class LobbyService {
-  private readonly baseUrl: string = `${environment.baseUrl}/lobby`;
-  private _lobbies: ILobbyItemViewModel[] = [];
+export class LobbyService extends BaseServiceService {
+  protected override readonly basePath: string = 'lobby';
+  private _lobbiesEventEmitter = new BehaviorSubject<ILobbyItemViewModel[]>([]);
   private _lobbyEventEmitter = new BehaviorSubject<ILobbyViewModel | undefined>(undefined);
 
   constructor(
-    private client: HttpClient,
+    injector: Injector,
     private dialog: MatDialog,
     private loadingService: LoadingService,
     private confirmService: ConfirmService,
     private router: Router
-    ) {}
+    ) { super(injector); }
 
   public loadLobbies(): Subscription {
+    this._lobbiesEventEmitter.next([]);
     return this.client
       .get<ILobbyItemViewModel[]>(this.baseUrl)
       .subscribe((lobbies: ILobbyItemViewModel[]) => {
-        this._lobbies = lobbies;
+        this._lobbiesEventEmitter.next(lobbies ?? []);
       });
   }
 
@@ -60,8 +61,8 @@ export class LobbyService {
     return this._lobbyEventEmitter;
   }
 
-  public get lobbies(): ILobbyItemViewModel[] {
-    return this._lobbies;
+  public get lobbiesEventEmitter(): Observable<ILobbyItemViewModel[]> {
+    return this._lobbiesEventEmitter;
   }
 
   public createLobby(lobby: ICreateLobbyDTO): Subscription {
@@ -95,7 +96,9 @@ export class LobbyService {
       .subscribe((result: boolean) => {
         if (result) {
           this.loadingService.start();
-          this.leaveLobby(dto).subscribe(() => { this.router.navigate(['lobby']); }).add(() => {
+          this.leaveLobby(dto).subscribe(() => {
+            this.router.navigate(['lobby']).catch(console.error);
+          }).add(() => {
             this.loadingService.stop();
           });
         }
@@ -120,14 +123,17 @@ export class LobbyService {
   }
 
   public addLobby(lobby: ILobbyItemViewModel): void {
-    if (this._lobbies.some((l) => l.id === lobby.id)) {
+    const lobbies = this._lobbiesEventEmitter.value;
+    if (lobbies.some((l) => l.id === lobby.id)) {
       return;
     }
-    this._lobbies.unshift(lobby);
+    lobbies.unshift(lobby);
+    this._lobbiesEventEmitter.next(lobbies);
   }
 
   public removeLobby(lobbyId: string): void {
-    this._lobbies = this._lobbies.filter((l) => l.id !== lobbyId);
+    const lobbies = this._lobbiesEventEmitter.value;
+    this._lobbiesEventEmitter.next(lobbies.filter((l) => l.id !== lobbyId));
   }
 
   public addPlayer(player: IPlayerViewModel) {
@@ -186,17 +192,5 @@ export class LobbyService {
         } else return of(undefined);
       }
     ));
-  }
-
-  /**
-   * Generate form data from object
-   * @param obj Object to transform
-   * @returns FormData generated
-   */
-  private getFormData(obj: any): FormData {
-    return Object.keys(obj).reduce((formData, key) => {
-      formData.append(key, obj[key]);
-      return formData;
-    }, new FormData());
   }
 }

@@ -1,11 +1,12 @@
 ﻿using MediatR;
+using shared.dal.Repository.Implementations;
+using shared.dal.Repository.Interfaces;
 using user.bll.Infrastructure;
 using user.bll.Infrastructure.Commands;
 using user.bll.Infrastructure.Pipelines;
 using user.bll.Infrastructure.Queries;
 using user.bll.Infrastructure.ViewModels;
-using user.dal.Repository.Implementations;
-using user.dal.Repository.Interfaces;
+using user.dal;
 using user.dal.UnitOfWork.Implementations;
 using user.dal.UnitOfWork.Interfaces;
 
@@ -40,6 +41,7 @@ namespace user.api.Extensions
             services.AddTransient<IRequestHandler<GetUserByIdQuery, UserViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>, UserQueryHandler>();
 
+            services.AddTransient(typeof(IDbContextProvider), typeof(DbContextProvider<UserDbContext>));
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IFileRepository, FileRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();

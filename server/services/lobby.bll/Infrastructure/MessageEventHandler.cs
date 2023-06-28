@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using lobby.bll.Infrastructure.Events;
 using lobby.bll.Infrastructure.ViewModels;
-using lobby.bll.Settings;
 using lobby.dal.UnitOfWork.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using shared.bll.Settings;
 using System.Text;
 
 namespace lobby.bll.Infrastructure

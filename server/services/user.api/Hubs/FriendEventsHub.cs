@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using shared.bll.Extensions;
 using user.api.Hubs.Interfaces;
-using user.bll.Extensions;
 using user.bll.Infrastructure.Commands;
 
 namespace user.api.Hubs

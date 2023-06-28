@@ -1,14 +1,15 @@
 ﻿using MediatR;
 using lobby.bll.Infrastructure;
 using lobby.bll.Infrastructure.Commands;
-using lobby.bll.Infrastructure.Pipelines;
 using lobby.bll.Infrastructure.Queries;
 using lobby.bll.Infrastructure.ViewModels;
-using lobby.dal.Repository.Implementations;
-using lobby.dal.Repository.Interfaces;
 using lobby.dal.UnitOfWork.Implementations;
 using lobby.dal.UnitOfWork.Interfaces;
 using lobby.bll.Infrastructure.Events;
+using shared.dal.Repository.Implementations;
+using shared.dal.Repository.Interfaces;
+using lobby.dal;
+using shared.bll.Infrastructure.Pipelines;
 
 namespace lobby.api.Extensions
 {
@@ -43,6 +44,7 @@ namespace lobby.api.Extensions
             services.AddTransient<INotificationHandler<RemoveLobbyEvent>, LobbyEventHandler>();
             services.AddTransient<INotificationHandler<AddMessageEvent>, MessageEventHandler>();
 
+            services.AddTransient(typeof(IDbContextProvider), typeof(DbContextProvider<LobbyDbContext>));
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IFileRepository, FileRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();

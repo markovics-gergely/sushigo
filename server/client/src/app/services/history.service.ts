@@ -1,17 +1,15 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { IHistoryViewModel } from 'src/shared/history.models';
+import { BaseServiceService } from './abstract/base-service.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class HistoryService {
-  /** Route of the history related endpoints */
-  private readonly baseUrl: string = `${environment.baseUrl}/history`;
+export class HistoryService extends BaseServiceService {
+  protected override readonly basePath: string = 'history';
 
-  constructor(private client: HttpClient) { }
+  constructor(injector: Injector) { super(injector); }
 
   public get history(): Observable<IHistoryViewModel[]> {
     return of([]);

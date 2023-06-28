@@ -1,8 +1,7 @@
-﻿using lobby.bll.Infrastructure.Commands.Cache;
-using lobby.bll.Infrastructure.DataTransferObjects;
+﻿using lobby.bll.Infrastructure.DataTransferObjects;
 using lobby.bll.Infrastructure.ViewModels;
-using lobby.dal.Domain;
 using MediatR;
+using shared.bll.Infrastructure.Queries;
 using System.Security.Claims;
 
 namespace lobby.bll.Infrastructure.Commands

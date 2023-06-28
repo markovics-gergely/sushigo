@@ -1,4 +1,4 @@
-﻿using lobby.api.Extensions;
+﻿using shared.Api.Extensions;
 
 namespace lobby.api.Hubs
 {

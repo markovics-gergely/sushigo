@@ -1,19 +1,18 @@
 ﻿using AutoMapper;
-using lobby.bll.Exceptions;
-using lobby.bll.Extensions;
 using lobby.bll.Infrastructure.Commands;
 using lobby.bll.Infrastructure.Events;
-using lobby.bll.Infrastructure.Queries;
 using lobby.bll.Infrastructure.ViewModels;
-using lobby.bll.Validators.Implementations;
-using lobby.bll.Validators.Interfaces;
+using lobby.bll.Validators;
 using lobby.dal.Domain;
 using lobby.dal.UnitOfWork.Interfaces;
 using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using shared.Models;
-using System.Numerics;
+using shared.bll.Exceptions;
+using shared.bll.Extensions;
+using shared.bll.Validators.Implementations;
+using shared.bll.Validators.Interfaces;
+using shared.dal.Models;
 
 namespace lobby.bll.Infrastructure
 {

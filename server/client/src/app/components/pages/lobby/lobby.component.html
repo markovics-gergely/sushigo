@@ -1,0 +1,133 @@
+<mat-grid-list
+  cols="12"
+  rowHeight="100px"
+  gutterSize="5px"
+  class="lobby-list"
+  *ngIf="lobby"
+>
+  <mat-grid-tile
+    [colspan]="12"
+    [rowspan]="1"
+    class="lobby-banner-row"
+    [ngClass]="isCreator ? 'creator' : ''"
+  >
+    <button
+      class="lobby-nav-button back"
+      mat-flat-button
+      color="accent"
+      (click)="leave()"
+    >
+      <i class="bx bx-arrow-back"></i>
+    </button>
+    <button
+      class="lobby-nav-button"
+      mat-flat-button
+      [ngClass]="own.ready ? 'true' : 'false'"
+      *ngIf="own"
+      (click)="ready()"
+    >
+      <i class="bx bx-check" *ngIf="!own.ready"></i>
+      <i class="bx bx-x" *ngIf="own.ready"></i>
+    </button>
+    <button
+      class="lobby-nav-button"
+      mat-flat-button
+      color="accent"
+      *ngIf="isCreator"
+      (click)="edit()"
+    >
+      <i class="bx bx-edit"></i>
+    </button>
+    <button
+      class="lobby-nav-button start"
+      mat-flat-button
+      *ngIf="isCreator"
+      [disabled]="!valid"
+    >
+      <i class="bx bx-send"></i>
+    </button>
+    <mat-card
+      class="lobby-banner hideable"
+      [ngClass]="isCreator ? 'creator' : ''"
+    >
+      <h1>{{ lobby.name }}</h1>
+    </mat-card>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="0" [rowspan]="1" [sm]="12">
+    <mat-card class="lobby-banner">
+      <h1>{{ lobby.name }}</h1>
+    </mat-card>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="3" [md]="12" [rowspan]="3">
+    <mat-card class="player-list">
+      <mat-card class="player-item" *ngFor="let player of players">
+        <div class="avatar">
+          <img
+            *ngIf="!player.imageLoaded"
+            mat-card-sm-image
+            src="https://placehold.co/80x80?text=Sushi"
+            alt="cover"
+          />
+          <img
+            mat-card-sm-image
+            [src]="player.imagePath | imgPath"
+            alt="cover"
+            (load)="player.imageLoaded = true"
+            [ngStyle]="player.imageLoaded ? {} : { display: 'none' }"
+          />
+        </div>
+        <div class="name">{{ player.userName }}</div>
+        <div
+          class="ready"
+          [ngClass]="player.ready ? 'true' : 'false'"
+          (click)="remove(player)"
+        >
+          <i class="bx bx-check" *ngIf="player.ready"></i>
+          <i class="bx bx-x" *ngIf="!player.ready"></i>
+        </div>
+      </mat-card>
+    </mat-card>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="9" [md]="12" [rowspan]="3" [xsr]="5">
+    <div class="lobby-details">
+      <div class="detail">
+        <mat-card class="detail-item">
+          <div class="name creator">{{ "lobby.creator" | translate }}</div>
+          <mat-card-title class="value">{{ creator }}</mat-card-title>
+        </mat-card>
+        <mat-card class="detail-item">
+          <div class="name password">{{ "lobby.password" | translate }}</div>
+          <mat-card-title class="value" [matTooltip]="lobby.password">{{ lobby.password }}</mat-card-title>
+        </mat-card>
+        <mat-card class="detail-item">
+          <div class="name date">{{ "lobby.date" | translate }}</div>
+          <mat-card-title class="value">{{ lobby.created | date : "YYYY.MM.dd HH:mm" }}</mat-card-title>
+        </mat-card>
+      </div>
+      <div class="image" *ngIf="deck">
+        <mat-card class="deck-name">
+          <h1>{{ "shop." + deck.deckType + ".title" | translate }}</h1>
+        </mat-card>
+        <mat-card class="cover">
+          <img
+            *ngIf="!deck.imageLoaded"
+            mat-card-xl-image
+            src="https://placehold.co/240x240?text=Sushi"
+            alt="cover"
+          />
+          <img
+            *ngIf="deck.imagePath"
+            mat-card-xl-image
+            [src]="deck.imagePath | imgPath"
+            alt="cover"
+            (load)="deck.imageLoaded = true"
+            [ngStyle]="deck.imageLoaded ? {} : { display: 'none' }"
+          />
+        </mat-card>
+      </div>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="12" [rowspan]="4">
+    <app-chat style="width: 100%; height: 100%" [lobbyId]="lobby.id"></app-chat>
+  </mat-grid-tile>
+</mat-grid-list>

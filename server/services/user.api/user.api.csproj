@@ -37,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\shared.api\shared.api.csproj" />
     <ProjectReference Include="..\user.bll\user.bll.csproj" />
   </ItemGroup>
 

@@ -7,7 +7,10 @@ import { TokenService } from './token.service';
 })
 export class LanguagesService {
 
-  constructor(private tokenService: TokenService, private translateService: TranslateService) { }
+  constructor(
+    private tokenService: TokenService,
+    private translateService: TranslateService
+  ) { }
 
   public get language(): string | undefined {
     return this.translateService.currentLang;

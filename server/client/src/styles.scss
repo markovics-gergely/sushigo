@@ -1,5 +1,4 @@
 @use "sass:map";
-//@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 @import url("https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css");
 @import "sushi-theme";
 @import "mixins";
@@ -84,7 +83,6 @@ input[type="number"] {
 .snack-class {
   --mat-mdc-snack-bar-button-color: var(--color-text-light);
   --mdc-snackbar-container-color: var(--color-primary);
-  //--mdc-snackbar-supporting-text-color: var(--color-text-light);
 }
 
 .nav-button {

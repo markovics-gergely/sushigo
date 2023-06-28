@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using shop.bll.Exceptions;
-using shop.bll.Extensions;
+using shared.bll.Exceptions;
 using shop.bll.Infrastructure.Queries;
 using shop.bll.Infrastructure.ViewModels;
-using shop.bll.Validators.Interfaces;
+using shared.bll.Validators.Interfaces;
 using shop.dal.Domain;
 using shop.dal.UnitOfWork.Interfaces;
 
@@ -17,7 +16,6 @@ namespace shop.bll.Infrastructure
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private IValidator? _validator;
 
         public ShopQueryHandler(IMapper mapper, IUnitOfWork unitOfWork)
         {

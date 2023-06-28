@@ -4,15 +4,16 @@ using Microsoft.AspNetCore.Identity;
 using user.bll.Infrastructure.Commands;
 using user.dal.Domain;
 using user.dal.UnitOfWork.Interfaces;
-using user.bll.Validators.Interfaces;
-using user.bll.Validators.Implementations;
-using user.bll.Exceptions;
-using user.bll.Extensions;
-using user.dal.Configurations.Interfaces;
-using user.dal.Repository.Interfaces;
 using user.bll.Infrastructure.ViewModels;
-using shared.Models;
 using user.bll.Infrastructure.Events;
+using user.bll.Validators;
+using shared.bll.Validators.Interfaces;
+using shared.dal.Configurations.Interfaces;
+using shared.dal.Repository.Interfaces;
+using shared.bll.Exceptions;
+using shared.dal.Models;
+using shared.bll.Extensions;
+using shared.bll.Validators.Implementations;
 
 namespace user.bll.Infrastructure
 {
@@ -30,11 +31,11 @@ namespace user.bll.Infrastructure
         private IValidator? _validator;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IUserConfigurationService _config;
+        private readonly IFileConfigurationService _config;
         private readonly IFileRepository _fileRepository;
 
         public UserCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, RoleManager<ApplicationRole> roleManager,
-            UserManager<ApplicationUser> userManager, IUserConfigurationService config, IFileRepository fileRepository, IMediator mediator)
+            UserManager<ApplicationUser> userManager, IFileConfigurationService config, IFileRepository fileRepository, IMediator mediator)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -150,12 +151,6 @@ namespace user.bll.Infrastructure
             {
                 throw new EntityNotFoundException("User not found");
             }
-            //var roles = await _userManager.GetRolesAsync(userEntity);
-            //var removed = await _userManager.RemoveFromRolesAsync(userEntity, roles);
-            //if (removed.Errors.Any())
-            //{
-            //    throw new InvalidParameterException(string.Join('\n', removed.Errors.Select(e => e.Description).ToList()));
-            //}
             var added = await _userManager.AddToRoleAsync(userEntity, request.DTO.Role);
             if (added.Errors.Any())
             {

@@ -29,7 +29,8 @@ export class AclService {
     return userDecks.length === 0;
   }
 
-  public hasRoles(roles: (AppRole | '*')[]): boolean {
-    return this.tokenService.roles.some(role => roles.includes(role));
+  public hasRoles(roles: (AppRole | '*' | '!')[]): boolean {
+    const has = this.tokenService.roles.some(role => roles.includes(role));
+    return roles.includes('!') ? !has : has;
   }
 }

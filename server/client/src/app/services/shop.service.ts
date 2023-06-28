@@ -1,17 +1,15 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { DeckType, IBuyDeckDTO, IDeckItemViewModel, IDeckViewModel } from 'src/shared/deck.models';
+import { BaseServiceService } from './abstract/base-service.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ShopService {
-  /** Route of the shop related endpoints */
-  private readonly baseUrl: string = `${environment.baseUrl}/shop`;
+export class ShopService extends BaseServiceService {
+  protected override readonly basePath = 'shop';
 
-  constructor(private client: HttpClient) { }
+  constructor(injector: Injector) { super(injector); }
 
   public get decks(): Observable<IDeckViewModel[]> {
     return this.client.get<IDeckViewModel[]>(`${this.baseUrl}`);

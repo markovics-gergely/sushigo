@@ -1,18 +1,16 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { IMessageDTO, IMessageViewModel } from 'src/shared/message.models';
+import { BaseServiceService } from './abstract/base-service.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MessageService {
-  /** Route of the message related endpoints */
-  private readonly baseUrl: string = `${environment.baseUrl}/message`;
+export class MessageService extends BaseServiceService {
+  protected override readonly basePath = 'message';
   private _messageEventEmitter = new BehaviorSubject<IMessageViewModel | undefined>(undefined);
 
-  constructor(private client: HttpClient) { }
+  constructor(injector: Injector) { super(injector); }
 
   public getMessages(lobbyId: string): Observable<IMessageViewModel[]> {
     return this.client.get<IMessageViewModel[]>(`${this.baseUrl}/${lobbyId}`);

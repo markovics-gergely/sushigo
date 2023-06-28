@@ -1,19 +1,18 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import {
   IFriendListCounter,
   IFriendListViewModel,
   IFriendStatusViewModel,
 } from 'src/shared/friend.models';
 import { IUserNameViewModel } from 'src/shared/user.models';
+import { BaseServiceService } from './abstract/base-service.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class FriendService {
-  private readonly baseUrl: string = `${environment.baseUrl}/friend`;
+export class FriendService extends BaseServiceService {
+  protected override readonly basePath: string = 'friend';
   private _friends: IFriendListViewModel | undefined;
   private _friendsCounter: IFriendListCounter = {
     friends: [],
@@ -22,7 +21,7 @@ export class FriendService {
   };
   private _online: Set<string> = new Set();
 
-  constructor(private client: HttpClient) {}
+  constructor(injector: Injector) { super(injector); }
 
   public loadFriends(): Subscription {
     return this.client

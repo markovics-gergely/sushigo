@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
+using shared.bll.Extensions;
 using System.Data;
-using user.bll.Extensions;
 using user.bll.Infrastructure.Events;
 using user.bll.Infrastructure.Queries;
 using user.bll.Infrastructure.ViewModels;

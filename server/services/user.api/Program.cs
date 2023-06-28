@@ -2,13 +2,14 @@ using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using shared.dal.Configurations.Interfaces;
+using shared.bll.Settings;
 using System.Text.Json.Serialization;
 using user.api.Extensions;
 using user.api.Hubs;
-using user.bll.Settings;
 using user.dal;
-using user.dal.Configurations.Interfaces;
 using user.dal.Domain;
+using shared.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -77,7 +78,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-var configService = app.Services.GetRequiredService<IUserConfigurationService>();
+var configService = app.Services.GetRequiredService<IFileConfigurationService>();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(configService.GetStaticFilePhysicalPath()),

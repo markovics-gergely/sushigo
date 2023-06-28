@@ -41,6 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\shared.api\shared.api.csproj" />
     <ProjectReference Include="..\shop.bll\shop.bll.csproj" />
     <ProjectReference Include="..\shop.dal\shop.dal.csproj" />
   </ItemGroup>

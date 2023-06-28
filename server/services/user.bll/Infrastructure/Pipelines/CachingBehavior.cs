@@ -3,10 +3,10 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using shared.bll.Exceptions;
+using shared.bll.Settings;
 using System.Text;
-using user.bll.Exceptions;
 using user.bll.Infrastructure.Queries.Cache;
-using user.bll.Settings;
 
 namespace user.bll.Infrastructure.Pipelines
 {

@@ -1,7 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
+import { Injectable, Injector } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import {
   IEditUserDTO,
@@ -12,19 +12,20 @@ import {
 } from 'src/shared/user.models';
 import { EditUserComponent } from '../components/dialog/edit-user/edit-user.component';
 import { LoadingService } from './loading.service';
+import { BaseServiceService } from './abstract/base-service.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class UserService {
-  /** Route of the user related endpoints */
-  private readonly baseUrl: string = `${environment.baseUrl}/user`;
+export class UserService extends BaseServiceService {
+  protected override readonly basePath = 'user';
+  private _userEventEmitter = new BehaviorSubject<IUserViewModel | undefined>(undefined);
 
   constructor(
-    private client: HttpClient,
+    injector: Injector,
     private dialog: MatDialog,
     private loadingService: LoadingService
-  ) { }
+  ) { super(injector); }
 
   /**
    * Send registration request to the server
@@ -58,42 +59,36 @@ export class UserService {
     });
   }
 
-  public startEdit(dto: IEditUserDTO): Observable<IUserViewModel | undefined> {
+  public startEdit() {
     const dialogRef = this.dialog.open(EditUserComponent, {
       width: '40%',
-      data: dto,
+      data: {
+        userName: this._userEventEmitter.value?.userName,
+        firstName: this._userEventEmitter.value?.name.split(" ")[0],
+        lastName: this._userEventEmitter.value?.name.split(" ")[1],
+        avatar: undefined,
+      },
     });
-    return dialogRef.afterClosed().pipe(
-      switchMap((result: IEditUserDTO | undefined) => {
-        if (result) {
-          this.loadingService.start();
-          return this.client.put<IUserViewModel>(
-            `${this.baseUrl}/edit`,
-            this.getFormData(result)
-          ).pipe(
-            switchMap((user: IUserViewModel) => {
-              this.loadingService.stop();
-              return of(user);
-            })
-          );
-        } else return of(undefined);
-      })
-    );
+    dialogRef.afterClosed().subscribe((result: IEditUserDTO | undefined) => {
+      if (result) {
+        this.loadingService.start();
+        this.client
+          .put<IUserViewModel>(`${this.baseUrl}/edit`, this.getFormData(result))
+          .subscribe((user: IUserViewModel) => {
+            this.loadingService.stop();
+            this._userEventEmitter.next(user);
+          });
+      }
+    });
   }
 
-  public get user(): Observable<IUserViewModel> {
-    return this.client.get<IUserViewModel>(`${this.baseUrl}`);
+  public refreshUser(): void {
+    this.client.get<IUserViewModel>(`${this.baseUrl}`).subscribe((user: IUserViewModel) => {
+      this._userEventEmitter.next(user);
+    });
   }
 
-  /**
-   * Generate form data from object
-   * @param obj Object to transform
-   * @returns FormData generated
-   */
-  private getFormData(obj: any): FormData {
-    return Object.keys(obj).reduce((formData, key) => {
-      formData.append(key, obj[key]);
-      return formData;
-    }, new FormData());
+  public get userEventEmitter(): Observable<IUserViewModel | undefined> {
+    return this._userEventEmitter;
   }
 }

@@ -2,13 +2,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using shared.Models;
+using shared.dal.Configurations.Interfaces;
+using shared.dal.Models;
 using user.bll.Infrastructure.Commands;
 using user.bll.Infrastructure.DataTransferObjects;
 using user.bll.Infrastructure.Queries;
 using user.bll.Infrastructure.ViewModels;
-using user.dal.Configurations.Interfaces;
-using user.dal.Types;
 
 namespace user.api.Controllers
 {
@@ -22,14 +21,14 @@ namespace user.api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IUserConfigurationService _config;
+        private readonly IFileConfigurationService _config;
 
         /// <summary>
         /// Constructor for dependency injection
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="config"></param>
-        public UserController(IMediator mediator, IUserConfigurationService config)
+        public UserController(IMediator mediator, IFileConfigurationService config)
         {
             _mediator = mediator;
             _config = config;

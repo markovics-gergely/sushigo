@@ -6,7 +6,7 @@ using lobby.bll.Infrastructure.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using shared.Models;
+using shared.dal.Models;
 
 namespace lobby.api.Controllers
 {

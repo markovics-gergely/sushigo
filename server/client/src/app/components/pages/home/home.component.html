@@ -1,0 +1,30 @@
+<mat-grid-list class="home-list" cols="12" rowHeight="100px" gutterSize="5px">
+  <mat-grid-tile [colspan]="12" [rowspan]="1">
+    <mat-card class="home-banner">
+      <img src="/assets/home-icon.png" alt="banner" />
+      <h1>Sushi GO Party!</h1>
+    </mat-card>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="8" [rowspan]="4" [md]="12" [smr]="6">
+    <app-user class="home-inner-card"></app-user>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="4" [rowspan]="4" [md]="12" [mdr]="2">
+    <app-history class="home-inner-card"></app-history>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="12" [rowspan]="1" *can="'Party'">
+    <button mat-flat-button color="none" routerLink="/shop" class="home-link left">
+      <div class="home-link-content">
+        <img src="/assets/shop-icon.png" alt="shop-logo" />
+        <span class="label">Shop</span>
+      </div>
+    </button>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="12" [rowspan]="1">
+    <button mat-flat-button color="none" routerLink="/lobby" class="home-link right">
+      <div class="home-link-content">
+        <span class="label">Lobby</span>
+        <img src="/assets/lobby-icon.png" alt="lobby-logo" />
+      </div>
+    </button>
+  </mat-grid-tile>
+</mat-grid-list>

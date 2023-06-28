@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using user.bll.Exceptions;
-using user.bll.Extensions;
+using shared.bll.Exceptions;
+using shared.bll.Extensions;
 using user.bll.Infrastructure.Commands;
 using user.bll.Infrastructure.Events;
 using user.bll.Infrastructure.ViewModels;

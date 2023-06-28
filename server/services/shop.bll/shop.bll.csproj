@@ -6,6 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Infrastructure\Events\**" />
+    <EmbeddedResource Remove="Infrastructure\Events\**" />
+    <None Remove="Infrastructure\Events\**" />
+  </ItemGroup>
+
 	<ItemGroup>
     <PackageReference Include="MassTransit" Version="8.0.14" />
     <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
@@ -21,12 +27,11 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructure\Events\" />
     <Folder Include="ValueConverters\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\shared\shared.csproj" />
+    <ProjectReference Include="..\shared.bll\shared.bll.csproj" />
     <ProjectReference Include="..\shop.dal\shop.dal.csproj" />
   </ItemGroup>
 

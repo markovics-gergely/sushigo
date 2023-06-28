@@ -5,7 +5,7 @@
 namespace user.dal.Migrations
 {
     /// <inheritdoc />
-    public partial class avatar : Migration
+    public partial class Avatar : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

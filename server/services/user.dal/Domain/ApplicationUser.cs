@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using shared.Models;
-using user.dal.Types;
+using shared.dal.Models;
 
 namespace user.dal.Domain
 {

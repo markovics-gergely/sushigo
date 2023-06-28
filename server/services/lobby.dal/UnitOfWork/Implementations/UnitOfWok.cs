@@ -1,6 +1,6 @@
 ﻿using lobby.dal.Domain;
-using lobby.dal.Repository.Interfaces;
 using lobby.dal.UnitOfWork.Interfaces;
+using shared.dal.Repository.Interfaces;
 
 namespace lobby.dal.UnitOfWork.Implementations
 {

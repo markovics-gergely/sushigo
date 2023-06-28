@@ -1,6 +1,5 @@
 ﻿using MediatR;
-using shop.bll.Extensions;
-using shop.bll.Infrastructure.Queries.Cache;
+using shared.bll.Infrastructure.Queries;
 using shop.bll.Infrastructure.ViewModels;
 using System.Security.Claims;
 

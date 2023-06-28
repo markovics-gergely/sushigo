@@ -125,6 +125,35 @@ namespace user.dal.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("shared.Models.Image", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("DisplayPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileExtension")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhysicalPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Size")
+                        .HasColumnType("float");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Image");
+                });
+
             modelBuilder.Entity("user.dal.Domain.ApplicationRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -290,32 +319,6 @@ namespace user.dal.Migrations
                     b.ToTable("Friends");
                 });
 
-            modelBuilder.Entity("user.dal.Domain.Image", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("DisplayPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileExtension")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhysicalPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Size")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Image");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("user.dal.Domain.ApplicationRole", null)
@@ -369,8 +372,8 @@ namespace user.dal.Migrations
 
             modelBuilder.Entity("user.dal.Domain.ApplicationUser", b =>
                 {
-                    b.HasOne("user.dal.Domain.Image", "Avatar")
-                        .WithOne("User")
+                    b.HasOne("shared.Models.Image", "Avatar")
+                        .WithOne()
                         .HasForeignKey("user.dal.Domain.ApplicationUser", "AvatarId")
                         .OnDelete(DeleteBehavior.NoAction);
 
@@ -409,11 +412,6 @@ namespace user.dal.Migrations
                     b.Navigation("Tokens");
 
                     b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("user.dal.Domain.Image", b =>
-                {
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,5 +1,5 @@
 ﻿using lobby.dal.Domain;
-using lobby.dal.Repository.Interfaces;
+using shared.dal.Repository.Interfaces;
 
 namespace lobby.dal.UnitOfWork.Interfaces
 {

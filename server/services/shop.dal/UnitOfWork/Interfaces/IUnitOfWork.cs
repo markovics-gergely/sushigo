@@ -1,5 +1,5 @@
-﻿using shop.dal.Domain;
-using shop.dal.Repository.Interfaces;
+﻿using shared.dal.Repository.Interfaces;
+using shop.dal.Domain;
 
 namespace shop.dal.UnitOfWork.Interfaces
 {

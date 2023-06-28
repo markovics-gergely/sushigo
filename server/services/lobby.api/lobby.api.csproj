@@ -38,6 +38,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\lobby.bll\lobby.bll.csproj" />
+    <ProjectReference Include="..\shared.api\shared.api.csproj" />
+    <ProjectReference Include="..\shared.dal\shared.dal.csproj" />
   </ItemGroup>
 
   <ItemGroup>

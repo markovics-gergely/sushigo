@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using shop.dal.Configurations.Interfaces;
+using shared.dal.Configurations.Interfaces;
 
 namespace shop.bll.ValueConverters
 {
     public class ImageDisplayUrlConverter : IValueConverter<string, string>
     {
-        private readonly IShopConfigurationService _config;
+        private readonly IFileConfigurationService _config;
 
-        public ImageDisplayUrlConverter(IShopConfigurationService config)
+        public ImageDisplayUrlConverter(IFileConfigurationService config)
         {
             _config = config;
         }

@@ -1,4 +1,4 @@
-﻿using shared.Models;
+﻿using shared.dal.Models;
 
 namespace lobby.bll.Infrastructure.DataTransferObjects
 {

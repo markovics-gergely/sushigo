@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace shop.dal.Migrations
 {
     /// <inheritdoc />
-    public partial class path : Migration
+    public partial class Path : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

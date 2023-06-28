@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using shared.Models;
-using user.dal.Comparers;
-using user.dal.Converters;
+using shared.dal.Comparers;
+using shared.dal.Converters;
+using shared.dal.Models;
 using user.dal.Domain;
-using user.dal.Types;
 
 namespace user.dal
 {
@@ -67,7 +66,7 @@ namespace user.dal
 
             builder.Entity<ApplicationUser>()
                 .HasOne(u => u.Avatar)
-                .WithOne(a => a.User)
+                .WithOne()
                 .HasForeignKey<ApplicationUser>(a => a.AvatarId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);

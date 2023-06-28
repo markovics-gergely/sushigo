@@ -3,9 +3,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { AppRole, IUser, IUserTokenViewModel } from 'src/shared/user.models';
 import jwt_decode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DeckType } from 'src/shared/deck.models';
-import { AclPage } from 'src/shared/acl.models';
 
 @Injectable({
   providedIn: 'root'
@@ -89,7 +88,7 @@ export class TokenService {
   public clearCookies() {
     this.cookieService.delete(this.cookieName);
     this.cookieService.delete(this.rCookieName);
-    this.router.navigateByUrl('login');
+    this.router.navigateByUrl('login').catch(console.error);
   }
 
   public clearAllCookies() {

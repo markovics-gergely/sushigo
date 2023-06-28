@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\shared\shared.csproj" />
     <ProjectReference Include="..\lobby.dal\lobby.dal.csproj" />
+    <ProjectReference Include="..\shared.bll\shared.bll.csproj" />
   </ItemGroup>
 
 </Project>

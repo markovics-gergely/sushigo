@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using lobby.dal.Configurations.Interfaces;
+using shared.dal.Configurations.Interfaces;
 
 namespace lobby.bll.ValueConverters
 {
     public class ImageDisplayUrlConverter : IValueConverter<string, string>
     {
-        private readonly ILobbyConfigurationService _config;
+        private readonly IFileConfigurationService _config;
 
-        public ImageDisplayUrlConverter(ILobbyConfigurationService config)
+        public ImageDisplayUrlConverter(IFileConfigurationService config)
         {
             _config = config;
         }

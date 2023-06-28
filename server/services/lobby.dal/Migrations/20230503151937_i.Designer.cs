@@ -13,7 +13,7 @@ namespace lobby.dal.Migrations
 {
     [DbContext(typeof(LobbyDbContext))]
     [Migration("20230503151937_i")]
-    partial class i
+    partial class I
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -5,12 +5,7 @@ using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using shared.bll.Exceptions;
 using shared.dal.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace game.bll.Infrastructure.Commands.Card
 {

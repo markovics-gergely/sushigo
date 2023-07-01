@@ -1,5 +1,5 @@
-﻿using MediatR;
-using shared.dal.Models;
+﻿using game.bll.Infrastructure.DataTransferObjects;
+using MediatR;
 using System.Security.Claims;
 
 namespace game.bll.Infrastructure.Commands
@@ -7,9 +7,10 @@ namespace game.bll.Infrastructure.Commands
     public class PlayCardCommand : IRequest
     {
         public ClaimsPrincipal? User { get; }
-        public CardType CardType { get; }
-        public PlayCardCommand(CardType cardType, ClaimsPrincipal? user = null) {
-            CardType = cardType;
+        public PlayCardDTO PlayCardDTO { get; }
+        public PlayCardCommand(PlayCardDTO playCardDTO, ClaimsPrincipal? user = null)
+        {
+            PlayCardDTO = playCardDTO;
             User = user;
         }
     }

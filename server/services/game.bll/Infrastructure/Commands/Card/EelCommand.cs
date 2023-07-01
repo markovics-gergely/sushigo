@@ -21,7 +21,7 @@ namespace game.bll.Infrastructure.Commands.Card
             _simpleAddToBoard = simpleAddToBoard;
         }
 
-        public async Task CalculateEndRound(BoardCard boardCard)
+        public async Task OnEndRound(BoardCard boardCard)
         {
             if (User == null) throw new EntityNotFoundException(nameof(ClaimsPrincipal));
             var cards = _unitOfWork.BoardCardRepository.Get(
@@ -50,7 +50,7 @@ namespace game.bll.Infrastructure.Commands.Card
             await _unitOfWork.Save();
         }
 
-        public async Task OnPlay(Player player, PlayCardDTO playCardDTO)
+        public async Task OnEndTurn(Player player, PlayCardDTO playCardDTO)
         {
             await _simpleAddToBoard.AddToBoard(_unitOfWork, playCardDTO.HandCardId, player.BoardId, User);
         }

@@ -21,12 +21,12 @@ namespace game.bll.Infrastructure.Commands.Card
             _simpleAddToBoard = simpleAddToBoard;
         }
 
-        public async Task CalculateEndRound(BoardCard boardCard)
+        public async Task OnEndRound(BoardCard boardCard)
         {
             await _simpleAddPoint.CalculateEndRound(_unitOfWork, boardCard, POINT, User);
         }
 
-        public async Task OnPlay(Player player, PlayCardDTO playCardDTO)
+        public async Task OnEndTurn(Player player, PlayCardDTO playCardDTO)
         {
             await _simpleAddToBoard.AddToBoard(_unitOfWork, playCardDTO.HandCardId, player.BoardId, User);
         }

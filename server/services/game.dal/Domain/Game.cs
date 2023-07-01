@@ -1,4 +1,5 @@
-﻿using shared.dal.Models;
+﻿using game.dal.Types;
+using shared.dal.Models;
 
 namespace game.dal.Domain
 {
@@ -12,8 +13,10 @@ namespace game.dal.Domain
         public Guid ActualPlayerId { get; set; }
         public Guid FirstPlayerId { get; set; }
         public int Round { get; set; } = 0;
+        public Phase Phase { get; set; } = Phase.StartGame;
 
         public ICollection<Player> Players { get; set; } = new List<Player>();
+        public List<Guid> PlayerIds { get; set; } = new List<Guid>();
         public Dictionary<string, string> AdditionalInfo { get; set; } = new Dictionary<string, string>();
     }
 }

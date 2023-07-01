@@ -35,6 +35,11 @@ namespace game.dal
                 .WithMany(g => g.Players)
                 .HasForeignKey(p => p.GameId)
                 .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Player>()
+                .HasOne(p => p.NextPlayer)
+                .WithMany()
+                .HasForeignKey(p => p.NextPlayerId)
+                .OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Game>()
                 .HasOne(g => g.Deck)
                 .WithOne(d => d.Game)
@@ -63,6 +68,10 @@ namespace game.dal
                 .Property(g => g.AdditionalInfo)
                 .HasConversion<DictionaryStringValueConverter<string>>()
                 .Metadata.SetValueComparer(new DictionaryValueComparer<string>());
+            builder.Entity<Game>()
+                .Property(g => g.PlayerIds)
+                .HasConversion<CollectionJsonValueConverter<Guid>>()
+                .Metadata.SetValueComparer(new CollectionValueComparer<string>());
             builder.Entity<Deck>()
                 .Property(g => g.AdditionalInfo)
                 .HasConversion<DictionaryStringValueConverter<string>>()

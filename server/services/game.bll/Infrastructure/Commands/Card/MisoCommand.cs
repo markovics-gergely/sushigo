@@ -10,13 +10,13 @@ using System.Security.Claims;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
-    public class UramakiCommand : ICardCommand<Uramaki>
+    public class MisoCommand : ICardCommand<MisoSoup>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISimpleAddToBoard _simpleAddToBoard;
         public ClaimsPrincipal? User { get; set; }
 
-        public UramakiCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard)
+        public MisoCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard)
         {
             _unitOfWork = unitOfWork;
             _simpleAddToBoard = simpleAddToBoard;
@@ -108,7 +108,8 @@ namespace game.bll.Infrastructure.Commands.Card
                 _unitOfWork.HandCardRepository.Delete(handCard);
                 game.AdditionalInfo["uramaki"] = (uramaki + 1).ToString();
                 _unitOfWork.GameRepository.Update(game);
-            } else
+            }
+            else
             {
                 _unitOfWork.HandCardRepository.Delete(playCardDTO.HandCardId);
                 var boardCard = new BoardCard

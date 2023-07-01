@@ -21,7 +21,8 @@ namespace game.bll.Infrastructure.Commands.Card.Abstract
             var boardCard = new BoardCard {
                 CardType = handCard.CardType,
                 BoardId = boardId,
-                GameId = user.GetGameIdFromJwt()
+                GameId = user.GetGameIdFromJwt(),
+                AdditionalInfo = handCard.AdditionalInfo,
             };
             unitOfWork.BoardCardRepository.Insert(boardCard);
             await unitOfWork.Save();

@@ -92,5 +92,15 @@
             CardType.Pudding => typeof(Pudding),
             _ => throw new ArgumentOutOfRangeException(nameof(card)),
         };
+
+        public static bool HasAfterTurn(this CardType cardType)
+        {
+            return cardType switch
+            {
+                CardType.Chopsticks => true,
+                CardType.Spoon => true,
+                _ => false,
+            };
+        }
     }
 }

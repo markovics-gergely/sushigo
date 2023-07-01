@@ -14,6 +14,8 @@
         public Hand? Hand { get; set; }
         public Guid BoardId { get; set; }
         public Board? Board { get; set; }
+        public Guid? SelectedCardId { get; set; }
         public Guid NextPlayerId { get; set; }
+        public Player NextPlayer { get; set; } = null!;
     }
 }

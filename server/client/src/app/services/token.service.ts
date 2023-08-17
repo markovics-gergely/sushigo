@@ -120,4 +120,8 @@ export class TokenService {
     if (!lobbyId || !this.user?.lobby) return false;
     return this.user.lobby === lobbyId;
   }
+
+  public get game(): string | undefined {
+    return this.user?.game;
+  }
 }

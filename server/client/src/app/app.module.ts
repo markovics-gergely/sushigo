@@ -58,6 +58,13 @@ import localeHu from '@angular/common/locales/hu';
 import { EditLobbyComponent } from './components/dialog/edit-lobby/edit-lobby.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { SettingsComponent } from './components/overlay/settings/settings.component';
+import { CardBaseComponent } from './components/pages/game/card/card-base/card-base.component';
+import { CardWrapperComponent } from './components/pages/game/card/card-wrapper/card-wrapper.component';
+import { PointCardComponent } from './components/pages/game/card/point-card/point-card.component';
+import { GameComponent } from './components/pages/game/game.component';
+import { HandComponent } from './components/pages/game/hand/hand.component';
+import { NgScrollbarModule } from 'ngx-scrollbar';
+import {MatListModule, MatNavList} from '@angular/material/list';
 
 export function jwtOptionsFactory(tokenService: TokenService) {
   return {
@@ -94,6 +101,11 @@ registerLocaleData(localeHu);
     JoinLobbyComponent,
     EditLobbyComponent,
     SettingsComponent,
+    CardBaseComponent,
+    CardWrapperComponent,
+    PointCardComponent,
+    GameComponent,
+    HandComponent,
   ],
   imports: [
     BrowserModule,
@@ -119,6 +131,8 @@ registerLocaleData(localeHu);
     MatProgressSpinnerModule,
     MatToolbarModule,
     MatRadioModule,
+    NgScrollbarModule,
+    MatListModule,
     JwtModule.forRoot({
       jwtOptionsProvider: {
         provide: JWT_OPTIONS,

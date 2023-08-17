@@ -1,5 +1,7 @@
 using game.api.Extensions;
+using game.api.Hubs;
 using game.dal;
+using Hangfire;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -25,6 +27,7 @@ builder.Services.AddExceptionExtensions();
 builder.Services.AddAuthenticationExtensions(configuration);
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+builder.Services.AddRabbitExtensions();
 builder.Services.AddServiceExtensions();
 builder.Services.AddConfigurations(configuration);
 builder.Services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
@@ -42,6 +45,8 @@ builder.Services.AddStackExchangeRedisCache(options => {
     options.InstanceName = "localRedis_";
 });
 
+builder.Services.AddHangfireExtension(builder.Configuration);
+
 builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
@@ -56,6 +61,8 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<GameDbContext>();
     dbContext.Database.Migrate();
 }
+
+app.UseHangfireDashboard();
 
 app.UseProblemDetails();
 
@@ -86,5 +93,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHangfireDashboard();
+
+app.MapHub<GameEventsHub>("/game-hub").RequireCors("CorsPolicy");
 
 app.Run();

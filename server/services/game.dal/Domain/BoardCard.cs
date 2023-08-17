@@ -1,4 +1,5 @@
-﻿using shared.dal.Models;
+﻿using game.dal.Types;
+using shared.dal.Models;
 
 namespace game.dal.Domain
 {
@@ -10,6 +11,6 @@ namespace game.dal.Domain
         public Guid BoardId { get; set; }
         public Board? Board { get; set; }
         public CardType CardType { get; set; }
-        public Dictionary<string, string> AdditionalInfo { get; set; } = new Dictionary<string, string>();
+        public Dictionary<Additional, string> AdditionalInfo { get; set; } = new Dictionary<Additional, string>();
     }
 }

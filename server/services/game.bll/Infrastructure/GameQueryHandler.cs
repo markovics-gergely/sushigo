@@ -1,0 +1,58 @@
+﻿using AutoMapper;
+using game.bll.Infrastructure.Events;
+using game.bll.Infrastructure.Queries;
+using game.bll.Infrastructure.ViewModels;
+using game.dal.Domain;
+using game.dal.UnitOfWork.Interfaces;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using shared.bll.Exceptions;
+using shared.bll.Extensions;
+
+namespace game.bll.Infrastructure
+{
+    public class GameQueryHandler : 
+        IRequestHandler<GetGameQuery, GameViewModel>,
+        IRequestHandler<GetHandQuery, HandViewModel>
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
+
+        public GameQueryHandler(IUnitOfWork unitOfWork, IServiceProvider serviceProvider, IMapper mapper, IMediator mediator)
+        {
+            _unitOfWork = unitOfWork;
+            _serviceProvider = serviceProvider;
+            _mapper = mapper;
+            _mediator = mediator;
+        }
+
+        public Task<GameViewModel> Handle(GetGameQuery request, CancellationToken cancellationToken)
+        {
+            // Get game entity
+            var game = _unitOfWork.GameRepository.Get(
+                    transform: x => x.AsNoTracking(),
+                    filter: x => x.Id == request.User!.GetGameIdFromJwt(),
+                    includeProperties: "Players.Board.Cards"
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(EndRoundEvent));
+            if (game == null) throw new EntityNotFoundException(nameof(EndRoundEvent));
+
+            return Task.FromResult(_mapper.Map<GameViewModel>(game));
+        }
+
+        public Task<HandViewModel> Handle(GetHandQuery request, CancellationToken cancellationToken)
+        {
+            // Get card entities
+            var cards = _unitOfWork.HandCardRepository.Get(
+                    transform: x => x.AsNoTracking(),
+                    filter: x => x.HandId == request.HandId
+                ).ToList();
+
+            return Task.FromResult(new HandViewModel
+            {
+                Cards = _mapper.Map<IEnumerable<HandCardViewModel>>(cards)
+            });
+        }
+    }
+}

@@ -10,6 +10,7 @@ import { LobbyListComponent } from './components/pages/lobby-list/lobby-list.com
 import { HubGuard } from './guards/hub.guard';
 import { LoginGuard } from './guards/login.guard';
 import { LobbyGuard } from './guards/lobby.guard';
+import { GameComponent } from './components/pages/game/game.component';
 
 const routes: Routes = [
   {
@@ -47,6 +48,12 @@ const routes: Routes = [
     component: LobbyComponent,
     data: { name: 'lobby', hub: ['friend', 'lobby', 'lobbyList'] },
     canActivate: [AclGuard, LobbyGuard, HubGuard]
+  },
+  {
+    path: 'game',
+    component: GameComponent,
+    data: { name: 'game', hub: ['friend', 'game'] },
+    //canActivate: [AclGuard, HubGuard]
   },
   {
     path: '**',

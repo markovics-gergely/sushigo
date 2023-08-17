@@ -7,12 +7,19 @@
     <UserSecretsId>ed1a8c10-1e7e-4405-9697-3028ed10ebca</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
+    <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-    <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.3" />
+    <PackageReference Include="Hangfire.Core" Version="1.8.3" />
+    <PackageReference Include="Hangfire.InMemory" Version="0.5.1" />
+    <PackageReference Include="Hangfire.MemoryStorage" Version="1.8.0" />
+    <PackageReference Include="Hangfire.Redis.StackExchange" Version="1.9.0" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.8.3" />
     <PackageReference Include="IdentityServer4" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
@@ -38,10 +45,6 @@
     <ProjectReference Include="..\game.bll\game.bll.csproj" />
     <ProjectReference Include="..\shared.api\shared.api.csproj" />
     <ProjectReference Include="..\shared.dal\shared.dal.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

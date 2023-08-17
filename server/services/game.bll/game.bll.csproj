@@ -21,8 +21,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Infrastructure\Events\" />
-    <Folder Include="Infrastructure\Queries\" />
     <Folder Include="ValueConverters\" />
   </ItemGroup>
 

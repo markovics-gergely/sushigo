@@ -1,11 +1,11 @@
 ﻿using game.bll.Infrastructure.Commands;
-using game.bll.Infrastructure.Commands.Card.Abstract;
+using game.bll.Infrastructure.DataTransferObjects;
+using game.bll.Infrastructure.Queries;
+using game.bll.Infrastructure.ViewModels;
 using IdentityServer4.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualBasic;
 using shared.dal.Models;
 
 namespace game.api.Controllers
@@ -26,6 +26,7 @@ namespace game.api.Controllers
         /// Constructor for dependency injection
         /// </summary>
         /// <param name="mediator"></param>
+        /// <param name="serviceProvider"></param>
         public CardController(IMediator mediator, IServiceProvider serviceProvider)
         {
             _mediator = mediator;
@@ -33,16 +34,59 @@ namespace game.api.Controllers
         }
 
         /// <summary>
-        /// Get a lobby by id
+        /// Get hand
         /// </summary>
-        /// <param name="id">Id of the lobby</param>
+        /// <param name="handId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [HttpPost("{card}")]
-        public async Task<ActionResult> GetLobbyAsync([FromRoute] CardType card, CancellationToken cancellationToken)
+        [HttpGet("hand/{handId}")]
+        public async Task<ActionResult<HandViewModel>> GetHandAsync([FromRoute] Guid handId, CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
-            var command = new PlayCardCommand(card, user);
+            var query = new GetHandQuery(handId, user);
+            return Ok(await _mediator.Send(query, cancellationToken));
+        }
+
+        /// <summary>
+        /// Play a card
+        /// </summary>
+        /// <param name="playCardDTO"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ActionResult> PlayCardAsync([FromBody] PlayCardDTO playCardDTO, CancellationToken cancellationToken)
+        {
+            var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
+            var command = new PlayCardCommand(playCardDTO, user);
+            await _mediator.Send(command, cancellationToken);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Play a card after the turn
+        /// </summary>
+        /// <param name="playAfterTurnDTO"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost("after-turn")]
+        public async Task<ActionResult> PlayAfterTurnAsync([FromBody] PlayAfterTurnDTO playAfterTurnDTO, CancellationToken cancellationToken)
+        {
+            var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
+            var command = new PlayAfterTurnCommand(playAfterTurnDTO, user);
+            await _mediator.Send(command, cancellationToken);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Skip playing after the turn
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost("skip-after")]
+        public async Task<ActionResult> SkipAfterTurnAsync(CancellationToken cancellationToken)
+        {
+            var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
+            var command = new SkipAfterTurnCommand(user);
             await _mediator.Send(command, cancellationToken);
             return Ok();
         }

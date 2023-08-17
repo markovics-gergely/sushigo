@@ -21,6 +21,12 @@
         "title": "Játékos eltávolítása",
         "message": "Biztosan el akarja távolítani a játékost?"
       }
+    },
+    "game": {
+      "delete": {
+        "title": "Játék törlése",
+        "message": "Biztosan törölni akarja a játékot?"
+      }
     }
   },
   "refresh": {

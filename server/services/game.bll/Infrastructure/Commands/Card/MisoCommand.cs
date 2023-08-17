@@ -1,10 +1,7 @@
-﻿using game.bll.Infrastructure.Commands.Card.Abstract;
-using game.bll.Infrastructure.DataTransferObjects;
+﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.dal.Domain;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using shared.bll.Exceptions;
-using shared.bll.Extensions;
 using shared.dal.Models;
 using System.Security.Claims;
 
@@ -14,113 +11,41 @@ namespace game.bll.Infrastructure.Commands.Card
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISimpleAddToBoard _simpleAddToBoard;
+        private readonly ISimpleAddPoint _simpleAddPoint;
+
         public ClaimsPrincipal? User { get; set; }
 
-        public MisoCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard)
+        public MisoCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard, ISimpleAddPoint simpleAddPoint)
         {
             _unitOfWork = unitOfWork;
             _simpleAddToBoard = simpleAddToBoard;
+            _simpleAddPoint = simpleAddPoint;
         }
 
         public async Task OnEndRound(BoardCard boardCard)
         {
-            if (User == null) throw new EntityNotFoundException(nameof(ClaimsPrincipal));
-            var cards = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.GameId == boardCard.GameId && x.CardType == CardType.Uramaki && !x.IsCalculated,
-                    transform: x => x.AsNoTracking()
-                );
-            if (!cards.Any()) return;
-            var game = _unitOfWork.GameRepository.Get(
-                    transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == User.GetGameIdFromJwt()
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(UramakiCommand));
-            if (game == null) throw new EntityNotFoundException(nameof(game));
-            game.AdditionalInfo.TryGetValue("uramaki", out string? uramakiCount);
-            var uramaki = int.Parse(uramakiCount ?? "0");
-            if (uramaki < 3)
-            {
-                var boards = cards.GroupBy(c => c.BoardId)
-                    .OrderByDescending(c => c.Select(cc => int.Parse(cc.AdditionalInfo["uramaki"])).Sum())
-                    .Take(3 - uramaki)
-                    .Select(c => c.Key);
-                foreach (var board in boards)
-                {
-                    var player = _unitOfWork.PlayerRepository.Get(
-                        filter: x => x.BoardId == board,
-                        transform: x => x.AsNoTracking()
-                        ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(UramakiCommand));
-                    if (player == null) throw new EntityNotFoundException(nameof(player));
-                    var point = uramaki switch
-                    {
-                        0 => 8,
-                        1 => 5,
-                        2 => 2,
-                        _ => 0,
-                    };
-                    uramaki++;
-                    player.Points += point;
-                    _unitOfWork.PlayerRepository.Update(player);
-                }
-            }
-            foreach (var card in cards)
-            {
-                card.IsCalculated = true;
-                _unitOfWork.BoardCardRepository.Update(card);
-            }
-            await _unitOfWork.Save();
+            await _simpleAddPoint.CalculateEndRound(boardCard, 3);
         }
 
-        public async Task OnEndTurn(Player player, PlayCardDTO playCardDTO)
+        public async Task OnEndTurn(Player player, HandCard handCard)
         {
-            if (User == null) throw new EntityNotFoundException(nameof(ClaimsPrincipal));
-            var handCard = _unitOfWork.HandCardRepository.Get(
-                    transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == playCardDTO.HandCardId
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(UramakiCommand));
-            if (handCard == null) throw new EntityNotFoundException(nameof(handCard));
-            var cards = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.BoardId == player.BoardId && x.CardType == CardType.Uramaki,
+            // Get count of miso cards played this turn
+            var misoCount = _unitOfWork.HandCardRepository.Get(
+                    filter: x => x.GameId == player.GameId && x.IsSelected && x.CardType == CardType.MisoSoup,
                     transform: x => x.AsNoTracking()
-                );
-            var points = cards.Select(c => int.Parse(c.AdditionalInfo["point"])).Sum() + int.Parse(handCard.AdditionalInfo["point"]);
-            if (points >= 10)
+                ).Count();
+
+            // Remove card if there is more than 1 player who played miso this turn
+            if (misoCount > 1)
             {
-                var game = _unitOfWork.GameRepository.Get(
-                    transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == User.GetGameIdFromJwt()
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(UramakiCommand));
-                if (game == null) throw new EntityNotFoundException(nameof(game));
-                game.AdditionalInfo.TryGetValue("uramaki", out string? uramakiCount);
-                var uramaki = int.Parse(uramakiCount ?? "0");
-                var point = int.Parse(uramakiCount ?? "0") switch
-                {
-                    0 => 8,
-                    1 => 5,
-                    2 => 2,
-                    _ => 0,
-                };
-                player.Points += point;
-                _unitOfWork.PlayerRepository.Update(player);
-                foreach (var card in cards)
-                {
-                    _unitOfWork.BoardCardRepository.Delete(card);
-                }
                 _unitOfWork.HandCardRepository.Delete(handCard);
-                game.AdditionalInfo["uramaki"] = (uramaki + 1).ToString();
-                _unitOfWork.GameRepository.Update(game);
+                await _unitOfWork.Save();
             }
+            // Add to board otherwise
             else
             {
-                _unitOfWork.HandCardRepository.Delete(playCardDTO.HandCardId);
-                var boardCard = new BoardCard
-                {
-                    CardType = handCard.CardType,
-                    BoardId = player.BoardId,
-                    GameId = User.GetGameIdFromJwt()
-                };
-                _unitOfWork.BoardCardRepository.Insert(boardCard);
+                await _simpleAddToBoard.AddToBoard(player, handCard);
             }
-            await _unitOfWork.Save();
         }
     }
 }

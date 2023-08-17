@@ -1,4 +1,4 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import {
   IFriendListCounter,
@@ -20,8 +20,6 @@ export class FriendService extends BaseServiceService {
     received: [],
   };
   private _online: Set<string> = new Set();
-
-  constructor(injector: Injector) { super(injector); }
 
   public loadFriends(): Subscription {
     return this.client

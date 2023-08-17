@@ -52,6 +52,9 @@ namespace game.dal.Migrations
                     b.Property<int>("CardType")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsCalculated")
                         .HasColumnType("bit");
 
@@ -68,9 +71,16 @@ namespace game.dal.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AdditionalInfo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Cards")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DeckType")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -86,6 +96,10 @@ namespace game.dal.Migrations
                     b.Property<Guid>("ActualPlayerId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AdditionalInfo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("DeckId")
                         .HasColumnType("uniqueidentifier");
 
@@ -95,13 +109,14 @@ namespace game.dal.Migrations
                     b.Property<Guid>("FirstPlayerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("HandSize")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaxRound")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Phase")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PlayerIds")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -140,8 +155,14 @@ namespace game.dal.Migrations
                     b.Property<int>("CardType")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("HandId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsSelected")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -159,6 +180,9 @@ namespace game.dal.Migrations
                     b.Property<Guid>("BoardId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("CanPlayAfterTurn")
+                        .HasColumnType("bit");
+
                     b.Property<Guid>("GameId")
                         .HasColumnType("uniqueidentifier");
 
@@ -172,6 +196,12 @@ namespace game.dal.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Points")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("SelectedCardId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("SelectedCardType")
                         .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
@@ -258,8 +288,7 @@ namespace game.dal.Migrations
                 {
                     b.Navigation("Cards");
 
-                    b.Navigation("Player")
-                        .IsRequired();
+                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("game.dal.Domain.Deck", b =>
@@ -277,8 +306,7 @@ namespace game.dal.Migrations
                 {
                     b.Navigation("Cards");
 
-                    b.Navigation("Player")
-                        .IsRequired();
+                    b.Navigation("Player");
                 });
 #pragma warning restore 612, 618
         }

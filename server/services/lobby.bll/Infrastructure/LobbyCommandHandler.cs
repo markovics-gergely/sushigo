@@ -22,7 +22,8 @@ namespace lobby.bll.Infrastructure
         IRequestHandler<RemovePlayerCommand, LobbyViewModel?>,
         IRequestHandler<JoinLobbyCommand, LobbyViewModel>,
         IRequestHandler<UpdateLobbyDeckCommand, LobbyViewModel>,
-        IRequestHandler<PlayerReadyCommand, LobbyViewModel>
+        IRequestHandler<PlayerReadyCommand, LobbyViewModel>,
+        IRequestHandler<RemoveLobbyCommand, LobbyViewModel?>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMediator _mediator;
@@ -228,6 +229,43 @@ namespace lobby.bll.Infrastructure
             var lobbyViewModel = _mapper.Map<LobbyViewModel>(lobby);
             await _mediator.Publish(new PlayerReadyEvent(lobbyViewModel), cancellationToken);
             return lobbyViewModel;
+        }
+
+        public async Task<LobbyViewModel?> Handle(RemoveLobbyCommand request, CancellationToken cancellationToken)
+        {
+            // Get lobby entity
+            var lobby = _unitOfWork.LobbyRepository.Get(
+                    includeProperties: nameof(Lobby.Players),
+                    transform: x => x.AsNoTracking(),
+                    filter: x => x.Id == request.LobbyId
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Lobby));
+
+            // Get messages sent in the lobby
+            var messages = _unitOfWork.MessageRepository.Get(
+                        filter: x => x.LobbyId == request.LobbyId,
+                        transform: x => x.AsNoTracking()
+                    ).Select(m => m.Id).ToList();
+
+            // Remove every message from the lobby
+            foreach (var message in messages)
+            {
+                _unitOfWork.MessageRepository.Delete(message);
+            }
+
+            // Remove every player from the lobby
+            foreach (var p in lobby.Players)
+            {
+                _unitOfWork.PlayerRepository.Delete(p.Id);
+                await _endpoint.Publish(new LobbyJoinedDTO
+                {
+                    UserId = p.UserId,
+                    LobbyId = null
+                }, cancellationToken);
+            }
+            // Remove the lobby
+            _unitOfWork.LobbyRepository.Delete(lobby.Id);
+            await _unitOfWork.Save();
+            return null;
         }
     }
 }

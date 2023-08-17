@@ -1,10 +1,9 @@
-﻿using game.bll.Infrastructure.Commands.Card.Abstract;
+﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.bll.Infrastructure.DataTransferObjects;
 using game.dal.Domain;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using shared.bll.Exceptions;
-using shared.bll.Extensions;
 using shared.dal.Models;
 using System.Security.Claims;
 
@@ -24,25 +23,31 @@ namespace game.bll.Infrastructure.Commands.Card
 
         public async Task OnEndRound(BoardCard boardCard)
         {
+            // Set calculated flag for the card
             boardCard.IsCalculated = true;
             _unitOfWork.BoardCardRepository.Update(boardCard);
             await _unitOfWork.Save();
         }
 
-        public async Task OnEndTurn(Player player, PlayCardDTO playCardDTO)
+        public async Task OnEndTurn(Player player, HandCard handCard)
         {
-            await _simpleAddToBoard.AddToBoard(_unitOfWork, playCardDTO.HandCardId, player.BoardId, User);
+            await _simpleAddToBoard.AddToBoard(player, handCard);
         }
 
         public async Task OnAfterTurn(Player player, PlayAfterTurnDTO playAfterTurnDTO)
         {
+            // Find card entity to play from the hand
             var replace = _unitOfWork.HandCardRepository.Get(
                     filter: x => x.HandId == player.HandId && x.Id == Guid.Parse(playAfterTurnDTO.AdditionalInfo["chopsticks"]),
                     transform: x => x.AsNoTracking()
                     ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(ChopSticksCommand));
             if (replace == null) throw new EntityNotFoundException(nameof(replace));
+
+            // Delete the card from the hand end the chopsticks card from the board
             _unitOfWork.HandCardRepository.Delete(replace.Id);
             _unitOfWork.BoardRepository.Delete(playAfterTurnDTO.BoardCardId);
+
+            // Add replacable card to the board
             var boardCard = new BoardCard
             {
                 CardType = replace.CardType,
@@ -50,13 +55,15 @@ namespace game.bll.Infrastructure.Commands.Card
                 GameId = player.GameId,
                 AdditionalInfo = replace.AdditionalInfo,
             };
+            _unitOfWork.BoardCardRepository.Insert(boardCard);
+
+            // Get chopsticks card back to the players hand
             var handCard = new HandCard
             {
                 CardType = CardType.Chopsticks,
                 HandId = player.HandId,
                 GameId = player.GameId,
             };
-            _unitOfWork.BoardCardRepository.Insert(boardCard);
             _unitOfWork.HandCardRepository.Insert(handCard);
             await _unitOfWork.Save();
         }

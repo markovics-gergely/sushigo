@@ -1,4 +1,6 @@
-﻿namespace game.dal.Domain
+﻿using shared.dal.Models;
+
+namespace game.dal.Domain
 {
     public class Player
     {
@@ -15,7 +17,7 @@
         public Guid BoardId { get; set; }
         public Board? Board { get; set; }
         public Guid? SelectedCardId { get; set; }
+        public CardType? SelectedCardType { get; set; }
         public Guid NextPlayerId { get; set; }
-        public Player NextPlayer { get; set; } = null!;
     }
 }

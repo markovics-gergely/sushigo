@@ -21,6 +21,12 @@
         "title": "Remove player",
         "message": "Are you sure you want to remove the player?"
       }
+    },
+    "game": {
+      "delete": {
+        "title": "Delete game",
+        "message": "Are you sure you want to delete the game?"
+      }
     }
   },
   "refresh": {

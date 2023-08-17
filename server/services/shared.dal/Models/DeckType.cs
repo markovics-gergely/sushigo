@@ -68,5 +68,15 @@
                 _ => throw new ArgumentOutOfRangeException(nameof(deck)),
             };
         }
+
+        public static Queue<CardType> GetShuffledCards(this DeckType deckType, int round = 0, int count = 2)
+        {
+            var cardList = new List<CardType>();
+            deckType.GetCardTypes().ToList().ForEach(cardType =>
+            {
+                cardList.AddRange(Enumerable.Repeat(cardType, cardType.SushiType().GetCount(round, count)));
+            });
+            return new Queue<CardType>(cardList.OrderBy(x => Guid.NewGuid()));
+        }
     }
 }

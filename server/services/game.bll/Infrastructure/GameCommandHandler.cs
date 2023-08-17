@@ -1,217 +1,322 @@
 ﻿using AutoMapper;
 using game.bll.Infrastructure.Commands;
-using game.bll.Infrastructure.Commands.Card.Abstract;
+using game.bll.Infrastructure.Commands.Card.Utils;
+using game.bll.Infrastructure.Events;
 using game.bll.Infrastructure.ViewModels;
 using game.dal.Domain;
+using game.dal.Types;
 using game.dal.UnitOfWork.Interfaces;
+using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using shared.bll.Exceptions;
 using shared.bll.Extensions;
 using shared.dal.Models;
+using System;
 
 namespace game.bll.Infrastructure
 {
     public class GameCommandHandler :
         IRequestHandler<CreateGameCommand, GameViewModel>,
-        IRequestHandler<CalculateEndTurnCommand>,
-        IRequestHandler<CalculateEndRoundCommand>
+        IRequestHandler<ProceedEndTurnCommand>,
+        IRequestHandler<ProceedEndRoundCommand>,
+        IRequestHandler<RemoveGameCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IServiceProvider _serviceProvider;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
+        private readonly IPublishEndpoint _endpoint;
 
-        public GameCommandHandler(IUnitOfWork unitOfWork, IServiceProvider serviceProvider, IMapper mapper, IMediator mediator)
+        public GameCommandHandler(IUnitOfWork unitOfWork, IServiceProvider serviceProvider, IMapper mapper, IMediator mediator, IPublishEndpoint endpoint)
         {
             _unitOfWork = unitOfWork;
             _serviceProvider = serviceProvider;
             _mapper = mapper;
             _mediator = mediator;
+            _endpoint = endpoint;
         }
 
         public async Task<GameViewModel> Handle(CreateGameCommand request, CancellationToken cancellationToken)
         {
-            var deck = new Deck();
-            var cardList = new Queue<CardType>(Shuffle(request.CreateGameDTO.DeckType, 0, request.CreateGameDTO.Players.Count()));
-            var players = _mapper.Map<List<Player>>(request.CreateGameDTO.Players).OrderBy(x => Guid.NewGuid()).ToList();
-            var handSize = GetHandCount(players.Count);
+            // Create a game
+            var game = new Game
+            {
+                DeckType = request.CreateGameDTO.DeckType,
+                Name = request.CreateGameDTO.Name,
+                Phase = Phase.Turn
+            };
+            _unitOfWork.GameRepository.Insert(game);
 
+            // Shuffle cards from deck type and count of players
+            var cardList = request.CreateGameDTO.DeckType.GetShuffledCards(0, request.CreateGameDTO.Players.Count());
+
+            // Set remaining cards to a deck
+            var deck = new Deck
+            {
+                DeckType = request.CreateGameDTO.DeckType
+            };
+
+            // Generate additional card informations
+            deck.AddDeckInfo();
+
+            // Shuffle players
+            var players = _mapper.Map<List<Player>>(request.CreateGameDTO.Players).OrderBy(x => Guid.NewGuid()).ToList();
+            var handSize = Game.GetHandCount(players.Count);
+            
+            // Create players and cards in their hands
             var lastGuid = new Guid();
             foreach (var player in players)
             {
-                _unitOfWork.PlayerRepository.Insert(player);
-                var hand = new Hand { Player = player };
+                var hand = new Hand();
                 _unitOfWork.HandRepository.Insert(hand);
+
+                // Get cards from shuffled deck
                 for (int i = 0; i < handSize; i++)
                 {
                     var card = cardList.Dequeue();
-                    var handCard = new HandCard { CardType = card, Hand = hand };
+                    var handCard = new HandCard { CardType = card, Hand = hand, GameId = game.Id };
+                    var info = deck.PopInfoItem(card);
+                    if (info != null)
+                    {
+                        handCard.AdditionalInfo[Additional.Points] = info?.ToString() ?? "";
+                    }
                     _unitOfWork.HandCardRepository.Insert(handCard);
-                    hand.Cards.Add(handCard);
                 }
-                var board = new Board { Player = player };
+
+                // Create board
+                var board = new Board { GameId = game.Id };
                 _unitOfWork.BoardRepository.Insert(board);
+
+                // Set player properties
                 player.Board = board;
                 player.Hand = hand;
                 player.NextPlayerId = lastGuid;
+                player.GameId = game.Id;
+                _unitOfWork.PlayerRepository.Insert(player);
+
+                // Increment next player node
                 lastGuid = player.Id;
             }
+            // Attach last node to first
             players.First().NextPlayerId = players.Last().Id;
 
             deck.Cards = cardList.ToList();
-            AddDeckInfo(request.CreateGameDTO.DeckType, deck);
             _unitOfWork.DeckRepository.Insert(deck);
-            var game = new Game {
-                DeckType = request.CreateGameDTO.DeckType,
-                Name = request.CreateGameDTO.Name,
-                Deck = deck,
-                Players = players,
-                PlayerIds = players.Select(x => x.Id).ToList()
-            };
-            _unitOfWork.GameRepository.Insert(game);
-            await _unitOfWork.Save();
-            var actualId = game.Players.First().Id;
+
+            game.PlayerIds = players.Select(x => x.Id).ToList();
+            game.Deck = deck;
+
+            // Set actual player indicator
+            var actualId = game.PlayerIds.First();
             game.FirstPlayerId = actualId;
             game.ActualPlayerId = actualId;
-            _unitOfWork.GameRepository.Update(game);
-            foreach (var player in players)
-            {
-                foreach (var card in player!.Hand!.Cards)
-                {
-                    card.GameId = game.Id;
-                    _unitOfWork.HandCardRepository.Update(card);
-                }
-            }
+
             await _unitOfWork.Save();
+
+            // Send game created to user management
+            await _endpoint.Publish(new GameJoinedDTO
+            {
+                LobbyId = Guid.Parse(request.User!.GetUserLobbyFromJwt()),
+                UserIds = request.CreateGameDTO.Players.Select(p => p.UserId),
+                GameId = game.Id
+            }, cancellationToken);
             return _mapper.Map<GameViewModel>(game);
         }
 
-        private static List<CardType> Shuffle(DeckType deckType, int round = 0, int count = 2)
+        public async Task Handle(ProceedEndTurnCommand request, CancellationToken cancellationToken)
         {
-            var cardList = new List<CardType>();
-            deckType.GetCardTypes().ToList().ForEach(cardType =>
-            {
-                cardList.AddRange(Enumerable.Repeat(cardType, cardType.SushiType().GetCount(round)));
-            });
-            return cardList.OrderBy(x => Guid.NewGuid()).ToList();
-        }
-
-        private static void AddDeckInfo(DeckType deckType, Deck deck)
-        {
-            var cardTypes = deckType.GetCardTypes();
-            if (cardTypes.Contains(CardType.MakiRoll))
-            {
-                var points = string.Join(',', new int[] { 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3 }.OrderBy(x => Guid.NewGuid()).ToList());
-                deck.AdditionalInfo["maki"] = points;
-            }
-            if (cardTypes.Contains(CardType.Uramaki))
-            {
-                var points = string.Join(',', new int[] { 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5 }.OrderBy(x => Guid.NewGuid()).ToList());
-                deck.AdditionalInfo["uramaki"] = points;
-            }
-            if (cardTypes.Contains(CardType.Onigiri))
-            {
-                var points = string.Join(',', new int[] { 0, 0, 1, 1, 2, 2, 3, 3 }.OrderBy(x => Guid.NewGuid()).ToList());
-                deck.AdditionalInfo["onigiri"] = points;
-            }
-        }
-
-        private static int GetHandCount(int playerCount)
-        {
-            if (playerCount < 4) return 10;
-            if (playerCount < 6) return 9;
-            if (playerCount < 8) return 8;
-            return 7;
-        }
-
-        private ICardCommand<TCard>? GetCommand<TCard>(TCard card) where TCard : CardTypeWrapper
-        {
-            return (ICardCommand<TCard>?)_serviceProvider.GetService(typeof(ICardCommand<>).MakeGenericType(card.GetType()));
-        }
-
-        public async Task Handle(CalculateEndTurnCommand request, CancellationToken cancellationToken)
-        {
-            if (request.User == null) throw new EntityNotFoundException(nameof(request.User));
+            // Get game entity
             var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == request.User.GetGameIdFromJwt(),
+                    filter: x => x.Id == request.User!.GetGameIdFromJwt(),
                     includeProperties: nameof(Game.Players)
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(SimpleAddPoint));
-            if (game == null) throw new EntityNotFoundException(nameof(game));
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
+            if (game == null) throw new EntityNotFoundException(nameof(Game));
+
+            // Get played cards by hand
+            var selectedCards = _unitOfWork.HandCardRepository.Get(
+                    filter: x => x.GameId == game.Id && x.IsSelected,
+                    transform: x => x.AsNoTracking()
+                    ).ToDictionary(x => x.HandId);
+
+            foreach (var player in game.Players)
+            {
+                // Get selected card
+                var selected = selectedCards[player.HandId];
+
+                // Get command associated with card
+                var command = _serviceProvider.GetCommand(selected.CardType.GetClass());
+                if (command == null) throw new EntityNotFoundException(nameof(command));
+
+                // play the action of the card used
+                await command.OnEndTurn(player, selected);
+
+                // Remove selected card from the player
+                player.SelectedCardType = null;
+                player.SelectedCardId = null;
+                _unitOfWork.PlayerRepository.Update(player);
+
+                await _unitOfWork.Save();
+            }
+
+            // Check if there is any hand to swap
             var handCards = _unitOfWork.HandCardRepository.Get(
-                    filter: x => x.GameId == request.User.GetGameIdFromJwt(),
+                    filter: x => x.GameId == game.Id,
                     transform: x => x.AsNoTracking()
                     ).Any();
             if (handCards)
             {
+                // Swap hands with each other
                 var playerMap = game.Players.Select(p => new { Key = p.NextPlayerId, Value = p.HandId }).ToDictionary(p => p.Key, p => p.Value);
                 foreach (var player in game.Players)
                 {
                     player.HandId = playerMap[player.Id];
                     _unitOfWork.PlayerRepository.Update(player);
                 }
-                game.Phase = dal.Types.Phase.Turn;
+                game.Phase = Phase.Turn;
             }
             else
             {
-                game.Phase = dal.Types.Phase.EndRound;
+                // Otherwise it is the end of the round
+                game.Phase = Phase.EndRound;
             }
             _unitOfWork.GameRepository.Update(game);
+
             await _unitOfWork.Save();
+
+            // Send refresh to users and cache
+            var gameViewModel = _mapper.Map<GameViewModel>(game);
+            await _mediator.Publish(new RefreshGameEvent { GameViewModel = gameViewModel }, cancellationToken);
+
+            // Initiate end round event if it is needed
+            if (game.Phase == Phase.EndRound)
+            {
+                await _mediator.Publish(new EndRoundEvent
+                {
+                    GameId = game.Id,
+                    Principal = request.User!
+                }, cancellationToken);
+            }
         }
 
-        public async Task Handle(CalculateEndRoundCommand request, CancellationToken cancellationToken)
+        public async Task Handle(ProceedEndRoundCommand request, CancellationToken cancellationToken)
         {
-            if (request.User == null) throw new EntityNotFoundException(nameof(request.User));
+            // Get game entity
             var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == request.User.GetGameIdFromJwt(),
+                    filter: x => x.Id == request.User!.GetGameIdFromJwt(),
                     includeProperties: nameof(Game.Players)
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(CalculateEndRoundCommand));
-            if (game == null) throw new EntityNotFoundException(nameof(game));
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
+            if (game == null) throw new EntityNotFoundException(nameof(Game));
+
+            // Get deck entity
             var deck = _unitOfWork.DeckRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == game.DeckId
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(CalculateEndRoundCommand));
-            if (deck == null) throw new EntityNotFoundException(nameof(deck));
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game.Deck));
+            if (deck == null) throw new EntityNotFoundException(nameof(Game.Deck));
+
+            // Get cards on the board
             var cards = _unitOfWork.BoardCardRepository.Get(
                     filter: x => x.GameId == game.Id,
                     transform: x => x.AsNoTracking()
                 );
-            foreach (var card in cards.Where(c => !c.IsCalculated))
+
+            // Iterate over cards that are not already calculated
+            foreach (var card in cards.Where(c => !c.IsCalculated && c.CardType.SushiType() != SushiType.Dessert))
             {
-                var command = GetCommand(card.CardType.GetClass());
+                // Calculate end round action through the command of the card type
+                var command = _serviceProvider.GetCommand(card.CardType.GetClass());
                 if (command != null)
                 {
-                    command.User = request.User;
                     await command.OnEndRound(card);
                 }
             }
-            if (game.Round != 2)
+
+            // If it was the last round end the game
+            if (game.IsOver())
             {
-                game.Round += 1;
-                game.Phase = dal.Types.Phase.Turn;
-                var cardList = new Queue<CardType>(Shuffle(game.DeckType, game.Round, game.PlayerIds.Count));
-                var handSize = GetHandCount(game.PlayerIds.Count);
-                foreach (var player in game.Players)
+                // Iterate over dessert cards to calculate
+                foreach (var card in cards.Where(c => !c.IsCalculated && c.CardType.SushiType() == SushiType.Dessert))
                 {
-                    for (int i = 0; i < handSize; i++)
+                    // Calculate end game action through the command of the card type
+                    var command = _serviceProvider.GetCommand(card.CardType.GetClass());
+                    if (command != null)
                     {
-                        var card = cardList.Dequeue();
-                        var handCard = new HandCard { CardType = card, HandId = player.HandId };
-                        _unitOfWork.HandCardRepository.Insert(handCard);
+                        await command.OnEndGame(card);
                     }
                 }
-                deck.Cards = cardList.ToList();
-                AddDeckInfo(game.DeckType, deck);
-                _unitOfWork.DeckRepository.Update(deck);
+                game.Phase = Phase.EndGame;
             }
             else
             {
-                game.Phase = dal.Types.Phase.EndGame;
+                // Start the next round
+                game.Round += 1;
+                game.Phase = Phase.Turn;
+
+                // Reshuffle the deck
+                var cardList = deck.DeckType.GetShuffledCards(game.Round, game.PlayerIds.Count);
+                var handSize = game.GetHandCount();
+
+                // Iterate over the players
+                foreach (var player in game.Players)
+                {
+                    // Restore the hand to the full size
+                    for (int i = 0; i < handSize; i++)
+                    {
+                        // Add a card to the player from the top of the deck
+                        var card = cardList.Dequeue();
+                        var handCard = new HandCard { CardType = card, HandId = player.HandId, GameId = game.Id };
+                        _unitOfWork.HandCardRepository.Insert(handCard);
+                    }
+                }
+
+                // Set remaining cards to deck
+                deck.Cards = cardList.ToList();
+
+                // Generate additional card informations
+                deck.AddDeckInfo();
+                _unitOfWork.DeckRepository.Update(deck);
             }
-            _unitOfWork.GameRepository.Update(game);
+            await _unitOfWork.Save();
+
+            // Send refresh to users and cache
+            var gameViewModel = _mapper.Map<GameViewModel>(game);
+            await _mediator.Publish(new RefreshGameEvent { GameViewModel = gameViewModel }, cancellationToken);
+        }
+
+        public async Task Handle(RemoveGameCommand request, CancellationToken cancellationToken)
+        {
+            // Get game entity
+            var game = _unitOfWork.GameRepository.Get(
+                    transform: x => x.AsNoTracking(),
+                    filter: x => x.Id == request.User!.GetGameIdFromJwt(),
+                    includeProperties: nameof(Game.Players)
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(EndRoundEvent));
+
+            // Delete board cards
+            _unitOfWork.BoardCardRepository.Get(
+                transform: x => x.AsNoTracking(),
+                filter: x => x.GameId == game.Id
+            ).ToList().ForEach(_unitOfWork.BoardCardRepository.Delete);
+
+            // Delete hand cards
+            _unitOfWork.HandCardRepository.Get(
+                transform: x => x.AsNoTracking(),
+                filter: x => x.GameId == game.Id
+            ).ToList().ForEach(_unitOfWork.HandCardRepository.Delete);
+
+            // Delete players, boards and hands
+            foreach (var player in game.Players)
+            {
+                _unitOfWork.PlayerRepository.Delete(player);
+                _unitOfWork.HandRepository.Delete(player.HandId);
+                _unitOfWork.BoardRepository.Delete(player.BoardId);
+            }
+
+            _unitOfWork.GameRepository.Delete(game);
+            _unitOfWork.DeckRepository.Delete(game.DeckId);
             await _unitOfWork.Save();
         }
     }

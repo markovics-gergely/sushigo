@@ -1,7 +1,5 @@
-﻿using game.bll.Infrastructure.Commands.Card.Abstract;
-using game.bll.Infrastructure.DataTransferObjects;
+﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.dal.Domain;
-using game.dal.UnitOfWork.Interfaces;
 using shared.dal.Models;
 using System.Security.Claims;
 
@@ -10,25 +8,24 @@ namespace game.bll.Infrastructure.Commands.Card
     public class SalmonNigiriCommand : ICardCommand<SalmonNigiri>
     {
         private static readonly int POINT = 2;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly ISimpleAddPoint _simpleAddPoint;
         private readonly ISimpleAddToBoard _simpleAddToBoard;
         public ClaimsPrincipal? User { get; set; }
-        public SalmonNigiriCommand(IUnitOfWork unitOfWork, ISimpleAddPoint simpleAddPoint, ISimpleAddToBoard simpleAddToBoard)
+        public SalmonNigiriCommand(ISimpleAddPoint simpleAddPoint, ISimpleAddToBoard simpleAddToBoard)
         {
-            _unitOfWork = unitOfWork;
             _simpleAddPoint = simpleAddPoint;
             _simpleAddToBoard = simpleAddToBoard;
         }
 
         public async Task OnEndRound(BoardCard boardCard)
         {
-            await _simpleAddPoint.CalculateEndRound(_unitOfWork, boardCard, POINT, User);
+            var wasabi = boardCard.AdditionalInfo.ContainsKey(dal.Types.Additional.Tagged);
+            await _simpleAddPoint.CalculateEndRound(boardCard, wasabi ? POINT * 2 : POINT);
         }
 
-        public async Task OnEndTurn(Player player, PlayCardDTO playCardDTO)
+        public async Task OnEndTurn(Player player, HandCard handCard)
         {
-            await _simpleAddToBoard.AddToBoard(_unitOfWork, playCardDTO.HandCardId, player.BoardId, User);
+            await _simpleAddToBoard.AddNigiriToBoard(player, handCard);
         }
     }
 }

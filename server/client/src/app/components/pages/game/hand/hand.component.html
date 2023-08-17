@@ -1,0 +1,32 @@
+<div class="show-container">
+  <svg
+    class="show-svg"
+    width="100"
+    height="40"
+    viewBox="0 0 100 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M9.05317 3.78732C9.60963 1.56148 11.6095 0 13.9039 0H86.0961C88.3905 0 90.3904 1.56149 90.9468 3.78732L100 40H0L9.05317 3.78732Z"
+      fill="black"
+      fill-opacity="0.2"
+    />
+  </svg>
+  Hand
+</div>
+<div class="hand-container">
+  <mat-selection-list [multiple]="false" hideSingleSelectionIndicator class="hand-select">
+    <mat-list-option class="hand-select-option"
+      value="hand"
+    >
+      <span class="hand-select-content">Hand</span>
+    </mat-list-option>
+    <mat-list-option class="hand-select-option"
+      value="board"
+    >
+    <span class="hand-select-content">Board</span>
+    </mat-list-option>
+  </mat-selection-list>
+  <div class="card-container"></div>
+</div>

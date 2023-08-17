@@ -24,6 +24,7 @@ export interface IUserTokenViewModel {
     exp: number;
     avatar?: string;
     lobby?: string;
+    game?: string;
 }
 
 export interface ILoginUserDTO {

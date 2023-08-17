@@ -125,7 +125,7 @@ namespace user.dal.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("shared.Models.Image", b =>
+            modelBuilder.Entity("shared.dal.Models.Image", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -212,6 +212,9 @@ namespace user.dal.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<Guid?>("ActiveGame")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ActiveLobby")
                         .HasColumnType("uniqueidentifier");
@@ -372,7 +375,7 @@ namespace user.dal.Migrations
 
             modelBuilder.Entity("user.dal.Domain.ApplicationUser", b =>
                 {
-                    b.HasOne("shared.Models.Image", "Avatar")
+                    b.HasOne("shared.dal.Models.Image", "Avatar")
                         .WithOne()
                         .HasForeignKey("user.dal.Domain.ApplicationUser", "AvatarId")
                         .OnDelete(DeleteBehavior.NoAction);

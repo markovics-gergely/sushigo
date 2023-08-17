@@ -1,35 +1,33 @@
-﻿using game.bll.Infrastructure.Commands.Card.Abstract;
-using game.bll.Infrastructure.DataTransferObjects;
+﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.dal.Domain;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using shared.bll.Exceptions;
 using shared.dal.Models;
 using System.Security.Claims;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
-    public class WasabiCommand : ICardCommand<EggNigiri>
+    public class WasabiCommand : ICardCommand<Wasabi>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ISimpleAddPoint _simpleAddPoint;
         private readonly ISimpleAddToBoard _simpleAddToBoard;
         public ClaimsPrincipal? User { get; set; }
-        public WasabiCommand(IUnitOfWork unitOfWork, ISimpleAddPoint simpleAddPoint, ISimpleAddToBoard simpleAddToBoard)
+        public WasabiCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard)
         {
             _unitOfWork = unitOfWork;
-            _simpleAddPoint = simpleAddPoint;
             _simpleAddToBoard = simpleAddToBoard;
         }
 
         public async Task OnEndRound(BoardCard boardCard)
         {
-            if (User == null) throw new EntityNotFoundException(nameof(ClaimsPrincipal));
+            // Get wasabi card entities in the game
             var cards = _unitOfWork.BoardCardRepository.Get(
                     filter: x => x.GameId == boardCard.GameId && x.CardType == CardType.Wasabi && !x.IsCalculated,
                     transform: x => x.AsNoTracking()
                 );
             if (!cards.Any()) return;
+
+            // Set calculated flag for every wasabi card
             foreach (var card in cards)
             {
                 card.IsCalculated = true;
@@ -38,10 +36,9 @@ namespace game.bll.Infrastructure.Commands.Card
             await _unitOfWork.Save();
         }
 
-        public async Task OnEndTurn(Player player, PlayCardDTO playCardDTO)
+        public async Task OnEndTurn(Player player, HandCard handCard)
         {
-            await _simpleAddToBoard.AddToBoard(_unitOfWork, playCardDTO.HandCardId, player.BoardId, User);
+            await _simpleAddToBoard.AddToBoard(player, handCard);
         }
-    {
     }
 }

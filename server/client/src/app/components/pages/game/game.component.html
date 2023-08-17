@@ -1,0 +1,16 @@
+<div class="game-container" *ngIf="game">
+  <div class="game-header">
+    <mat-card class="game-banner">
+      <h1>{{ game.phase }}</h1>
+    </mat-card>
+  </div>
+  <div class="game-board">
+    <div class="game-board-container"></div>
+    <ng-scrollbar class="game-board-players">
+      <div scrollViewport>
+        <div class="player" *ngFor="let item of game.players"></div>
+      </div>
+    </ng-scrollbar>
+  </div>
+  <app-hand class="game-hand"></app-hand>
+</div>

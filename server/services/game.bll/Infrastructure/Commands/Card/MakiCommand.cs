@@ -1,9 +1,8 @@
-﻿using game.bll.Infrastructure.Commands.Card.Abstract;
-using game.bll.Infrastructure.DataTransferObjects;
+﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.dal.Domain;
+using game.dal.Types;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using shared.bll.Exceptions;
 using shared.dal.Models;
 using System.Security.Claims;
 
@@ -21,30 +20,87 @@ namespace game.bll.Infrastructure.Commands.Card
             _simpleAddToBoard = simpleAddToBoard;
         }
 
+        /// <summary>
+        /// Get points to add to the player
+        /// </summary>
+        /// <param name="placement"></param>
+        /// <param name="playerCount"></param>
+        /// <returns></returns>
+        private static int CalculatePoint(int placement, int playerCount)
+        {
+            if (playerCount >= 6)
+            {
+                return placement switch
+                {
+                    0 => 6,
+                    1 => 4,
+                    2 => 2,
+                    _ => 0
+                };
+            }
+            return placement switch
+            {
+                0 => 6,
+                1 => 3,
+                _ => 0
+            };
+        }
+
         public async Task OnEndRound(BoardCard boardCard)
         {
-            if (User == null) throw new EntityNotFoundException(nameof(ClaimsPrincipal));
+            // Get maki card entities in the game
             var cards = _unitOfWork.BoardCardRepository.Get(
                     filter: x => x.GameId == boardCard.GameId && x.CardType == CardType.MakiRoll && !x.IsCalculated,
                     transform: x => x.AsNoTracking()
                 );
-            if (!cards.Any()) return; 
+            if (!cards.Any()) return;
+
+            // Get count of players
+            var playerCount = _unitOfWork.GameRepository.Get(
+                    filter: x => x.Id == boardCard.GameId,
+                    transform: x => x.AsNoTracking()
+                ).First().PlayerIds.Count;
+
+            // Group maki cards by board and points
             var boards = cards
                 .GroupBy(c => c.BoardId)
-                .OrderByDescending(c => c.Select(cc => int.Parse(cc.AdditionalInfo["maki"])).Sum())
-                .Take(2)
-                .Select(c => c.Key);
-            var point = 6;
-            foreach (var board in boards) {
-                var player = _unitOfWork.PlayerRepository.Get(
-                        filter: x => x.BoardId == board,
+                .Select(x => new { x.Key, Value = x.Select(xx => int.Parse(xx.AdditionalInfo[Additional.Points])).Sum() })
+                .Where(x => x.Value > 0);
+
+            // Get the top winner points
+            var topPoints = boards.Select(x => x.Value).Distinct().OrderByDescending(x => x).Take(playerCount >= 6 ? 3 : 2);
+
+            // Group winning boards by their points by inversing the groupping
+            var topBoards = boards
+                .Where(x => topPoints.Contains(x.Value))
+                .GroupBy(x => x.Value)
+                .ToDictionary(x => x.Key, x => x.Select(xx => xx.Key).ToList());
+
+            // Iterate over each placement
+            int placement = 0;
+            foreach (var point in topPoints)
+            {
+                // Get list of boards of the placement
+                var winnerBoards = topBoards[point];
+
+                // Calculate point to add to the players
+                var playerPoint = CalculatePoint(placement, playerCount);
+
+                // Get player entities of the placement
+                var players = _unitOfWork.PlayerRepository.Get(
+                        filter: x => winnerBoards.Contains(x.BoardId),
                         transform: x => x.AsNoTracking()
-                        ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(UramakiCommand));
-                if (player == null) throw new EntityNotFoundException(nameof(player));
-                player.Points += point;
-                _unitOfWork.PlayerRepository.Update(player);
-                point -= 3;
+                        ).ToList();
+
+                // Add point to the players
+                foreach (var player in players)
+                {
+                    player.Points += playerPoint;
+                    _unitOfWork.PlayerRepository.Update(player);
+                }
             }
+
+            // Set calculated flag for every maki card
             foreach (var card in cards)
             {
                 card.IsCalculated = true;
@@ -53,9 +109,9 @@ namespace game.bll.Infrastructure.Commands.Card
             await _unitOfWork.Save();
         }
 
-        public async Task OnEndTurn(Player player, PlayCardDTO playCardDTO)
+        public async Task OnEndTurn(Player player, HandCard handCard)
         {
-            await _simpleAddToBoard.AddToBoard(_unitOfWork, playCardDTO.HandCardId, player.BoardId, User);
+            await _simpleAddToBoard.AddToBoard(player, handCard);
         }
     }
 }

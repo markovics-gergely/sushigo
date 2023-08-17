@@ -4,6 +4,7 @@ import { FriendHubService } from '../services/hubs/friend-hub.service';
 import { HubService } from '../services/hubs/abstract/hub.service';
 import { LobbyHubService } from '../services/hubs/lobby-hub.service';
 import { LobbyListHubService } from '../services/hubs/lobby-list-hub.service';
+import { GameHubService } from '../services/hubs/game-hub.service';
 
 export const HubGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
@@ -12,7 +13,8 @@ export const HubGuard: CanActivateFn = (
   const hubs = {
     friend: inject(FriendHubService),
     lobby: inject(LobbyHubService),
-    lobbyList: inject(LobbyListHubService)
+    lobbyList: inject(LobbyListHubService),
+    game: inject(GameHubService),
   } as Record<string, HubService>;
   const hubNames = route.data['hub'];
   Object.entries(hubs).forEach(([name, hub]) => {

@@ -25,6 +25,19 @@
       "UpstreamPathTemplate": "/api/lobby-hubs/{catchAll}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
       "SwaggerKey": "lobby"
+    },
+    {
+      "DownstreamPathTemplate": "/{catchAll}",
+      "DownstreamScheme": "ws",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "game.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/game-hubs/{catchAll}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
+      "SwaggerKey": "game"
     }
   ]
 }

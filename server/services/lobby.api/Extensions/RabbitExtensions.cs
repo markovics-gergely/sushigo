@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using lobby.bll.Infrastructure.Consumers;
+using MassTransit;
 
 namespace lobby.api.Extensions
 {
@@ -15,6 +16,7 @@ namespace lobby.api.Extensions
         {
             services.AddMassTransit(options =>
             {
+                options.AddConsumer<GameJoinedConsumer>();
                 options.SetKebabCaseEndpointNameFormatter();
 
                 options.UsingRabbitMq((context, cfg) =>

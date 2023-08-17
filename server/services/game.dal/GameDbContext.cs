@@ -1,4 +1,5 @@
 ﻿using game.dal.Domain;
+using game.dal.Types;
 using Microsoft.EntityFrameworkCore;
 using shared.dal.Comparers;
 using shared.dal.Converters;
@@ -35,11 +36,6 @@ namespace game.dal
                 .WithMany(g => g.Players)
                 .HasForeignKey(p => p.GameId)
                 .OnDelete(DeleteBehavior.NoAction);
-            builder.Entity<Player>()
-                .HasOne(p => p.NextPlayer)
-                .WithMany()
-                .HasForeignKey(p => p.NextPlayerId)
-                .OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Game>()
                 .HasOne(g => g.Deck)
                 .WithOne(d => d.Game)
@@ -58,24 +54,24 @@ namespace game.dal
 
             builder.Entity<BoardCard>()
                 .Property(bc => bc.AdditionalInfo)
-                .HasConversion<DictionaryStringValueConverter<string>>()
-                .Metadata.SetValueComparer(new DictionaryValueComparer<string>());
+                .HasConversion<DictionaryEnumValueConverter<Additional, string>>()
+                .Metadata.SetValueComparer(new DictionaryEnumValueComparer<Additional, string>());
             builder.Entity<HandCard>()
                 .Property(hc => hc.AdditionalInfo)
-                .HasConversion<DictionaryStringValueConverter<string>>()
-                .Metadata.SetValueComparer(new DictionaryValueComparer<string>());
+                .HasConversion<DictionaryEnumValueConverter<Additional, string>>()
+                .Metadata.SetValueComparer(new DictionaryEnumValueComparer<Additional, string>());
             builder.Entity<Game>()
                 .Property(g => g.AdditionalInfo)
-                .HasConversion<DictionaryStringValueConverter<string>>()
-                .Metadata.SetValueComparer(new DictionaryValueComparer<string>());
+                .HasConversion<DictionaryEnumValueConverter<CardType, string>>()
+                .Metadata.SetValueComparer(new DictionaryEnumValueComparer<CardType, string>());
             builder.Entity<Game>()
                 .Property(g => g.PlayerIds)
                 .HasConversion<CollectionJsonValueConverter<Guid>>()
-                .Metadata.SetValueComparer(new CollectionValueComparer<string>());
+                .Metadata.SetValueComparer(new CollectionValueComparer<Guid>());
             builder.Entity<Deck>()
                 .Property(g => g.AdditionalInfo)
-                .HasConversion<DictionaryStringValueConverter<string>>()
-                .Metadata.SetValueComparer(new DictionaryValueComparer<string>());
+                .HasConversion<DictionaryEnumValueConverter<CardType, string>>()
+                .Metadata.SetValueComparer(new DictionaryEnumValueComparer<CardType, string>());
             builder.Entity<Deck>()
                 .Property(d => d.Cards)
                 .HasConversion<EnumCollectionJsonValueConverter<CardType>>()

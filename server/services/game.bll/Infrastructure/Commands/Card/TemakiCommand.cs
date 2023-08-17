@@ -1,6 +1,7 @@
-﻿using game.bll.Infrastructure.Commands.Card.Abstract;
+﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.bll.Infrastructure.DataTransferObjects;
 using game.dal.Domain;
+using game.dal.Types;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using shared.bll.Exceptions;
@@ -23,37 +24,49 @@ namespace game.bll.Infrastructure.Commands.Card
 
         public async Task OnEndRound(BoardCard boardCard)
         {
-            if (User == null) throw new EntityNotFoundException(nameof(ClaimsPrincipal));
+            // Get temaki card entities in the game
             var cards = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.GameId == boardCard.GameId && x.CardType == CardType.MakiRoll && !x.IsCalculated,
+                    filter: x => x.GameId == boardCard.GameId && x.CardType == CardType.Temaki && !x.IsCalculated,
                     transform: x => x.AsNoTracking()
                 );
             if (!cards.Any()) return;
+
+            // Group cards by board and evaluate points
             var boards = cards
                 .GroupBy(c => c.BoardId)
-                .Select(c => new { c.Key, Value = c.Select(cc => int.Parse(cc.AdditionalInfo["temaki"])).Sum() });
+                .Select(c => new { c.Key, Value = c.Count() });
+
+            // Get top points
             var maxCount = boards.MaxBy(b => b.Value)?.Value;
-            var minCount = boards.MinBy(b => b.Value)?.Value;
+            // Find player entities with the top points
             var maxBoards = boards.Where(b => b.Value == maxCount).Select(b => b.Key).ToList();
-            var minBoards = boards.Where(b => b.Value == minCount).Select(b => b.Key).ToList();
-            var minPlayers = _unitOfWork.PlayerRepository.Get(
-                        filter: x => minBoards.Contains(x.BoardId),
-                        transform: x => x.AsNoTracking()
-                        ).ToList();
             var maxPlayers = _unitOfWork.PlayerRepository.Get(
                         filter: x => maxBoards.Contains(x.BoardId),
                         transform: x => x.AsNoTracking()
                         ).ToList();
+            // Add points for each top earner
             foreach (var player in maxPlayers)
             {
                 player.Points += 4;
                 _unitOfWork.PlayerRepository.Update(player);
             }
+
+            // Get bottom points
+            var minCount = boards.MinBy(b => b.Value)?.Value;
+            // Find player entities with the bottom points
+            var minBoards = boards.Where(b => b.Value == minCount).Select(b => b.Key).ToList();
+            var minPlayers = _unitOfWork.PlayerRepository.Get(
+                        filter: x => minBoards.Contains(x.BoardId),
+                        transform: x => x.AsNoTracking()
+                        ).ToList();
+            // Add points for each bottom earner
             foreach (var player in minPlayers)
             {
                 player.Points -= 4;
                 _unitOfWork.PlayerRepository.Update(player);
             }
+
+            // Set calculated flag for every temaki card
             foreach (var card in cards)
             {
                 card.IsCalculated = true;
@@ -62,9 +75,9 @@ namespace game.bll.Infrastructure.Commands.Card
             await _unitOfWork.Save();
         }
 
-        public async Task OnEndTurn(Player player, PlayCardDTO playCardDTO)
+        public async Task OnEndTurn(Player player, HandCard handCard)
         {
-            await _simpleAddToBoard.AddToBoard(_unitOfWork, playCardDTO.HandCardId, player.BoardId, User);
+            await _simpleAddToBoard.AddToBoard(player, handCard);
         }
     }
 }

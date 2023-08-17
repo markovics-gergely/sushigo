@@ -1,4 +1,5 @@
-﻿using shared.dal.Models;
+﻿using game.dal.Types;
+using shared.dal.Models;
 
 namespace game.bll.Infrastructure.ViewModels
 {
@@ -7,10 +8,10 @@ namespace game.bll.Infrastructure.ViewModels
         public Guid Id { get; set; }
         public required string Name { get; set; }
         public required DeckType DeckType { get; set; }
-        public Guid DeckId { get; set; }
         public Guid ActualPlayerId { get; set; }
         public Guid FirstPlayerId { get; set; }
         public int Round { get; set; } = 0;
-        public ICollection<PlayerViewModel> Players { get; set; } = new List<PlayerViewModel>();
+        public Phase Phase { get; set; } = Phase.None;
+        public IEnumerable<PlayerViewModel> Players { get; set; } = new List<PlayerViewModel>();
     }
 }

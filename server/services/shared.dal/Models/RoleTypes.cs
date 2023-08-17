@@ -41,6 +41,11 @@
         public const string LobbyClaim = "lobby";
 
         /// <summary>
+        /// Name of the claim for active lobby
+        /// </summary>
+        public const string GameClaim = "game";
+
+        /// <summary>
         /// Experience needed to claim party role
         /// </summary>
         public const long PartyExp = 100;

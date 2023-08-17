@@ -3,7 +3,6 @@
     public enum Phase
     {
         None,
-        StartGame,
         Turn,
         AfterTurn,
         EndTurn,

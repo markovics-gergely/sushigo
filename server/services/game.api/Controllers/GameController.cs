@@ -1,5 +1,6 @@
 ﻿using game.bll.Infrastructure.Commands;
 using game.bll.Infrastructure.DataTransferObjects;
+using game.bll.Infrastructure.Queries;
 using game.bll.Infrastructure.ViewModels;
 using IdentityServer4.Extensions;
 using MediatR;
@@ -25,6 +26,7 @@ namespace game.api.Controllers
         /// Constructor for dependency injection
         /// </summary>
         /// <param name="mediator"></param>
+        /// <param name="serviceProvider"></param>
         public GameController(IMediator mediator, IServiceProvider serviceProvider)
         {
             _mediator = mediator;
@@ -32,8 +34,22 @@ namespace game.api.Controllers
         }
 
         /// <summary>
+        /// Get game
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult<GameViewModel>> GetGameAsync(CancellationToken cancellationToken)
+        {
+            var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
+            var query = new GetGameQuery(user);
+            return Ok(await _mediator.Send(query, cancellationToken));
+        }
+
+        /// <summary>
         /// Create game
         /// </summary>
+        /// <param name="dto"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost("create")]
@@ -42,6 +58,48 @@ namespace game.api.Controllers
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
             var command = new CreateGameCommand(dto, user);
             return Ok(await _mediator.Send(command, cancellationToken));
+        }
+
+        /// <summary>
+        /// Create game
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost("end-turn")]
+        public async Task<ActionResult<GameViewModel>> EndTurnAsync(CancellationToken cancellationToken)
+        {
+            var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
+            var command = new ProceedEndTurnCommand(user);
+            await _mediator.Send(command, cancellationToken);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Create game
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost("end-round")]
+        public async Task<ActionResult<GameViewModel>> EndRoundAsync(CancellationToken cancellationToken)
+        {
+            var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
+            var command = new ProceedEndRoundCommand(user);
+            await _mediator.Send(command, cancellationToken);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Delete game
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        public async Task<ActionResult<GameViewModel>> RemoveGameAsync(CancellationToken cancellationToken)
+        {
+            var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
+            var command = new RemoveGameCommand(user);
+            await _mediator.Send(command, cancellationToken);
+            return Ok();
         }
     }
 }

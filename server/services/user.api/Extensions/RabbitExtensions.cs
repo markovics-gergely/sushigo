@@ -18,6 +18,7 @@ namespace user.api.Extensions
             {
                 options.AddConsumer<DeckBoughtConsumer>();
                 options.AddConsumer<LobbyJoinedConsumer>();
+                options.AddConsumer<GameJoinedConsumer>();
                 options.SetKebabCaseEndpointNameFormatter();
 
                 options.UsingRabbitMq((context, cfg) =>

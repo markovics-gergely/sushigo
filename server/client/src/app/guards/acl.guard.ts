@@ -24,6 +24,12 @@ export const AclGuard: CanActivateFn = (
     }
     return router.parseUrl(`/lobby/${tokenService.lobby}`);
   }
+  if (tokenService.game) {
+    if (routeName === 'game') {
+      return true;
+    }
+    return router.parseUrl('/game');
+  }
   if (!aclService.can(routeName)) {
     const url = router.parseUrl('login');
     url.queryParams = { returnUrl: state.url };

@@ -1,9 +1,5 @@
-﻿using game.bll.Infrastructure.Commands.Card.Abstract;
-using game.bll.Infrastructure.DataTransferObjects;
+﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.dal.Domain;
-using game.dal.UnitOfWork.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using shared.bll.Exceptions;
 using shared.dal.Models;
 using System.Security.Claims;
 
@@ -11,43 +7,31 @@ namespace game.bll.Infrastructure.Commands.Card
 {
     public class TempuraCommand : ICardCommand<Tempura>
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly ISimpleAddToBoard _simpleAddToBoard;
+        private readonly IAddPointByDelegate _addPointByDelegate;
         public ClaimsPrincipal? User { get; set; }
 
-        public TempuraCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard)
+        public TempuraCommand(ISimpleAddToBoard simpleAddToBoard, IAddPointByDelegate addPointByDelegate)
         {
-            _unitOfWork = unitOfWork;
             _simpleAddToBoard = simpleAddToBoard;
+            _addPointByDelegate = addPointByDelegate;
         }
+
+        /// <summary>
+        /// Point calculation function of the tempura card
+        /// </summary>
+        /// <param name="cards"></param>
+        /// <returns></returns>
+        private static int CalculateAddPoint(IEnumerable<BoardCard> cards) => cards.Count() / 2 * 5;
 
         public async Task OnEndRound(BoardCard boardCard)
         {
-            if (User == null) throw new EntityNotFoundException(nameof(ClaimsPrincipal));
-            var cards = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.BoardId == boardCard.BoardId && x.CardType == CardType.Tempura && !x.IsCalculated,
-                    transform: x => x.AsNoTracking()
-                );
-            if (!cards.Any()) return;
-            var player = _unitOfWork.PlayerRepository.Get(
-                        filter: x => x.BoardId == boardCard.BoardId,
-                        transform: x => x.AsNoTracking()
-                        ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(UramakiCommand));
-            if (player == null) throw new EntityNotFoundException(nameof(player));
-            var points = cards.Count() / 2 * 5;
-            player.Points += points;
-            _unitOfWork.PlayerRepository.Update(player);
-            foreach (var card in cards)
-            {
-                card.IsCalculated = true;
-                _unitOfWork.BoardCardRepository.Update(card);
-            }
-            await _unitOfWork.Save();
+            await _addPointByDelegate.CalculateEndRound(boardCard, CalculateAddPoint);
         }
 
-        public async Task OnEndTurn(Player player, PlayCardDTO playCardDTO)
+        public async Task OnEndTurn(Player player, HandCard handCard)
         {
-            await _simpleAddToBoard.AddToBoard(_unitOfWork, playCardDTO.HandCardId, player.BoardId, User);
+            await _simpleAddToBoard.AddToBoard(player, handCard);
         }
     }
 }

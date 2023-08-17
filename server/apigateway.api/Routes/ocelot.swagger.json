@@ -29,6 +29,16 @@
           "Url": "http://lobby.api/swagger/v1/swagger.json"
         }
       ]
+    },
+    {
+      "Key": "game",
+      "Config": [
+        {
+          "Name": "Game API",
+          "Version": "v1",
+          "Url": "http://game.api/swagger/v1/swagger.json"
+        }
+      ]
     }
   ]
 }

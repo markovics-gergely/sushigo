@@ -42,7 +42,7 @@ namespace shared.bll.Extensions
 
         public static Guid GetGameIdFromJwt(this ClaimsPrincipal claimsPrincipal)
         {
-            return Guid.Parse(claimsPrincipal.Claims.First(x => x.Type == "game").Value);
+            return Guid.Parse(claimsPrincipal.Claims.First(x => x.Type == RoleTypes.GameClaim).Value);
         }
 
         public static bool GetUserHasDeck(this ClaimsPrincipal claimsPrincipal, DeckType deck)

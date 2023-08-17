@@ -1,0 +1,174 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/Card/hand/{handId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "game.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/card/hand/{handId}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "game",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/Card",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "game.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/card",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "game",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/Card/after-turn",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "game.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/card/after-turn",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "game",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/Card/skip-after",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "game.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/card/skip-after",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "game",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/Game",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "game.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/game",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "game",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/Game/create",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "game.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/game/create",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "game",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/Game/end-turn",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "game.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/game/end-turn",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "game",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/Game/end-round",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "game.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/game/end-round",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "game",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/Game",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "game.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/game",
+      "UpstreamHttpMethod": [ "Delete" ],
+      "SwaggerKey": "game",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/files/images/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "game.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/gamefiles/files/images/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "game",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    }
+  ]
+}

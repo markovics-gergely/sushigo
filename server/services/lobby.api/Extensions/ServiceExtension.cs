@@ -32,6 +32,7 @@ namespace lobby.api.Extensions
             services.AddTransient<IRequestHandler<RemovePlayerCommand, LobbyViewModel?>, LobbyCommandHandler>();
             services.AddTransient<IRequestHandler<UpdateLobbyDeckCommand, LobbyViewModel>, LobbyCommandHandler>();
             services.AddTransient<IRequestHandler<PlayerReadyCommand, LobbyViewModel>, LobbyCommandHandler>();
+            services.AddTransient<IRequestHandler<RemoveLobbyCommand, LobbyViewModel?>, LobbyCommandHandler>();
 
             services.AddTransient<IRequestHandler<GetMessagesQuery, IEnumerable<MessageViewModel>>, MessageQueryHandler>();
             services.AddTransient<IRequestHandler<CreateMessageCommand, MessageViewModel>, MessageCommandHandler>();

@@ -37,7 +37,7 @@ namespace shared.bll.Extensions
 
         public static Guid GetPlayerIdFromJwt(this ClaimsPrincipal claimsPrincipal)
         {
-            return Guid.Parse(claimsPrincipal.Claims.First(x => x.Type == "player").Value);
+            return Guid.Parse(claimsPrincipal.Claims.First(x => x.Type == RoleTypes.PlayerClaim).Value);
         }
 
         public static Guid GetGameIdFromJwt(this ClaimsPrincipal claimsPrincipal)

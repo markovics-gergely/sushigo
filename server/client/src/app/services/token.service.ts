@@ -5,6 +5,7 @@ import jwt_decode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DeckType } from 'src/shared/deck.models';
+import { IPlayerViewModel } from 'src/shared/game.models';
 
 @Injectable({
   providedIn: 'root'
@@ -119,6 +120,10 @@ export class TokenService {
   public isOwnLobby(lobbyId?: string): boolean {
     if (!lobbyId || !this.user?.lobby) return false;
     return this.user.lobby === lobbyId;
+  }
+
+  public isOwnPlayer(playerId: string): boolean {
+    return this.user?.player == playerId;
   }
 
   public get game(): string | undefined {

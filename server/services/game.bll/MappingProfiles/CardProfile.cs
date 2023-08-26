@@ -11,7 +11,8 @@ namespace game.bll.MappingProfiles
             CreateMap<Hand, HandViewModel>();
 
             CreateMap<BoardCard, BoardCardViewModel>();
-            CreateMap<Board, BoardViewModel>();
+            CreateMap<Board, BoardViewModel>()
+                .ForMember(b => b.Cards, s => s.MapFrom(b => b.Cards));
         }
     }
 }

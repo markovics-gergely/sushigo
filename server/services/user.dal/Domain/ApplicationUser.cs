@@ -16,6 +16,7 @@ namespace user.dal.Domain
         public Image? Avatar { get; set; }
         public Guid? ActiveLobby { get; set; }
         public Guid? ActiveGame { get; set; }
+        public Guid? ActiveGamePlayer { get; set; }
 
         public ICollection<DeckType> DeckClaims { get; set; } = new List<DeckType>();
 

@@ -46,6 +46,11 @@
         public const string GameClaim = "game";
 
         /// <summary>
+        /// Name of the claim for active game player
+        /// </summary>
+        public const string PlayerClaim = "player";
+
+        /// <summary>
         /// Experience needed to claim party role
         /// </summary>
         public const long PartyExp = 100;

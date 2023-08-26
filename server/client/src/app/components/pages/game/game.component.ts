@@ -34,7 +34,7 @@ export class GameComponent {
     private gameService: GameService
   ) {
     gameService.gameEventEmitter.subscribe((game: IGameViewModel | undefined) => {
-      //this._game = game;
+      this._game = game;
     });
   }
 }

@@ -231,6 +231,7 @@ namespace user.bll.Infrastructure
             }
             userEntity.ActiveLobby = null;
             userEntity.ActiveGame = request.GameJoinedSingleDTO.GameId;
+            userEntity.ActiveGamePlayer = request.GameJoinedSingleDTO.PlayerId;
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
             await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() }, cancellationToken);

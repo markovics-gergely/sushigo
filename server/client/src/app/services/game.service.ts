@@ -6,6 +6,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ConfirmService } from './confirm.service';
 import { LoadingService } from './loading.service';
+import { TokenService } from './token.service';
+import { CardService } from './card.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +22,8 @@ export class GameService extends BaseServiceService {
     private dialog: MatDialog,
     private loadingService: LoadingService,
     private confirmService: ConfirmService,
+    private tokenService: TokenService,
+    private cardService: CardService,
     private router: Router
   ) { super(injector); }
 
@@ -30,6 +34,12 @@ export class GameService extends BaseServiceService {
       .get<IGameViewModel>(this.baseUrl)
       .subscribe((game: IGameViewModel) => {
         this._gameEventEmitter.next(game);
+        const player = game.players.find((p) => this.tokenService.isOwnPlayer(p.id));
+        console.log(player);
+        
+        if (player) {
+          this.cardService.loadHand(player.handId);
+        }
       }).add(() => {
         this.loadingService.stop();
       });

@@ -1,8 +1,7 @@
 ﻿namespace shared.dal.Models
 {
-    public class GameJoinedSingleDTO
+    public class GameJoinedPlayerDTO
     {
-        public Guid? GameId { get; set; }
         public Guid UserId { get; set; }
         public Guid PlayerId { get; set; }
     }

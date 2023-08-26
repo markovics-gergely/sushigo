@@ -2,6 +2,6 @@
 {
     public class BoardViewModel
     {
-        IEnumerable<BoardCardViewModel> Cards { get; set; } = new List<BoardCardViewModel>();
+        public IEnumerable<BoardCardViewModel> Cards { get; set; } = new List<BoardCardViewModel>();
     }
 }

@@ -16,12 +16,13 @@ namespace user.bll.Infrastructure.Consumers
 
         public async Task Consume(ConsumeContext<GameJoinedDTO> context)
         {
-            foreach (var user in context.Message.UserIds)
+            foreach (var user in context.Message.Users)
             {
                 var command = new JoinGameCommand(new GameJoinedSingleDTO
                 {
                     GameId = context.Message.GameId,
-                    UserId = user,
+                    UserId = user.UserId,
+                    PlayerId = user.PlayerId
                 });
                 await _mediator.Send(command, context.CancellationToken);
 

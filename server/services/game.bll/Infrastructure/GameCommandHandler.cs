@@ -115,10 +115,15 @@ namespace game.bll.Infrastructure
             await _unitOfWork.Save();
 
             // Send game created to user management
+            var lobbyId = request.User?.GetUserLobbyFromJwt();
             await _endpoint.Publish(new GameJoinedDTO
             {
-                LobbyId = Guid.Parse(request.User!.GetUserLobbyFromJwt()),
-                UserIds = request.CreateGameDTO.Players.Select(p => p.UserId),
+                LobbyId = string.IsNullOrEmpty(lobbyId) ? Guid.Empty : Guid.Parse(lobbyId),
+                Users = players.Select(p => new GameJoinedPlayerDTO
+                {
+                    UserId = p.UserId,
+                    PlayerId = p.Id
+                }),
                 GameId = game.Id
             }, cancellationToken);
             return _mapper.Map<GameViewModel>(game);
@@ -130,7 +135,7 @@ namespace game.bll.Infrastructure
             var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.User!.GetGameIdFromJwt(),
-                    includeProperties: nameof(Game.Players)
+                    includeProperties: "Players.Board.Cards" // for cache
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
             if (game == null) throw new EntityNotFoundException(nameof(Game));
 
@@ -206,7 +211,7 @@ namespace game.bll.Infrastructure
             var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.User!.GetGameIdFromJwt(),
-                    includeProperties: nameof(Game.Players)
+                    includeProperties: "Players.Board.Cards" // for cache
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
             if (game == null) throw new EntityNotFoundException(nameof(Game));
 

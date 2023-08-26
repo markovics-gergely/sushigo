@@ -47,7 +47,7 @@ namespace user.api.Extensions
                     new ApiResource(
                         configuration.GetValue<string>("Api:ApiResource:Name"),
                         configuration.GetValue<string>("Api:ApiResource:Description"),
-                        new[] { JwtClaimTypes.Role, ClaimTypes.Role, RoleTypes.ExpClaim, RoleTypes.DeckClaim, RoleTypes.AvatarClaim, RoleTypes.LobbyClaim, RoleTypes.GameClaim }
+                        new[] { JwtClaimTypes.Role, ClaimTypes.Role, RoleTypes.ExpClaim, RoleTypes.DeckClaim, RoleTypes.AvatarClaim, RoleTypes.LobbyClaim, RoleTypes.GameClaim, RoleTypes.PlayerClaim }
                     )
                 })
                 .AddAspNetIdentity<ApplicationUser>()
@@ -65,7 +65,7 @@ namespace user.api.Extensions
                 {
                     Name = RoleTypes.RoleScope,
                     DisplayName = RoleTypes.RoleScope,
-                    UserClaims = { JwtClaimTypes.Role, ClaimTypes.Role, RoleTypes.ExpClaim, RoleTypes.DeckClaim, RoleTypes.AvatarClaim, RoleTypes.LobbyClaim, RoleTypes.GameClaim },
+                    UserClaims = { JwtClaimTypes.Role, ClaimTypes.Role, RoleTypes.ExpClaim, RoleTypes.DeckClaim, RoleTypes.AvatarClaim, RoleTypes.LobbyClaim, RoleTypes.GameClaim, RoleTypes.PlayerClaim },
                     ShowInDiscoveryDocument = true,
                     Required = true,
                     Emphasize = true
@@ -89,7 +89,8 @@ namespace user.api.Extensions
                         RoleTypes.DeckClaim,
                         RoleTypes.AvatarClaim,
                         RoleTypes.LobbyClaim,
-                        RoleTypes.GameClaim
+                        RoleTypes.GameClaim,
+                        RoleTypes.PlayerClaim
                     }
                 )
             };

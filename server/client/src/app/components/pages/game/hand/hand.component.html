@@ -28,5 +28,13 @@
     <span class="hand-select-content">Board</span>
     </mat-list-option>
   </mat-selection-list>
-  <div class="card-container"></div>
+  <ng-scrollbar track="horizontal" style="width: 100%;">
+    <div class="card-container" *ngIf="hand?.cards?.length" scrollViewport>
+      <app-card-wrapper
+        class="card-wrapper"
+        *ngFor="let card of hand?.cards"
+        [card]="card"
+      ></app-card-wrapper>
+    </div>
+  </ng-scrollbar>
 </div>

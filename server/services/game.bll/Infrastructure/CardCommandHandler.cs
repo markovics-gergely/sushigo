@@ -101,7 +101,7 @@ namespace game.bll.Infrastructure
             var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == player.GameId,
-                    includeProperties: nameof(Game.Players) // For cache
+                    includeProperties: "Players.Board.Cards" // for cache
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
             if (game == null) throw new EntityNotFoundException(nameof(Game));
 
@@ -152,7 +152,7 @@ namespace game.bll.Infrastructure
             var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.User.GetGameIdFromJwt(),
-                    includeProperties: nameof(Game.Players) // For cache
+                    includeProperties: "Players.Board.Cards" // for cache
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
             if (game == null) throw new EntityNotFoundException(nameof(Game));
 
@@ -174,7 +174,7 @@ namespace game.bll.Infrastructure
             var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.User.GetGameIdFromJwt(),
-                    includeProperties: nameof(Game.Players) // For cache
+                    includeProperties: "Players.Board.Cards" // for cache
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
             if (game == null) throw new EntityNotFoundException(nameof(Game));
 

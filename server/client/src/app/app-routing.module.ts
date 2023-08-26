@@ -53,7 +53,7 @@ const routes: Routes = [
     path: 'game',
     component: GameComponent,
     data: { name: 'game', hub: ['friend', 'game'] },
-    //canActivate: [AclGuard, HubGuard]
+    canActivate: [AclGuard, HubGuard]
   },
   {
     path: '**',

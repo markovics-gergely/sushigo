@@ -16,8 +16,11 @@ namespace lobby.bll.Infrastructure.Consumers
 
         public async Task Consume(ConsumeContext<GameJoinedDTO> context)
         {
-            var command = new RemoveLobbyCommand(context.Message.LobbyId);
-            await _mediator.Send(command, context.CancellationToken);
+            if (!string.IsNullOrEmpty(context.Message.LobbyId.ToString()))
+            {
+                var command = new RemoveLobbyCommand(context.Message.LobbyId);
+                await _mediator.Send(command, context.CancellationToken);
+            }
         }
     }
 }

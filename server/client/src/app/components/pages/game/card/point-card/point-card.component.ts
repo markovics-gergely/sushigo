@@ -8,4 +8,8 @@ import { CardBaseComponent } from '../card-base/card-base.component';
 })
 export class PointCardComponent extends CardBaseComponent {
 
+
+  protected override get imagePath(): string {
+    return `/gamefiles/files/images/${this.card.cardType.toString()}${this.card.additionalInfo['Points']}.png`;
+  }
 }

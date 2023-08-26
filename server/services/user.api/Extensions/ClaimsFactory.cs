@@ -55,6 +55,7 @@ namespace user.api.Extensions
             identity.AddClaims(user.DeckClaims.Select(g => new Claim(RoleTypes.DeckClaim, g.ToString())));
             identity.AddClaim(new Claim(RoleTypes.LobbyClaim, user.ActiveLobby?.ToString() ?? ""));
             identity.AddClaim(new Claim(RoleTypes.GameClaim, user.ActiveGame?.ToString() ?? ""));
+            identity.AddClaim(new Claim(RoleTypes.PlayerClaim, user.ActiveGamePlayer?.ToString() ?? ""));
 
             var userVM = await _mediator.Send(new GetUserByIdQuery(user.Id.ToString()));
             identity.AddClaim(new Claim(RoleTypes.AvatarClaim, userVM.Avatar ?? ""));

@@ -1,34 +1,41 @@
-<div class="show-container">
-  <svg
-    class="show-svg"
-    width="100"
-    height="40"
-    viewBox="0 0 100 40"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M9.05317 3.78732C9.60963 1.56148 11.6095 0 13.9039 0H86.0961C88.3905 0 90.3904 1.56149 90.9468 3.78732L100 40H0L9.05317 3.78732Z"
-      fill="black"
-      fill-opacity="0.2"
-    />
-  </svg>
-  Hand
-</div>
 <div class="hand-container">
-  <mat-selection-list [multiple]="false" hideSingleSelectionIndicator class="hand-select">
-    <mat-list-option class="hand-select-option"
-      value="hand"
-    >
-      <span class="hand-select-content">Hand</span>
+  <mat-selection-list
+    [multiple]="false"
+    hideSingleSelectionIndicator
+    [(ngModel)]="selectedHand"
+    class="hand-select"
+  >
+    <mat-list-option class="hand-select-option" value="hand">
+      <span class="material-symbols-outlined hand-select-content">
+        playing_cards
+      </span>
     </mat-list-option>
-    <mat-list-option class="hand-select-option"
-      value="board"
-    >
-    <span class="hand-select-content">Board</span>
+    <mat-list-option class="hand-select-option" value="board">
+      <span class="material-symbols-outlined hand-select-content">
+        shelf_position
+      </span>
     </mat-list-option>
   </mat-selection-list>
-  <ng-scrollbar track="horizontal" style="width: 100%;">
+  <ng-scrollbar
+    track="horizontal"
+    style="width: 100%"
+    autoHeightDisabled="false"
+    *ngIf="selectedHand.includes('hand')"
+  >
+    <div class="card-container" *ngIf="hand?.cards?.length" scrollViewport>
+      <app-card-wrapper
+        class="card-wrapper"
+        *ngFor="let card of hand?.cards"
+        [card]="card"
+      ></app-card-wrapper>
+    </div>
+  </ng-scrollbar>
+  <ng-scrollbar
+    track="horizontal"
+    style="width: 100%"
+    autoHeightDisabled="false"
+    *ngIf="selectedHand.includes('board')"
+  >
     <div class="card-container" *ngIf="hand?.cards?.length" scrollViewport>
       <app-card-wrapper
         class="card-wrapper"

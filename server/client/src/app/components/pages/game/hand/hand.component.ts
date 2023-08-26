@@ -13,6 +13,8 @@ export class HandComponent {
     return this._hand;
   }
 
+  protected selectedHand = ["hand"];
+
   constructor(private cardService: CardService) {
     this.cardService.handEventEmitter.subscribe((hand: IHandViewModel | undefined) => {
       this._hand = hand;

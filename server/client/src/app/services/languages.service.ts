@@ -17,7 +17,7 @@ export class LanguagesService {
   }
 
   public set language(lang: string | undefined) {
-    this.tokenService.language = lang;
+    this.tokenService.language = lang ?? this.defaultLanguage;
     this.translateService.use(lang ?? this.defaultLanguage);
   }
 

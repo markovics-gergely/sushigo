@@ -24,7 +24,8 @@ namespace user.bll.Infrastructure
         IRequestHandler<ClaimDeckCommand, UserViewModel>,
         IRequestHandler<JoinLobbyCommand, UserViewModel>,
         IRequestHandler<EditUserRoleCommand>,
-        IRequestHandler<JoinGameCommand, UserViewModel>
+        IRequestHandler<JoinGameCommand, UserViewModel>,
+        IRequestHandler<EndGameCommand, UserViewModel>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -232,6 +233,22 @@ namespace user.bll.Infrastructure
             userEntity.ActiveLobby = null;
             userEntity.ActiveGame = request.GameJoinedSingleDTO.GameId;
             userEntity.ActiveGamePlayer = request.GameJoinedSingleDTO.PlayerId;
+            _unitOfWork.UserRepository.Update(userEntity);
+            await _unitOfWork.Save();
+            await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
+            return _mapper.Map<UserViewModel>(userEntity);
+        }
+
+        public async Task<UserViewModel> Handle(EndGameCommand request, CancellationToken cancellationToken)
+        {
+            var userEntity = _unitOfWork.UserRepository.Get(filter: x => x.Id == request.GameEndDTO.UserId).FirstOrDefault();
+            if (userEntity == null)
+            {
+                throw new EntityNotFoundException(nameof(ApplicationUser));
+            }
+            userEntity.ActiveGame = null;
+            userEntity.ActiveGamePlayer = null;
+            userEntity.Experience += request.GameEndDTO.Points;
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
             await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() }, cancellationToken);

@@ -32,6 +32,9 @@ export class TokenService {
     } else if(this.router.url.startsWith('/lobby/')) {
       this.router.navigateByUrl('/lobby');
     }
+    if (this.user?.game) {
+      this.router.navigateByUrl(`/game/${this.user.game}`);
+    }
   }
 
   private set token(token: string) {
@@ -122,11 +125,15 @@ export class TokenService {
     return this.user.lobby === lobbyId;
   }
 
-  public isOwnPlayer(playerId: string): boolean {
+  public isOwnPlayer(playerId?: string): boolean {
     return this.user?.player == playerId;
   }
 
   public get game(): string | undefined {
     return this.user?.game;
+  }
+
+  public get player(): string | undefined {
+    return this.user?.player;
   }
 }

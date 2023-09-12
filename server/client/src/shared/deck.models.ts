@@ -15,6 +15,7 @@ export interface IDeckItemViewModel {
   imageLoaded?: boolean;
   minPlayer: number;
   maxPlayer: number;
+  cardTypes: CardType[];
 }
 
 export interface IBuyDeckDTO {
@@ -58,6 +59,69 @@ export enum CardType {
   GreenTeaIceCream,
   Fruit,
   Pudding,
+}
+export enum SelectType {
+  None,
+  OwnHandCard,
+  OwnBoardCard,
+  OwnBoardCards,
+  CardType,
+}
+
+const isNumeric = (value: string): boolean => !new RegExp(/[^\d]/g).test(value.trim());
+
+export class CardTypeUtil {
+  public static getSelectType(cardType: CardType): SelectType {
+    switch (CardType[cardType.toString() as keyof typeof CardType]) {
+      case CardType.SpecialOrder:
+        return SelectType.OwnBoardCard;
+      case CardType.TakeoutBox:
+        return SelectType.OwnBoardCards;
+      default:
+        return SelectType.None;
+    }
+  }
+  public static getSelectTypeAfterPlay(cardType: CardType): SelectType {
+    switch (CardType[cardType.toString() as keyof typeof CardType]) {
+      case CardType.Chopsticks:
+        return SelectType.OwnHandCard;
+      case CardType.Spoon:
+        return SelectType.CardType;
+      default:
+        return SelectType.None;
+    }
+  }
+  public static getString(cardType: number | string): string {
+    if (typeof cardType === 'number') {
+      return CardType[cardType];
+    } else if (isNumeric(cardType)) {
+      return CardType[parseInt(cardType)];
+    }
+    return cardType;
+  }
+  public static hasAfterTurn(cardType: CardType): boolean {
+    switch (CardType[CardTypeUtil.getString(cardType) as keyof typeof CardType]) {
+      case CardType.Chopsticks:
+      case CardType.Spoon:
+        return true;
+      default:
+        return false;
+    }
+  }
+}
+
+export class DeckTypeUtil {
+  public static getString(deckType: number | string): string {
+    if (typeof deckType === 'number') {
+      return DeckType[deckType];
+    } else if (isNumeric(deckType)) {
+      return DeckType[parseInt(deckType)];
+    }
+    return deckType;
+  }
+  public static equals(deckType: DeckType, deckType2: DeckType): boolean {
+    return DeckTypeUtil.getString(deckType) === DeckTypeUtil.getString(deckType2);
+  }
 }
 
 export enum SushiType {

@@ -3,6 +3,7 @@ using game.api.Hubs;
 using game.dal;
 using Hangfire;
 using Hellang.Middleware.ProblemDetails;
+using IdentityServer4.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using shared.Api.Extensions;
@@ -19,6 +20,7 @@ builder.Services.AddDbContext<GameDbContext>(options =>
     {
         opt.EnableRetryOnFailure();
     }).EnableSensitiveDataLogging();
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
 builder.Services.AddAutoMapperExtensions();
@@ -48,6 +50,14 @@ builder.Services.AddStackExchangeRedisCache(options => {
 builder.Services.AddHangfireExtension(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSingleton<ICorsPolicyService>((container) => {
+    var logger = container.GetRequiredService<ILogger<DefaultCorsPolicyService>>();
+    return new DefaultCorsPolicyService(logger)
+    {
+        AllowAll = true
+    };
+});
 
 var app = builder.Build();
 

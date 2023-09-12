@@ -8,10 +8,12 @@ namespace user.bll.Infrastructure.Consumers
     public class GameJoinedConsumer : IConsumer<GameJoinedDTO>
     {
         private readonly IMediator _mediator;
+        private readonly IPublishEndpoint _endpoint;
 
-        public GameJoinedConsumer(IMediator mediator)
+        public GameJoinedConsumer(IMediator mediator, IPublishEndpoint endpoint)
         {
             _mediator = mediator;
+            _endpoint = endpoint;
         }
 
         public async Task Consume(ConsumeContext<GameJoinedDTO> context)
@@ -25,8 +27,8 @@ namespace user.bll.Infrastructure.Consumers
                     PlayerId = user.PlayerId
                 });
                 await _mediator.Send(command, context.CancellationToken);
-
             }
+            await _endpoint.Publish(new LobbyRemoveDTO { LobbyId = context.Message.LobbyId });
         }
     }
 }

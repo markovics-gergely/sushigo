@@ -2,6 +2,7 @@ import { DeckType } from "./deck.models";
 
 export interface IPlayerViewModel {
     id: string;
+    userId: string;
     userName: string;
     imagePath?: string;
     imageLoaded?: boolean;

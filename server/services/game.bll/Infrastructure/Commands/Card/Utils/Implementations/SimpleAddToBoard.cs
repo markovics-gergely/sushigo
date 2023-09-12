@@ -22,7 +22,7 @@ namespace game.bll.Infrastructure.Commands.Card.Utils.Implementations
 
             // Get free wasabi entity of the player if there is any
             var wasabi = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.BoardId == player.BoardId && x.CardType == CardType.Wasabi && !x.AdditionalInfo.ContainsKey(Additional.Tagged),
+                    filter: x => x.BoardId == player.BoardId && x.CardType == CardType.Wasabi,
                     transform: x => x.AsNoTracking()
                 ).FirstOrDefault();
             
@@ -39,11 +39,11 @@ namespace game.bll.Infrastructure.Commands.Card.Utils.Implementations
             };
 
             // If there was a wasabi to use
-            if (wasabi != null)
+            if (wasabi != null && !wasabi.AdditionalInfo.ContainsKey(Additional.Tagged))
             {
                 // Set flag for the wasabi and the nigiri card
-                wasabi.AdditionalInfo.Add(Additional.Tagged, "used");
-                boardCard.AdditionalInfo.Add(Additional.Tagged, "added");
+                wasabi.AdditionalInfo.TryAdd(Additional.Tagged, "used");
+                boardCard.AdditionalInfo.TryAdd(Additional.Tagged, "added");
                 _unitOfWork.BoardCardRepository.Update(wasabi);
             }
 

@@ -167,5 +167,27 @@
       "submit": "Save",
       "cancel": "Cancel"
     }
+  },
+  "game": {
+    "phase": {
+      "Turn": "In turn of {{player}}",
+      "AfterTurn": "After turn of {{player}} ",
+      "EndTurn": "End of turn",
+      "EndRound": "End of round",
+      "EndGame": "End of game"
+    },
+    "button": {
+      "end-turn": "End the turn",
+      "end-round": "End the round",
+      "skip-after": "Skip"
+    },
+    "round": "Round {{round}}",
+    "name": "Name: {{name}}",
+    "deck": "Deck: {{deck}}",
+    "card-select": {
+      "title": "Select a card",
+      "submit": "Select",
+      "cancel": "Cancel"
+    }
   }
 }

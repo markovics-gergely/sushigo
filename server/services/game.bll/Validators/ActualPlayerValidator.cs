@@ -1,12 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using game.dal.Domain;
+using shared.bll.Extensions;
+using shared.bll.Validators.Interfaces;
+using System.Security.Claims;
 
 namespace game.bll.Validators
 {
-    internal class ActualPlayerValidator
+    public class ActualPlayerValidator : IValidator
     {
+        private readonly Game _game;
+        private readonly ClaimsPrincipal? _user;
+
+        public ActualPlayerValidator(Game game, ClaimsPrincipal? user)
+        {
+            _game = game;
+            _user = user;
+        }
+
+        public bool Validate()
+        {
+            return _game.ActualPlayerId == _user?.GetPlayerIdFromJwt();
+        }
     }
 }

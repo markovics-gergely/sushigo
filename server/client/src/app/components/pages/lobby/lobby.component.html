@@ -43,6 +43,7 @@
       mat-flat-button
       *ngIf="isCreator"
       [disabled]="!valid"
+      (click)="start()"
     >
       <i class="bx bx-send"></i>
     </button>

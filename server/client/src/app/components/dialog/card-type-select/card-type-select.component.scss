@@ -1,0 +1,47 @@
+.edit-cover {
+  border: 2px solid var(--color-primary-dark);
+  border-radius: 5px;
+  background-color: rgba($color: #000000, $alpha: 0.4);
+  max-height: 116px;
+  width: auto;
+  height: auto;
+  margin: 2px;
+  cursor: pointer;
+  img {
+    object-fit: contain;
+  }
+}
+.radio-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  .mdc-radio {
+    display: none;
+  }
+  .mat-mdc-radio-checked {
+    .edit-cover {
+      border: 2px solid var(--color-primary);
+      background-color: rgba($color: #000000, $alpha: 0.2);
+    }
+  }
+}
+.mat-toolbar {
+  margin-top: 10px !important;
+  .toolbar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    .deck-name {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: var(--color-primary);
+    }
+    .deck-desc {
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: var(--color-text);
+    }
+  }
+}

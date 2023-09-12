@@ -11,7 +11,8 @@ using System.Text;
 namespace game.bll.Infrastructure
 {
     public class GameNotificationHandler :
-        INotificationHandler<RefreshGameEvent>
+        INotificationHandler<RefreshGameEvent>,
+        INotificationHandler<RemoveGameEvent>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IServiceProvider _serviceProvider;
@@ -35,6 +36,11 @@ namespace game.bll.Infrastructure
             var options = new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(_settings.SlidingExpiration) };
             var serializedData = Encoding.Default.GetBytes(JsonConvert.SerializeObject(notification.GameViewModel));
             await _cache.SetAsync($"game-{notification.GameViewModel.Id}", serializedData, options, cancellationToken);
+        }
+
+        public async Task Handle(RemoveGameEvent notification, CancellationToken cancellationToken)
+        {
+            await _cache.RemoveAsync($"game-{notification.GameId}", cancellationToken);
         }
     }
 }

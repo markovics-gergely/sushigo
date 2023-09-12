@@ -16,7 +16,7 @@ namespace game.bll.Infrastructure.Commands.Card.Utils.Implementations
         public async Task CalculateEndRound(BoardCard boardCard, int point)
         {
             var player = _unitOfWork.PlayerRepository.Get(
-                    transform: x => x.AsNoTracking(),
+                    transform: x => x.AsNoTrackingWithIdentityResolution(),
                     filter: x => x.BoardId == boardCard.BoardId
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(SimpleAddPoint));
             if (player == null) return;

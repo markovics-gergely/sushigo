@@ -31,6 +31,7 @@ namespace user.api.Extensions
             services.AddTransient<IRequestHandler<EditUserRoleCommand>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<JoinLobbyCommand, UserViewModel>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<JoinGameCommand, UserViewModel>, UserCommandHandler>();
+            services.AddTransient<IRequestHandler<EndGameCommand, UserViewModel>, UserCommandHandler>();
 
             services.AddTransient<IRequestHandler<AddFriendCommand, UserNameViewModel>, FriendCommandHandler>();
             services.AddTransient<IRequestHandler<RemoveFriendCommand>, FriendCommandHandler>();

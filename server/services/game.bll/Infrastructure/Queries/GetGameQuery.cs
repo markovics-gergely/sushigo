@@ -13,9 +13,10 @@ namespace game.bll.Infrastructure.Queries
         public string CacheKey => $"game-{User?.GetGameIdFromJwt()}";
         public TimeSpan? SlidingExpiration { get; set; }
 
-        public GetGameQuery(ClaimsPrincipal? user = null)
+        public GetGameQuery(ClaimsPrincipal? user = null, bool bypass = false)
         {
             User = user;
+            BypassCache = bypass;
         }
     }
 }

@@ -1,13 +1,14 @@
 import { Injectable, Injector } from '@angular/core';
 import { BaseServiceService } from './abstract/base-service.service';
-import { ICreateGameDTO, IGameViewModel } from 'src/shared/game.models';
-import { BehaviorSubject } from 'rxjs';
+import { ICreateGameDTO, IGameViewModel, Phase, PhaseUtil } from 'src/shared/game.models';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ConfirmService } from './confirm.service';
 import { LoadingService } from './loading.service';
 import { TokenService } from './token.service';
 import { CardService } from './card.service';
+import { DeckType } from 'src/shared/deck.models';
 
 @Injectable({
   providedIn: 'root'
@@ -34,12 +35,7 @@ export class GameService extends BaseServiceService {
       .get<IGameViewModel>(this.baseUrl)
       .subscribe((game: IGameViewModel) => {
         this._gameEventEmitter.next(game);
-        const player = game.players.find((p) => this.tokenService.isOwnPlayer(p.id));
-        console.log(player);
-        
-        if (player) {
-          this.cardService.loadHand(player.handId);
-        }
+        this.cardService.loadHand();
       }).add(() => {
         this.loadingService.stop();
       });
@@ -52,13 +48,17 @@ export class GameService extends BaseServiceService {
   public removeGame(): void {
     this.confirmService.confirm('game.delete').subscribe((result: boolean) => {
       if (result) {
-        this.client.delete(this.baseUrl);
+        this.loadingService.start();
+        this.client.delete(this.baseUrl).subscribe({
+        }).add(() => {
+          this.loadingService.stop();
+        });
       }
     });
   }
 
-  public createGame(dto: ICreateGameDTO): void {
-    this.client.post(`${this.baseUrl}/create`, dto);
+  public createGame(dto: ICreateGameDTO): Observable<void> {
+    return this.client.post<void>(`${this.baseUrl}/create`, dto);
   }
 
   public endTurn(): void {
@@ -71,5 +71,38 @@ export class GameService extends BaseServiceService {
 
   public refreshGame(game: IGameViewModel): void {
     this._gameEventEmitter.next(game);
+    this.cardService.loadHand();
+  }
+
+  public proceedEndTurn(): Observable<void> {
+    return this.client.post<void>(`${this.baseUrl}/end-turn`, {});
+  }
+
+  public proceedEndRound(): Observable<void> {
+    return this.client.post<void>(`${this.baseUrl}/end-round`, {});
+  }
+
+  public get canEndTurn(): boolean {
+    return this.tokenService.isOwnPlayer(this._gameEventEmitter.value?.actualPlayerId) && PhaseUtil.equals(this._gameEventEmitter.value?.phase, Phase.EndTurn);
+  }
+
+  public get canEndRound(): boolean {
+    return this.tokenService.isOwnPlayer(this._gameEventEmitter.value?.actualPlayerId) && PhaseUtil.equals(this._gameEventEmitter.value?.phase, Phase.EndRound);
+  }
+
+  public get canPlayCard(): boolean {
+    return this.tokenService.isOwnPlayer(this._gameEventEmitter.value?.actualPlayerId) && PhaseUtil.equals(this._gameEventEmitter.value?.phase, Phase.Turn);
+  }
+
+  public get canPlayAfterCard(): boolean {
+    return this.tokenService.isOwnPlayer(this._gameEventEmitter.value?.actualPlayerId) && PhaseUtil.equals(this._gameEventEmitter.value?.phase, Phase.AfterTurn);
+  }
+
+  public get deckType(): DeckType {
+    return this._gameEventEmitter.value?.deckType ?? DeckType.SushiGo;
+  }
+
+  public get isFirst(): boolean {
+    return this.tokenService.isOwnPlayer(this._gameEventEmitter.value?.actualPlayerId);
   }
 }

@@ -15,7 +15,8 @@ namespace shop.bll.MappingProfiles
             CreateMap<Deck, DeckItemViewModel>()
                 .ForMember(d => d.MinPlayer, opt => opt.MapFrom(v => v.DeckType.GetMinPlayer()))
                 .ForMember(d => d.MaxPlayer, opt => opt.MapFrom(v => v.DeckType.GetMaxPlayer()))
-                .ForMember(d => d.ImagePath, opt => opt.ConvertUsing<ImageDisplayUrlConverter, string>(src => src.ImagePath));
+                .ForMember(d => d.ImagePath, opt => opt.ConvertUsing<ImageDisplayUrlConverter, string>(src => src.ImagePath))
+                .ForMember(d => d.CardTypes, opt => opt.MapFrom(v => v.Cards.Select(c => c.CardType)));
         }
     }
 }

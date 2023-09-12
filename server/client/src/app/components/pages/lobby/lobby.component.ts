@@ -6,6 +6,7 @@ import { ILobbyViewModel, IPlayerViewModel } from 'src/shared/lobby.models';
 import { IDeckItemViewModel } from 'src/shared/deck.models';
 import { ShopService } from 'src/app/services/shop.service';
 import { TokenService } from 'src/app/services/token.service';
+import { GameService } from 'src/app/services/game.service';
 
 @Component({
   selector: 'app-lobby',
@@ -22,12 +23,15 @@ export class LobbyComponent {
     private loadingService: LoadingService,
     private lobbyService: LobbyService,
     private shopService: ShopService,
-    private tokenService: TokenService
-  ) { }
+    private tokenService: TokenService,
+    private gameService: GameService
+  ) {}
 
   ngOnInit(): void {
     this.lobbyService.lobbyEventEmitter.subscribe({
-      next: (lobby: ILobbyViewModel | undefined) => { this.processLobby(lobby); }
+      next: (lobby: ILobbyViewModel | undefined) => {
+        this.processLobby(lobby);
+      },
     });
     this.route.params.subscribe((params) => {
       if (params['id']) {
@@ -48,13 +52,15 @@ export class LobbyComponent {
     this._lobby = lobby;
     if (lobby) {
       console.log(lobby);
-      
-      this.shopService.getDeck(lobby.deckType).subscribe((deck: IDeckItemViewModel) => {
-        console.log(deck);
-        
-        this._deck = deck;
-        this._deck.imageLoaded = true;
-      });
+
+      this.shopService
+        .getDeck(lobby.deckType)
+        .subscribe((deck: IDeckItemViewModel) => {
+          console.log(deck);
+
+          this._deck = deck;
+          this._deck.imageLoaded = true;
+        });
     } else {
       this._deck = undefined;
     }
@@ -69,7 +75,9 @@ export class LobbyComponent {
   }
 
   public get own(): IPlayerViewModel | undefined {
-    return this._lobby?.players.find((p) => p.userName === this.tokenService.user?.name);
+    return this._lobby?.players.find(
+      (p) => p.userName === this.tokenService.user?.name
+    );
   }
 
   public get isCreator(): boolean {
@@ -79,23 +87,33 @@ export class LobbyComponent {
   public get validCount(): boolean {
     return Boolean(
       this._lobby &&
-      this._deck &&
-      this._lobby.players.length >= this._deck.minPlayer &&
-      this._lobby.players.length <= this._deck.maxPlayer
+        this._deck &&
+        this._lobby.players.length >= this._deck.minPlayer &&
+        this._lobby.players.length <= this._deck.maxPlayer
     );
   }
 
   public get valid(): boolean {
-    return Boolean(this.validCount && this._lobby?.players.every((p) => p.ready));
+    return Boolean(
+      this.validCount && this._lobby?.players.every((p) => p.ready)
+    );
   }
 
   public leave(): void {
     if (!this.own || !this._lobby) return;
-    this.lobbyService.leave({ playerId: this.own.id, lobbyId: this._lobby.id }, this.isCreator);
+    this.lobbyService.leave(
+      { playerId: this.own.id, lobbyId: this._lobby.id },
+      this.isCreator
+    );
   }
 
   public remove(player: IPlayerViewModel) {
-    if (!this._lobby || !this.isCreator || this._lobby.creatorUserName === player.userName) return;
+    if (
+      !this._lobby ||
+      !this.isCreator ||
+      this._lobby.creatorUserName === player.userName
+    )
+      return;
     this.lobbyService.remove({ playerId: player.id, lobbyId: this._lobby.id });
   }
 
@@ -106,15 +124,38 @@ export class LobbyComponent {
   public ready(): void {
     if (!this.own) return;
     this.loadingService.start();
-    this.lobbyService.ready({ playerId: this.own.id, ready: !this.own.ready }).subscribe({
-      next: (lobby: ILobbyViewModel) => { this.processLobby(lobby); }
-    }).add(() => {
-      this.loadingService.stop();
-    });
+    this.lobbyService
+      .ready({ playerId: this.own.id, ready: !this.own.ready })
+      .subscribe({
+        next: (lobby: ILobbyViewModel) => {
+          this.processLobby(lobby);
+        },
+      })
+      .add(() => {
+        this.loadingService.stop();
+      });
   }
 
   public edit(): void {
     if (!this._lobby) return;
-    this.lobbyService.startEditLobbyDeck(this._lobby.deckType, this._lobby.id).subscribe();
+    this.lobbyService
+      .startEditLobbyDeck(this._lobby.deckType, this._lobby.id)
+      .subscribe();
+  }
+
+  public start(): void {
+    if (!this._lobby) return;
+    this.loadingService.start();
+    this.gameService.createGame({
+      name: this._lobby.name,
+      deckType: this._lobby.deckType,
+      players: this._lobby.players.map((p) => ({
+        userId: p.userId,
+        userName: p.userName,
+        imagePath: p.imagePath,
+      })),
+    }).subscribe({}).add(() => {
+      this.loadingService.stop();
+    });
   }
 }

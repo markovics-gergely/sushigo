@@ -12,6 +12,7 @@ namespace shared.dal.Repository.Implementations
         public GenericRepository(IDbContextProvider contextProvider)
         {
             context = contextProvider.GetDbContext();
+            context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTrackingWithIdentityResolution;
             dbSet = context.Set<TEntity>();
         }
 

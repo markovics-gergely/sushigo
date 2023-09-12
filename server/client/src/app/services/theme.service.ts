@@ -14,6 +14,9 @@ export class ThemeService {
   }
 
   public get theme(): string | undefined {
+    if (!this.tokenService.theme) {
+      this.init();
+    }
     return this.tokenService.theme;
   }
 

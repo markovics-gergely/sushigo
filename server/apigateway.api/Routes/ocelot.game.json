@@ -18,6 +18,23 @@
       }
     },
     {
+      "DownstreamPathTemplate": "/Card/hand",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "game.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/card/hand",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "game",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
       "DownstreamPathTemplate": "/Card",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

@@ -45,177 +45,177 @@ namespace shop.dal.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2b73a059-b15a-4eb1-b88a-1275ba85d335"),
+                            Id = new Guid("73527941-b903-4f2e-9469-04d13ad37e34"),
                             ImagePath = "/cards/EggNigiri.png",
                             SushiType = 0,
                             Type = 0
                         },
                         new
                         {
-                            Id = new Guid("df9d0598-6c7b-47b5-82eb-e6ed459c6272"),
+                            Id = new Guid("d842190a-183a-4c35-a88d-8256753f1eca"),
                             ImagePath = "/cards/SalmonNigiri.png",
                             SushiType = 0,
                             Type = 1
                         },
                         new
                         {
-                            Id = new Guid("6656dc8f-1b2d-4fc2-8bbb-5d7d3cf7d5b2"),
+                            Id = new Guid("59f7cdbd-fa48-4348-ade6-45f8923d84f3"),
                             ImagePath = "/cards/SquidNigiri.png",
                             SushiType = 0,
                             Type = 2
                         },
                         new
                         {
-                            Id = new Guid("7580528f-3851-4ffd-b309-9f13d510392b"),
+                            Id = new Guid("f7d4abd9-b382-47a6-9e76-3eba0b606c6d"),
                             ImagePath = "/cards/MakiRoll.png",
-                            SushiType = 3,
+                            SushiType = 1,
                             Type = 3
                         },
                         new
                         {
-                            Id = new Guid("5e14949e-1ccf-47b2-8a86-888e52a0275c"),
+                            Id = new Guid("6c9eba45-abbc-4eef-8959-df76bb1f94b9"),
                             ImagePath = "/cards/Temaki.png",
-                            SushiType = 3,
+                            SushiType = 1,
                             Type = 4
                         },
                         new
                         {
-                            Id = new Guid("b6e25b27-e3fa-41ca-9683-8b1ab99f4ea4"),
+                            Id = new Guid("ef0b02dd-944a-4359-ad36-0b5280b77ca3"),
                             ImagePath = "/cards/Uramaki.png",
-                            SushiType = 5,
+                            SushiType = 1,
                             Type = 5
                         },
                         new
                         {
-                            Id = new Guid("b08938ca-b3d3-42b5-ae60-e27fdec1ad7b"),
+                            Id = new Guid("85ebefd3-ed02-45be-982c-696b98084136"),
                             ImagePath = "/cards/Dumpling.png",
-                            SushiType = 5,
+                            SushiType = 2,
                             Type = 6
                         },
                         new
                         {
-                            Id = new Guid("1d61c7ea-faf7-47e1-8fac-b67fe846af23"),
+                            Id = new Guid("3f92b303-b023-496e-8795-217274917672"),
                             ImagePath = "/cards/Edamame.png",
-                            SushiType = 5,
+                            SushiType = 2,
                             Type = 7
                         },
                         new
                         {
-                            Id = new Guid("85d0c512-abe6-4c32-936f-8ca635375861"),
+                            Id = new Guid("b073befa-621b-4184-b44f-5643d4d12ab2"),
                             ImagePath = "/cards/Eel.png",
-                            SushiType = 5,
+                            SushiType = 2,
                             Type = 8
                         },
                         new
                         {
-                            Id = new Guid("9b51b684-6b00-49ab-b9b8-e9ef98aa2234"),
+                            Id = new Guid("3d270093-98d6-4f6c-85e2-ec6f48790fc9"),
                             ImagePath = "/cards/Onigiri.png",
-                            SushiType = 5,
+                            SushiType = 2,
                             Type = 9
                         },
                         new
                         {
-                            Id = new Guid("b5aaa6fb-e8ab-492b-99d7-a8bb31a2e0d0"),
+                            Id = new Guid("d07f87ff-022a-4803-8742-725616004d9d"),
                             ImagePath = "/cards/MisoSoup.png",
-                            SushiType = 5,
+                            SushiType = 2,
                             Type = 10
                         },
                         new
                         {
-                            Id = new Guid("0ecc53be-db3f-434b-8750-f0f7b108e869"),
+                            Id = new Guid("e92bf631-7312-4f34-999d-9aaf415323bc"),
                             ImagePath = "/cards/Sashimi.png",
-                            SushiType = 5,
+                            SushiType = 2,
                             Type = 11
                         },
                         new
                         {
-                            Id = new Guid("f64687a8-a874-4b4e-8956-96fc84b13b82"),
+                            Id = new Guid("7335fa88-94d4-4997-8bb1-89555cb911bb"),
                             ImagePath = "/cards/Tempura.png",
-                            SushiType = 5,
+                            SushiType = 2,
                             Type = 12
                         },
                         new
                         {
-                            Id = new Guid("259241c4-10cc-4279-b520-c0eff1d04d21"),
+                            Id = new Guid("c814c368-f859-455a-b7d2-8a47debcf172"),
                             ImagePath = "/cards/Tofu.png",
-                            SushiType = 13,
+                            SushiType = 2,
                             Type = 13
                         },
                         new
                         {
-                            Id = new Guid("ca74570c-7675-4cd3-ad20-1aee3c4fcf80"),
+                            Id = new Guid("6470ca1d-25c7-4144-9dd4-276d229a0758"),
                             ImagePath = "/cards/Chopsticks.png",
-                            SushiType = 13,
+                            SushiType = 3,
                             Type = 14
                         },
                         new
                         {
-                            Id = new Guid("38705911-6b40-4a9a-9413-0f04a0d995d5"),
+                            Id = new Guid("986eeaf3-fd9f-41d6-a338-6572030a3f3b"),
                             ImagePath = "/cards/Menu.png",
-                            SushiType = 13,
+                            SushiType = 3,
                             Type = 15
                         },
                         new
                         {
-                            Id = new Guid("a7ce3912-4ea2-4793-b6c0-d098233ed925"),
+                            Id = new Guid("16e1545b-4b66-4abf-b008-2be9bd1e3fec"),
                             ImagePath = "/cards/SoySauce.png",
-                            SushiType = 13,
+                            SushiType = 3,
                             Type = 16
                         },
                         new
                         {
-                            Id = new Guid("7ab7c652-ef5a-48e3-98ce-06b6a5bc8ef8"),
+                            Id = new Guid("3f4aaf5c-ff98-40ea-8e4f-e180a138388c"),
                             ImagePath = "/cards/Spoon.png",
-                            SushiType = 13,
+                            SushiType = 3,
                             Type = 17
                         },
                         new
                         {
-                            Id = new Guid("e9a85b71-5077-4723-930e-4664933584cf"),
+                            Id = new Guid("95ee587a-42fc-44ee-9433-4a9084148c1d"),
                             ImagePath = "/cards/SpecialOrder.png",
-                            SushiType = 13,
+                            SushiType = 3,
                             Type = 18
                         },
                         new
                         {
-                            Id = new Guid("dda78d02-3b6b-4fef-9de8-0b20d20ba72a"),
+                            Id = new Guid("065611f2-5501-4c02-b4c4-9c61169cbc66"),
                             ImagePath = "/cards/TakeoutBox.png",
-                            SushiType = 13,
+                            SushiType = 3,
                             Type = 19
                         },
                         new
                         {
-                            Id = new Guid("a73c066d-3837-4096-98b3-b7418bbd0023"),
+                            Id = new Guid("d1ba5bf8-31e5-4624-a5e3-a1757bb8d6bb"),
                             ImagePath = "/cards/Tea.png",
-                            SushiType = 13,
+                            SushiType = 3,
                             Type = 20
                         },
                         new
                         {
-                            Id = new Guid("21b94c81-0278-4b6a-a066-ce5a5b195e4b"),
+                            Id = new Guid("0476464f-5e40-47b1-a5f1-f0b9e3903579"),
                             ImagePath = "/cards/Wasabi.png",
-                            SushiType = 21,
+                            SushiType = 3,
                             Type = 21
                         },
                         new
                         {
-                            Id = new Guid("b09141ed-73ea-429d-a55e-bdbf81367a52"),
+                            Id = new Guid("bb062eac-fff6-495c-84df-c181925e92a9"),
                             ImagePath = "/cards/GreenTeaIceCream.png",
-                            SushiType = 21,
+                            SushiType = 4,
                             Type = 22
                         },
                         new
                         {
-                            Id = new Guid("000ed01f-8076-477a-b6c9-6b904fd1b72f"),
+                            Id = new Guid("72ad82f6-0a98-4c8c-8649-38032dc0721b"),
                             ImagePath = "/cards/Fruit.png",
-                            SushiType = 21,
+                            SushiType = 4,
                             Type = 23
                         },
                         new
                         {
-                            Id = new Guid("cd6c5a6e-3f5f-48bf-8b2e-272435b6760d"),
+                            Id = new Guid("d0abb279-d897-40e0-8624-4ebe12fd6e52"),
                             ImagePath = "/cards/Pudding.png",
-                            SushiType = 24,
+                            SushiType = 4,
                             Type = 24
                         });
                 });
@@ -243,56 +243,56 @@ namespace shop.dal.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("9583ddba-7c9b-45d2-a921-8d394f98363f"),
+                            Id = new Guid("f0f67a12-5f98-4ba6-8031-c20f3193a326"),
                             Cost = 50L,
                             DeckType = 0,
                             ImagePath = "/decks/MyFirstMeal.png"
                         },
                         new
                         {
-                            Id = new Guid("c8f2b614-5330-451e-a3e7-13ad7ebc98a0"),
+                            Id = new Guid("fe484141-ee6d-4029-8498-5d3cfac9adb0"),
                             Cost = 50L,
                             DeckType = 1,
                             ImagePath = "/decks/SushiGo.png"
                         },
                         new
                         {
-                            Id = new Guid("7c74074d-ab6c-41a3-87b2-19078174423b"),
+                            Id = new Guid("e6ee5f1c-f2aa-4ab2-981f-5c5544e58cec"),
                             Cost = 50L,
                             DeckType = 2,
                             ImagePath = "/decks/PartySampler.png"
                         },
                         new
                         {
-                            Id = new Guid("47998cfe-61b6-4bbf-9035-14d2aa0c5332"),
+                            Id = new Guid("878dcfaa-738a-4c7b-bd98-5045a37a8932"),
                             Cost = 50L,
                             DeckType = 3,
                             ImagePath = "/decks/MasterMenu.png"
                         },
                         new
                         {
-                            Id = new Guid("70ba49e2-3d0c-4f84-a559-ef7c1dd3af6b"),
+                            Id = new Guid("3177fa4a-f09f-4083-a6f4-d5e5d2f2fa68"),
                             Cost = 50L,
                             DeckType = 4,
                             ImagePath = "/decks/PointsPlatter.png"
                         },
                         new
                         {
-                            Id = new Guid("e4c9951f-f371-405b-9102-9a66fb62f96c"),
+                            Id = new Guid("a743fb13-aad3-4459-af8d-8c96f560b5c4"),
                             Cost = 50L,
                             DeckType = 5,
                             ImagePath = "/decks/CutThroatCombo.png"
                         },
                         new
                         {
-                            Id = new Guid("0546c1d2-5b4d-4e51-940f-8a5e93d7dd79"),
+                            Id = new Guid("9fe2a730-f7f1-4ca7-a6fe-5d3ce7c6885c"),
                             Cost = 50L,
                             DeckType = 6,
                             ImagePath = "/decks/BigBanquet.png"
                         },
                         new
                         {
-                            Id = new Guid("e265f7fa-a62f-4b32-888a-ed891f1b71b2"),
+                            Id = new Guid("9c5c6df6-2eac-487f-9f66-60a7f686e823"),
                             Cost = 50L,
                             DeckType = 7,
                             ImagePath = "/decks/DinnerForTwo.png"
@@ -307,6 +307,9 @@ namespace shop.dal.Migrations
                     b.Property<int>("CardType")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("DeckType", "CardType");
 
                     b.HasIndex("CardType");
@@ -317,402 +320,482 @@ namespace shop.dal.Migrations
                         new
                         {
                             DeckType = 0,
-                            CardType = 0
+                            CardType = 0,
+                            Id = new Guid("b10fa3c3-e18c-4541-9b46-127ea9a2f924")
                         },
                         new
                         {
                             DeckType = 0,
-                            CardType = 1
+                            CardType = 1,
+                            Id = new Guid("e172b89e-80f1-4c23-82e8-1882e2aa48c1")
                         },
                         new
                         {
                             DeckType = 0,
-                            CardType = 2
+                            CardType = 2,
+                            Id = new Guid("89b108c9-8606-4cd6-a0a1-360ef51e4958")
                         },
                         new
                         {
                             DeckType = 0,
-                            CardType = 3
+                            CardType = 3,
+                            Id = new Guid("b3860012-917b-4091-8f3a-8c1a7a0a33ea")
                         },
                         new
                         {
                             DeckType = 0,
-                            CardType = 12
+                            CardType = 12,
+                            Id = new Guid("25127479-6d90-40eb-867d-987fdec05451")
                         },
                         new
                         {
                             DeckType = 0,
-                            CardType = 11
+                            CardType = 11,
+                            Id = new Guid("de55b2d1-939b-469c-b9e9-fd6c07fabb3a")
                         },
                         new
                         {
                             DeckType = 0,
-                            CardType = 10
+                            CardType = 10,
+                            Id = new Guid("16101299-5b37-49a1-b410-c535d248d4bb")
                         },
                         new
                         {
                             DeckType = 0,
-                            CardType = 21
+                            CardType = 21,
+                            Id = new Guid("e69c8efe-faf1-4e31-8912-261613b52524")
                         },
                         new
                         {
                             DeckType = 0,
-                            CardType = 20
+                            CardType = 20,
+                            Id = new Guid("38140c9b-6d67-486b-81e7-49622965cb97")
                         },
                         new
                         {
                             DeckType = 0,
-                            CardType = 22
+                            CardType = 22,
+                            Id = new Guid("7ebd5108-daf0-4938-9f85-319b131d8f31")
                         },
                         new
                         {
                             DeckType = 1,
-                            CardType = 0
+                            CardType = 0,
+                            Id = new Guid("7b9695dc-e405-4b3c-8dc3-53a7e934232c")
                         },
                         new
                         {
                             DeckType = 1,
-                            CardType = 1
+                            CardType = 1,
+                            Id = new Guid("bd6731e0-fb90-4af3-a661-094f095c015a")
                         },
                         new
                         {
                             DeckType = 1,
-                            CardType = 2
+                            CardType = 2,
+                            Id = new Guid("e2a37017-af7c-41ab-8c1b-59b7776c2a95")
                         },
                         new
                         {
                             DeckType = 1,
-                            CardType = 3
+                            CardType = 3,
+                            Id = new Guid("506b3f48-23c8-44d0-a743-d4b2e4f2f190")
                         },
                         new
                         {
                             DeckType = 1,
-                            CardType = 12
+                            CardType = 12,
+                            Id = new Guid("1bda0dba-4763-459c-b842-2eacdf14979a")
                         },
                         new
                         {
                             DeckType = 1,
-                            CardType = 11
+                            CardType = 11,
+                            Id = new Guid("e4b96b81-ec0c-4c9a-9242-52fcb5022d7c")
                         },
                         new
                         {
                             DeckType = 1,
-                            CardType = 6
+                            CardType = 6,
+                            Id = new Guid("cd28da30-75b1-4275-8fa6-47f282a7d6c1")
                         },
                         new
                         {
                             DeckType = 1,
-                            CardType = 14
+                            CardType = 14,
+                            Id = new Guid("ddcb803e-0cc8-409c-b95a-804f3fc18636")
                         },
                         new
                         {
                             DeckType = 1,
-                            CardType = 21
+                            CardType = 21,
+                            Id = new Guid("7876ef65-7c09-4c09-b3a2-8224a9f5bc1b")
                         },
                         new
                         {
                             DeckType = 1,
-                            CardType = 24
+                            CardType = 24,
+                            Id = new Guid("97265733-5f89-4235-ae30-2f02476842b6")
                         },
                         new
                         {
                             DeckType = 2,
-                            CardType = 0
+                            CardType = 0,
+                            Id = new Guid("29955a69-e3a2-4dc7-96b8-07c83439a086")
                         },
                         new
                         {
                             DeckType = 2,
-                            CardType = 1
+                            CardType = 1,
+                            Id = new Guid("818e8879-3abc-4c58-8a43-0def6f69c1c6")
                         },
                         new
                         {
                             DeckType = 2,
-                            CardType = 2
+                            CardType = 2,
+                            Id = new Guid("11eb04e1-5261-45aa-8f0d-07611b46643f")
                         },
                         new
                         {
                             DeckType = 2,
-                            CardType = 4
+                            CardType = 4,
+                            Id = new Guid("3fa0f61b-1b0c-4375-8134-8df2ba437a9e")
                         },
                         new
                         {
                             DeckType = 2,
-                            CardType = 12
+                            CardType = 12,
+                            Id = new Guid("26c98834-6e65-4571-9b15-0a782e8fb2ec")
                         },
                         new
                         {
                             DeckType = 2,
-                            CardType = 6
+                            CardType = 6,
+                            Id = new Guid("dbb6de3a-c106-4744-bb2c-a0e1f9588ce7")
                         },
                         new
                         {
                             DeckType = 2,
-                            CardType = 13
+                            CardType = 13,
+                            Id = new Guid("c099268a-ca13-49f8-8677-96e8628467b6")
                         },
                         new
                         {
                             DeckType = 2,
-                            CardType = 21
+                            CardType = 21,
+                            Id = new Guid("c2459e06-d2af-4a0a-8997-62da81d457b3")
                         },
                         new
                         {
                             DeckType = 2,
-                            CardType = 15
+                            CardType = 15,
+                            Id = new Guid("418bbf4d-c7fa-4604-acb1-9f2bf40342ad")
                         },
                         new
                         {
                             DeckType = 2,
-                            CardType = 22
+                            CardType = 22,
+                            Id = new Guid("76719c84-f898-4d1f-a1cc-9220bb7121ee")
                         },
                         new
                         {
                             DeckType = 3,
-                            CardType = 0
+                            CardType = 0,
+                            Id = new Guid("0e45bf7d-4fa4-464e-ab75-e8bf9084fbe4")
                         },
                         new
                         {
                             DeckType = 3,
-                            CardType = 1
+                            CardType = 1,
+                            Id = new Guid("8fd5251b-fd93-4736-b579-0656499110bb")
                         },
                         new
                         {
                             DeckType = 3,
-                            CardType = 2
+                            CardType = 2,
+                            Id = new Guid("c6588c8c-314f-4fd9-8ca0-2e2531649d72")
                         },
                         new
                         {
                             DeckType = 3,
-                            CardType = 4
+                            CardType = 4,
+                            Id = new Guid("e0e09874-5e65-43da-acc4-6a5b78156a7f")
                         },
                         new
                         {
                             DeckType = 3,
-                            CardType = 9
+                            CardType = 9,
+                            Id = new Guid("99bcf316-849c-4b57-8fa3-03720113d4d1")
                         },
                         new
                         {
                             DeckType = 3,
-                            CardType = 13
+                            CardType = 13,
+                            Id = new Guid("d67ae5aa-deb1-4e91-a8cb-563e3afd03e3")
                         },
                         new
                         {
                             DeckType = 3,
-                            CardType = 11
+                            CardType = 11,
+                            Id = new Guid("d80712f6-61e8-479e-b767-43a709b42972")
                         },
                         new
                         {
                             DeckType = 3,
-                            CardType = 17
+                            CardType = 17,
+                            Id = new Guid("68629c99-898e-44c3-a00f-129bbcd27f6e")
                         },
                         new
                         {
                             DeckType = 3,
-                            CardType = 19
+                            CardType = 19,
+                            Id = new Guid("53507d9c-00fc-4780-ab7e-1a2be413d110")
                         },
                         new
                         {
                             DeckType = 3,
-                            CardType = 23
+                            CardType = 23,
+                            Id = new Guid("67bc3585-e9a5-446c-bbc2-41e547168aea")
                         },
                         new
                         {
                             DeckType = 4,
-                            CardType = 0
+                            CardType = 0,
+                            Id = new Guid("2819e144-923e-493d-997e-ffe36c600d20")
                         },
                         new
                         {
                             DeckType = 4,
-                            CardType = 1
+                            CardType = 1,
+                            Id = new Guid("53c79d63-0082-4d67-81e6-6663425d1543")
                         },
                         new
                         {
                             DeckType = 4,
-                            CardType = 2
+                            CardType = 2,
+                            Id = new Guid("44a09e11-a43b-440d-a445-d2b04b07231a")
                         },
                         new
                         {
                             DeckType = 4,
-                            CardType = 5
+                            CardType = 5,
+                            Id = new Guid("d6975f70-ebf2-49e0-bae9-8b841b705d56")
                         },
                         new
                         {
                             DeckType = 4,
-                            CardType = 9
+                            CardType = 9,
+                            Id = new Guid("f033e280-4bef-4e37-a322-56feb94e10a7")
                         },
                         new
                         {
                             DeckType = 4,
-                            CardType = 6
+                            CardType = 6,
+                            Id = new Guid("29758d4c-bedd-405d-bdf1-e2123b2ed188")
                         },
                         new
                         {
                             DeckType = 4,
-                            CardType = 7
+                            CardType = 7,
+                            Id = new Guid("51333131-38f6-4f38-bab0-007bcc687157")
                         },
                         new
                         {
                             DeckType = 4,
-                            CardType = 18
+                            CardType = 18,
+                            Id = new Guid("a6db99bb-b698-494b-8d51-72b46ad42d38")
                         },
                         new
                         {
                             DeckType = 4,
-                            CardType = 20
+                            CardType = 20,
+                            Id = new Guid("54d558a5-2e46-4518-ba3e-5bba11328b85")
                         },
                         new
                         {
                             DeckType = 4,
-                            CardType = 22
+                            CardType = 22,
+                            Id = new Guid("a1223b5a-5d9a-4201-98bb-17ee3e4c424c")
                         },
                         new
                         {
                             DeckType = 5,
-                            CardType = 0
+                            CardType = 0,
+                            Id = new Guid("04bfee6e-4965-4bee-bf1e-9d7a8e1aa2d0")
                         },
                         new
                         {
                             DeckType = 5,
-                            CardType = 1
+                            CardType = 1,
+                            Id = new Guid("ffd98ad0-1582-4a13-b74f-fc831cb73bf4")
                         },
                         new
                         {
                             DeckType = 5,
-                            CardType = 2
+                            CardType = 2,
+                            Id = new Guid("49cbb2b3-f9f5-4f7e-b783-22b12b0ede04")
                         },
                         new
                         {
                             DeckType = 5,
-                            CardType = 4
+                            CardType = 4,
+                            Id = new Guid("fb657a6f-9f2f-4e86-b6a3-1f907c221e1d")
                         },
                         new
                         {
                             DeckType = 5,
-                            CardType = 8
+                            CardType = 8,
+                            Id = new Guid("47273c8a-b174-42a5-9deb-352070f1cd52")
                         },
                         new
                         {
                             DeckType = 5,
-                            CardType = 13
+                            CardType = 13,
+                            Id = new Guid("56621d94-53a2-4988-afb1-e5bf4ad8d6f7")
                         },
                         new
                         {
                             DeckType = 5,
-                            CardType = 10
+                            CardType = 10,
+                            Id = new Guid("3a9879ba-e9c9-4138-af55-82182db4e7e1")
                         },
                         new
                         {
                             DeckType = 5,
-                            CardType = 17
+                            CardType = 17,
+                            Id = new Guid("7c964677-7c22-4bf3-8c91-3b3e6845db00")
                         },
                         new
                         {
                             DeckType = 5,
-                            CardType = 16
+                            CardType = 16,
+                            Id = new Guid("85ca961a-8f86-4e07-a81d-e364c95ba269")
                         },
                         new
                         {
                             DeckType = 5,
-                            CardType = 24
+                            CardType = 24,
+                            Id = new Guid("24233d86-fc58-461c-9c75-5bd19428a9a0")
                         },
                         new
                         {
                             DeckType = 6,
-                            CardType = 0
+                            CardType = 0,
+                            Id = new Guid("56e6df35-37a2-449e-8392-85493bdcffe2")
                         },
                         new
                         {
                             DeckType = 6,
-                            CardType = 1
+                            CardType = 1,
+                            Id = new Guid("b38253c2-e2e6-4dd4-8438-90ff97d7d9a2")
                         },
                         new
                         {
                             DeckType = 6,
-                            CardType = 2
+                            CardType = 2,
+                            Id = new Guid("3860454b-9107-4ede-ae42-53c5c1afb4af")
                         },
                         new
                         {
                             DeckType = 6,
-                            CardType = 3
+                            CardType = 3,
+                            Id = new Guid("68511fff-4651-4c55-b9c6-ee7f1eb895c5")
                         },
                         new
                         {
                             DeckType = 6,
-                            CardType = 12
+                            CardType = 12,
+                            Id = new Guid("2b7f6cf5-4300-4baa-92ee-5e57c51855e0")
                         },
                         new
                         {
                             DeckType = 6,
-                            CardType = 6
+                            CardType = 6,
+                            Id = new Guid("9d8b75c7-71c8-4623-bf51-d91f10cfb2e7")
                         },
                         new
                         {
                             DeckType = 6,
-                            CardType = 8
+                            CardType = 8,
+                            Id = new Guid("0552524f-4496-4808-b21c-2168f55e7071")
                         },
                         new
                         {
                             DeckType = 6,
-                            CardType = 17
+                            CardType = 17,
+                            Id = new Guid("4f8ed8af-69dd-40b4-bc6b-c6e88212107d")
                         },
                         new
                         {
                             DeckType = 6,
-                            CardType = 14
+                            CardType = 14,
+                            Id = new Guid("1d95e7f5-7f69-48c1-b3d9-4641ce7c1f05")
                         },
                         new
                         {
                             DeckType = 6,
-                            CardType = 22
+                            CardType = 22,
+                            Id = new Guid("c979c17c-b914-4554-862c-4a29dc8600b6")
                         },
                         new
                         {
                             DeckType = 7,
-                            CardType = 0
+                            CardType = 0,
+                            Id = new Guid("9c12af39-58b0-4d23-8b1d-afa43f203af3")
                         },
                         new
                         {
                             DeckType = 7,
-                            CardType = 1
+                            CardType = 1,
+                            Id = new Guid("0591c3ef-7e0c-473f-ab12-5a58045bd9b0")
                         },
                         new
                         {
                             DeckType = 7,
-                            CardType = 2
+                            CardType = 2,
+                            Id = new Guid("b03da0c2-faa9-46de-84db-ab8945f24387")
                         },
                         new
                         {
                             DeckType = 7,
-                            CardType = 5
+                            CardType = 5,
+                            Id = new Guid("bfe8ecaf-ca47-465a-80c5-1f7669d4e334")
                         },
                         new
                         {
                             DeckType = 7,
-                            CardType = 9
+                            CardType = 9,
+                            Id = new Guid("2ea5c1aa-7280-4998-bf41-d4dafb264d30")
                         },
                         new
                         {
                             DeckType = 7,
-                            CardType = 13
+                            CardType = 13,
+                            Id = new Guid("b3b89ae2-c696-4669-8775-253037582079")
                         },
                         new
                         {
                             DeckType = 7,
-                            CardType = 10
+                            CardType = 10,
+                            Id = new Guid("4f29b96c-db3b-49c9-a165-399407b83018")
                         },
                         new
                         {
                             DeckType = 7,
-                            CardType = 15
+                            CardType = 15,
+                            Id = new Guid("da29d6d8-c822-470a-8e41-11ec67409d13")
                         },
                         new
                         {
                             DeckType = 7,
-                            CardType = 18
+                            CardType = 18,
+                            Id = new Guid("af6f52b2-637e-4de2-909c-6569850dbe04")
                         },
                         new
                         {
                             DeckType = 7,
-                            CardType = 23
+                            CardType = 23,
+                            Id = new Guid("7065fc50-e39e-4ddb-877e-27292a03cc66")
                         });
                 });
 

@@ -16,7 +16,7 @@ namespace lobby.api.Extensions
         {
             services.AddMassTransit(options =>
             {
-                options.AddConsumer<GameJoinedConsumer>();
+                options.AddConsumer<LobbyRemoveConsumer>();
                 options.SetKebabCaseEndpointNameFormatter();
 
                 options.UsingRabbitMq((context, cfg) =>

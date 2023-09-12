@@ -45,6 +45,7 @@ namespace game.dal.UnitOfWork.Implementations
         public async Task Save()
         {
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.bll.Infrastructure.DataTransferObjects;
 using game.dal.Domain;
+using game.dal.Types;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using shared.bll.Exceptions;
@@ -38,14 +39,14 @@ namespace game.bll.Infrastructure.Commands.Card
         {
             // Find card entity to play from the hand
             var replace = _unitOfWork.HandCardRepository.Get(
-                    filter: x => x.HandId == player.HandId && x.Id == Guid.Parse(playAfterTurnDTO.AdditionalInfo["chopsticks"]),
+                    filter: x => x.HandId == player.HandId && x.Id == Guid.Parse(playAfterTurnDTO.AdditionalInfo[Additional.Tagged]),
                     transform: x => x.AsNoTracking()
                     ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(ChopSticksCommand));
             if (replace == null) throw new EntityNotFoundException(nameof(replace));
 
             // Delete the card from the hand end the chopsticks card from the board
             _unitOfWork.HandCardRepository.Delete(replace.Id);
-            _unitOfWork.BoardRepository.Delete(playAfterTurnDTO.BoardCardId);
+            _unitOfWork.BoardCardRepository.Delete(playAfterTurnDTO.BoardCardId);
 
             // Add replacable card to the board
             var boardCard = new BoardCard

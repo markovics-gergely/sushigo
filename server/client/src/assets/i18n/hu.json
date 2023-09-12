@@ -167,5 +167,28 @@
       "submit": "Mentés",
       "cancel": "Mégse"
     }
+  },
+  "game": {
+    "phase": {
+      "Turn": "{{player}} Köre",
+      "AfterTurn": "{{player}} Kör után",
+      "EndTurn": "Kör vége",
+      "EndRound": "Menet vége",
+      "EndGame": "Játék vége",
+      "skip-after": "Kihagyás"
+    },
+    "button": {
+      "end-turn": "Kör befejezése",
+      "end-round": "Menet befejezése"
+    },
+    "round": "{{round}}. Menet",
+    "name": "Név: {{name}}",
+    "deck": "Pakli: {{deck}}",
+    "card-select": {
+      "title": "Kártya kiválasztása",
+      "message": "Válasszon egy kártyát!",
+      "submit": "Kiválasztás",
+      "cancel": "Mégse"
+    }
   }
 }

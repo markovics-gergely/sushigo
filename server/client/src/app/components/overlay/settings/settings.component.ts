@@ -4,6 +4,7 @@ import { Setting, Settings, SettingsType } from 'src/shared/settings.models';
 import { ConfirmService } from 'src/app/services/confirm.service';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
+import { GameService } from 'src/app/services/game.service';
 
 @Component({
   selector: 'app-settings',
@@ -15,7 +16,8 @@ export class SettingsComponent extends AbstractOpenableComponent {
   constructor(
     private confirmService: ConfirmService,
     private tokenService: TokenService,
-    private userService: UserService
+    private userService: UserService,
+    private gameService: GameService,
   ) { super(); }
 
   public get closeStyle(): { [klass: string]: any; } {
@@ -23,7 +25,20 @@ export class SettingsComponent extends AbstractOpenableComponent {
   }
 
   public get settings(): SettingsType[] {
-    return Settings;
+    return Settings.filter((setting) => this.isAllowed(setting.settings));
+  }
+
+  public isAllowed(setting: Setting): boolean {
+    switch (setting) {
+      case 'logout':
+        return true;
+      case 'edit-user':
+        return true;
+      case 'remove-game':
+        return this.gameService.isFirst;
+      default:
+        return false;
+    }
   }
 
   public onSelect(val: Setting) {
@@ -34,6 +49,9 @@ export class SettingsComponent extends AbstractOpenableComponent {
         break;
       case 'edit-user':
         this.edit();
+        break;
+      case 'remove-game':
+        this.removeGame();
         break;
       default:
         break;
@@ -52,5 +70,9 @@ export class SettingsComponent extends AbstractOpenableComponent {
 
   private edit() {
     this.userService.startEdit();
+  }
+
+  private removeGame() {
+    this.gameService.removeGame();
   }
 }

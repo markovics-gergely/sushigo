@@ -24,11 +24,7 @@
       ],
       "UpstreamPathTemplate": "/api/user/refresh",
       "UpstreamHttpMethod": [ "Post" ],
-      "SwaggerKey": "user",
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
+      "SwaggerKey": "user"
     },
     {
       "DownstreamPathTemplate": "/User/registration",

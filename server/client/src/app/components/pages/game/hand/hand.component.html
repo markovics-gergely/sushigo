@@ -5,12 +5,12 @@
     [(ngModel)]="selectedHand"
     class="hand-select"
   >
-    <mat-list-option class="hand-select-option" value="hand">
+    <mat-list-option class="hand-select-option" [ngClass]="{ 'can-play': canPlay }" value="hand">
       <span class="material-symbols-outlined hand-select-content">
         playing_cards
       </span>
     </mat-list-option>
-    <mat-list-option class="hand-select-option" value="board">
+    <mat-list-option class="hand-select-option" [ngClass]="{ 'can-play': canPlayAfter }" value="board">
       <span class="material-symbols-outlined hand-select-content">
         shelf_position
       </span>
@@ -18,7 +18,7 @@
   </mat-selection-list>
   <ng-scrollbar
     track="horizontal"
-    style="width: 100%"
+    class="hand-scroll"
     autoHeightDisabled="false"
     *ngIf="selectedHand.includes('hand')"
   >
@@ -26,6 +26,7 @@
       <app-card-wrapper
         class="card-wrapper"
         *ngFor="let card of hand?.cards"
+        [hand]="true"
         [card]="card"
       ></app-card-wrapper>
     </div>
@@ -36,10 +37,11 @@
     autoHeightDisabled="false"
     *ngIf="selectedHand.includes('board')"
   >
-    <div class="card-container" *ngIf="hand?.cards?.length" scrollViewport>
+    <div class="card-container" *ngIf="board?.cards?.length" scrollViewport>
       <app-card-wrapper
         class="card-wrapper"
-        *ngFor="let card of hand?.cards"
+        *ngFor="let card of board?.cards"
+        [hand]="false"
         [card]="card"
       ></app-card-wrapper>
     </div>

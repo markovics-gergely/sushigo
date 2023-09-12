@@ -1,16 +1,88 @@
 <div class="game-container" *ngIf="game">
   <div class="game-header">
-    <mat-card class="game-banner">
-      <h1>{{ game.phase }}</h1>
+    <button
+      mat-flat-button
+      color="primary"
+      class="proceed-button"
+      (click)="endTurn()"
+      *ngIf="canEndTurn"
+      [matTooltip]="'game.button.end-turn' | translate"
+    >
+      <i class="bx bxs-chevron-right"></i>
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      class="proceed-button"
+      (click)="endRound()"
+      *ngIf="canEndRound"
+      [matTooltip]="'game.button.end-round' | translate"
+    >
+      <i class="bx bxs-chevrons-right"></i>
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      class="proceed-button"
+      (click)="skipAfter()"
+      *ngIf="canPlayAfterCard"
+      [matTooltip]="'game.button.skip-after' | translate"
+    >
+      <i class="bx bxs-chevron-right"></i>
+    </button>
+    <mat-card class="game-banner round" [matTooltip]="'game.round' | translate: { round: game.round + 1 }">
+      <span>{{ game.round + 1 }}</span>
+    </mat-card>
+    <mat-card class="game-banner" [matTooltip]="gameInfo" matTooltipClass="game-tooltip" #infoTooltip="matTooltip" (click)="infoTooltip.toggle()">
+      <span>{{ phaseTranslatable | translate: { player: actualPlayer?.userName } }}</span>
     </mat-card>
   </div>
   <div class="game-board">
-    <div class="game-board-container"></div>
-    <ng-scrollbar class="game-board-players">
-      <div scrollViewport>
-        <div class="player" *ngFor="let item of game.players"></div>
+    <ng-scrollbar class="game-board-container">
+      <div
+        scrollViewport
+        *ngIf="selectedPlayer?.board?.cards?.length"
+        class="game-board-inner-container"
+      >
+        <mat-card
+          class="board-card"
+          *ngFor="let card of selectedPlayer!.board.cards"
+        >
+          <img [src]="getImageUrl(card) | imgPath" alt="board-card" [ngClass]="{ tagged: isTagged(card) }"/>
+        </mat-card>
       </div>
     </ng-scrollbar>
+    <div class="game-nav">
+      <ng-scrollbar class="game-board-players">
+        <div scrollViewport>
+          <mat-card
+            class="player"
+            [ngClass]="{ selected: selectedPlayer === player }"
+            *ngFor="let player of game.players"
+            [matTooltip]="player.userName"
+            matTooltipPosition="left"
+            (click)="selectedPlayer = player"
+          >
+            <span class="player-name">{{ player.userName.substring(0, 1) }}</span>
+            <img
+              *ngIf="!player.imageLoaded"
+              src="https://placehold.co/80x80?text=Sushi"
+              alt="hand-card"
+            />
+            <img
+              *ngIf="player.imagePath"
+              [src]="player.imagePath | imgPath"
+              alt="player-card"
+              (load)="player.imageLoaded = true"
+              [ngStyle]="player.imageLoaded ? {} : { display: 'none' }"
+            />
+            <span class="points"
+              >{{ player.points }} <i class="bx bx-sushi"></i
+            ></span>
+          </mat-card>
+        </div>
+      </ng-scrollbar>
+    </div>
   </div>
   <app-hand class="game-hand" [board]="board"></app-hand>
 </div>

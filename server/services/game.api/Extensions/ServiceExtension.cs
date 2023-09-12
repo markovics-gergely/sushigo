@@ -67,9 +67,9 @@ namespace game.api.Extensions
 
             services.AddTransient<IRequestHandler<GetGameQuery, GameViewModel>, GameQueryHandler>();
             services.AddTransient<IRequestHandler<GetHandQuery, HandViewModel>, GameQueryHandler>();
+            services.AddTransient<IRequestHandler<GetOwnHandQuery, HandViewModel>, GameQueryHandler>();
 
-            //services.AddTransient<INotificationHandler<EndTurnEvent>, GameNotificationHandler>();
-            //services.AddTransient<INotificationHandler<EndRoundEvent>, GameNotificationHandler>();
+            services.AddTransient<INotificationHandler<RefreshGameEvent>, GameNotificationHandler>();
 
             services.AddTransient(typeof(IDbContextProvider), typeof(DbContextProvider<GameDbContext>));
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));

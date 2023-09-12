@@ -24,7 +24,6 @@ namespace shared.bll.Infrastructure.Pipelines
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             TResponse response;
-            if (request.BypassCache) return await next();
             async Task<TResponse> GetResponseAndAddToCache()
             {
                 response = await next();
@@ -32,6 +31,12 @@ namespace shared.bll.Infrastructure.Pipelines
                 var options = new DistributedCacheEntryOptions { SlidingExpiration = slidingExpiration };
                 var serializedData = Encoding.Default.GetBytes(JsonConvert.SerializeObject(response));
                 await _cache.SetAsync(request.CacheKey, serializedData, options, cancellationToken);
+                return response;
+            }
+            if (request.BypassCache)
+            {
+                response = await GetResponseAndAddToCache();
+                _logger.LogInformation("Added to Cache: '{key}'.", request.CacheKey);
                 return response;
             }
             var cachedResponse = await _cache.GetAsync(request.CacheKey, cancellationToken);

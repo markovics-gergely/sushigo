@@ -189,6 +189,9 @@ namespace game.dal.Migrations
                     b.Property<Guid>("HandId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("HandId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
@@ -218,8 +221,11 @@ namespace game.dal.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("HandId")
-                        .IsUnique();
+                    b.HasIndex("HandId");
+
+                    b.HasIndex("HandId1")
+                        .IsUnique()
+                        .HasFilter("[HandId1] IS NOT NULL");
 
                     b.ToTable("Players");
                 });
@@ -272,10 +278,14 @@ namespace game.dal.Migrations
                         .IsRequired();
 
                     b.HasOne("game.dal.Domain.Hand", "Hand")
-                        .WithOne("Player")
-                        .HasForeignKey("game.dal.Domain.Player", "HandId")
+                        .WithMany()
+                        .HasForeignKey("HandId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("game.dal.Domain.Hand", null)
+                        .WithOne("Player")
+                        .HasForeignKey("game.dal.Domain.Player", "HandId1");
 
                     b.Navigation("Board");
 

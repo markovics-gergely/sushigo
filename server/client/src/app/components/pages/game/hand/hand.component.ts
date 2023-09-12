@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CardService } from 'src/app/services/card.service';
+import { GameSelectService } from 'src/app/services/game-select.service';
+import { GameService } from 'src/app/services/game.service';
 import { IBoardViewModel, IHandViewModel } from 'src/shared/game.models';
 
 @Component({
@@ -17,9 +19,22 @@ export class HandComponent {
 
   @Input() board: IBoardViewModel | undefined;
 
-  constructor(private cardService: CardService) {
+  constructor(private cardService: CardService, private gameService: GameService, private gameSelectService: GameSelectService) {
     this.cardService.handEventEmitter.subscribe((hand: IHandViewModel | undefined) => {
       this._hand = hand;
     });
+    gameSelectService.boardSelectEventEmitter.subscribe((value: boolean) => {
+      if (value) {
+        this.selectedHand = ["hand"];
+      }
+    });
+  }
+
+  protected get canPlay() {
+    return this.gameService.canPlayCard;
+  }
+
+  protected get canPlayAfter() {
+    return this.gameService.canPlayAfterCard;
   }
 }

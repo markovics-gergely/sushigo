@@ -1,6 +1,7 @@
 ﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.bll.Infrastructure.DataTransferObjects;
 using game.dal.Domain;
+using game.dal.Types;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using shared.dal.Models;
@@ -35,7 +36,7 @@ namespace game.bll.Infrastructure.Commands.Card
         public async Task OnAfterTurn(Player player, PlayAfterTurnDTO playAfterTurnDTO)
         {
             // Get type of the searched card
-            var searchType = Enum.Parse<CardType>(playAfterTurnDTO.AdditionalInfo["spoon"]);
+            var searchType = Enum.Parse<CardType>(playAfterTurnDTO.AdditionalInfo[Additional.Tagged]);
 
             // Get hand card entities
             var hands = _unitOfWork.HandCardRepository.Get(
@@ -88,7 +89,7 @@ namespace game.bll.Infrastructure.Commands.Card
                 });
             }
             // Remove the spoon played
-            _unitOfWork.BoardRepository.Delete(playAfterTurnDTO.BoardCardId);
+            _unitOfWork.BoardCardRepository.Delete(playAfterTurnDTO.BoardCardId);
             await _unitOfWork.Save();
         }
     }

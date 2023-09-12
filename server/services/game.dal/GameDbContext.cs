@@ -23,8 +23,8 @@ namespace game.dal
 
             builder.Entity<Player>()
                 .HasOne(p => p.Hand)
-                .WithOne(h => h.Player)
-                .HasForeignKey<Player>(p => p.HandId)
+                .WithMany()
+                .HasForeignKey(p => p.HandId)
                 .OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Player>()
                 .HasOne(p => p.Board)

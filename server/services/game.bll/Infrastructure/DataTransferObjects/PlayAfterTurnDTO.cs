@@ -1,8 +1,10 @@
-﻿namespace game.bll.Infrastructure.DataTransferObjects
+﻿using game.dal.Types;
+
+namespace game.bll.Infrastructure.DataTransferObjects
 {
     public class PlayAfterTurnDTO
     {
         public Guid BoardCardId { get; set; }
-        public Dictionary<string, string> AdditionalInfo { get; set; } = new Dictionary<string, string>();
+        public Dictionary<Additional, string> AdditionalInfo { get; set; } = new Dictionary<Additional, string>();
     }
 }

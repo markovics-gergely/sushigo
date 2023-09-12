@@ -36,13 +36,14 @@ namespace game.api.Controllers
         /// <summary>
         /// Get game
         /// </summary>
+        /// <param name="bypass"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<GameViewModel>> GetGameAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<GameViewModel>> GetGameAsync([FromQuery] bool bypass, CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
-            var query = new GetGameQuery(user);
+            var query = new GetGameQuery(user, bypass);
             return Ok(await _mediator.Send(query, cancellationToken));
         }
 

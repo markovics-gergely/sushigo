@@ -5,16 +5,16 @@ using shared.dal.Models;
 
 namespace lobby.bll.Infrastructure.Consumers
 {
-    public class GameJoinedConsumer : IConsumer<GameJoinedDTO>
+    public class LobbyRemoveConsumer : IConsumer<LobbyRemoveDTO>
     {
         private readonly IMediator _mediator;
 
-        public GameJoinedConsumer(IMediator mediator)
+        public LobbyRemoveConsumer(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        public async Task Consume(ConsumeContext<GameJoinedDTO> context)
+        public async Task Consume(ConsumeContext<LobbyRemoveDTO> context)
         {
             if (!string.IsNullOrEmpty(context.Message.LobbyId.ToString()))
             {

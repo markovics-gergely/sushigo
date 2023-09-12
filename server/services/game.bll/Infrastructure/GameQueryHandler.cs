@@ -13,7 +13,8 @@ namespace game.bll.Infrastructure
 {
     public class GameQueryHandler : 
         IRequestHandler<GetGameQuery, GameViewModel>,
-        IRequestHandler<GetHandQuery, HandViewModel>
+        IRequestHandler<GetHandQuery, HandViewModel>,
+        IRequestHandler<GetOwnHandQuery, HandViewModel>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IServiceProvider _serviceProvider;
@@ -47,6 +48,29 @@ namespace game.bll.Infrastructure
             var cards = _unitOfWork.HandCardRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.HandId == request.HandId
+                ).ToList();
+
+            return Task.FromResult(new HandViewModel
+            {
+                Cards = _mapper.Map<IEnumerable<HandCardViewModel>>(cards)
+            });
+        }
+
+        public Task<HandViewModel> Handle(GetOwnHandQuery request, CancellationToken cancellationToken)
+        {
+            if (request.User == null) throw new EntityNotFoundException(nameof(request.User));
+
+            // Get player entity
+            var player = _unitOfWork.PlayerRepository.Get(
+                    transform: x => x.AsNoTracking(),
+                    filter: x => x.Id == request.User.GetPlayerIdFromJwt()
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Player));
+            if (player == null) throw new EntityNotFoundException(nameof(Player));
+
+            // Get card entities
+            var cards = _unitOfWork.HandCardRepository.Get(
+                    transform: x => x.AsNoTracking(),
+                    filter: x => player.HandId == x.HandId
                 ).ToList();
 
             return Task.FromResult(new HandViewModel

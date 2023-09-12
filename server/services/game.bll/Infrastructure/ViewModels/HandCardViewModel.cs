@@ -1,4 +1,5 @@
-﻿using shared.dal.Models;
+﻿using game.dal.Types;
+using shared.dal.Models;
 
 namespace game.bll.Infrastructure.ViewModels
 {
@@ -7,6 +8,6 @@ namespace game.bll.Infrastructure.ViewModels
         public Guid Id { get; set; }
         public CardType CardType { get; set; }
         public bool IsSelected { get; set; } = false;
-        public Dictionary<string, string> AdditionalInfo { get; set; } = new Dictionary<string, string>();
+        public Dictionary<Additional, string> AdditionalInfo { get; set; } = new Dictionary<Additional, string>();
     }
 }

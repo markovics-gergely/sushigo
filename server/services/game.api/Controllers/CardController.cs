@@ -48,6 +48,19 @@ namespace game.api.Controllers
         }
 
         /// <summary>
+        /// Get hand
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpGet("hand")]
+        public async Task<ActionResult<HandViewModel>> GetOwnHandAsync(CancellationToken cancellationToken)
+        {
+            var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
+            var query = new GetOwnHandQuery(user);
+            return Ok(await _mediator.Send(query, cancellationToken));
+        }
+
+        /// <summary>
         /// Play a card
         /// </summary>
         /// <param name="playCardDTO"></param>

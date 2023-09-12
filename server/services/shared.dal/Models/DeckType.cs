@@ -28,7 +28,6 @@
         private static IEnumerable<CardType> NigiriList { get; } = new List<CardType> { CardType.EggNigiri, CardType.SalmonNigiri, CardType.SquidNigiri };
         public static ICollection<CardType> GetCardTypes(this DeckType deckType)
         {
-
             return NigiriList.Concat(DeckCards[deckType].Select(d => (CardType)d)).ToList();
         }
 

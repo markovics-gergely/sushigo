@@ -265,6 +265,7 @@ namespace lobby.bll.Infrastructure
             // Remove the lobby
             _unitOfWork.LobbyRepository.Delete(lobby.Id);
             await _unitOfWork.Save();
+            await _mediator.Publish(new RemoveLobbyEvent(request.LobbyId), cancellationToken);
             return null;
         }
     }

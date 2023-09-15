@@ -44,7 +44,7 @@ import { environment } from "src/environments/environment";
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', (username: string, password: string) => {
+function login(username: string, password: string) {
   cy.session(username, () => {
     let body = new URLSearchParams();
 
@@ -67,4 +67,6 @@ Cypress.Commands.add('login', (username: string, password: string) => {
     });
   });
   cy.visit('/');
-});
+};
+
+Cypress.Commands.add('login', login);

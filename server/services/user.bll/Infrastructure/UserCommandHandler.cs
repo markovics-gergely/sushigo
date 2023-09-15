@@ -80,7 +80,6 @@ namespace user.bll.Infrastructure
                     throw new InvalidParameterException(string.Join('\n', result.Errors.Select(e => e.Description).ToList()));
                 }
                 user.DeckClaims.Add(DeckType.SushiGo);
-                user.Experience -= RoleTypes.DeckExp;
                 _unitOfWork.UserRepository.Update(user);
                 await _unitOfWork.Save();
             }

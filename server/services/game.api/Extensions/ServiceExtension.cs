@@ -63,6 +63,7 @@ namespace game.api.Extensions
             services.AddTransient<IRequestHandler<CreateGameCommand, GameViewModel>, GameCommandHandler>();
             services.AddTransient<IRequestHandler<ProceedEndTurnCommand>, GameCommandHandler>();
             services.AddTransient<IRequestHandler<ProceedEndRoundCommand>, GameCommandHandler>();
+            services.AddTransient<IRequestHandler<ProceedEndGameCommand>, GameCommandHandler>();
             services.AddTransient<IRequestHandler<RemoveGameCommand>, GameCommandHandler>();
 
             services.AddTransient<IRequestHandler<GetGameQuery, GameViewModel>, GameQueryHandler>();

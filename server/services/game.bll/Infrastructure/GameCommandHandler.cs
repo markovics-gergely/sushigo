@@ -22,6 +22,7 @@ namespace game.bll.Infrastructure
         IRequestHandler<CreateGameCommand, GameViewModel>,
         IRequestHandler<ProceedEndTurnCommand>,
         IRequestHandler<ProceedEndRoundCommand>,
+        IRequestHandler<ProceedEndGameCommand>,
         IRequestHandler<RemoveGameCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -278,16 +279,6 @@ namespace game.bll.Infrastructure
             // If it was the last round end the game
             if (game.IsOver())
             {
-                // Iterate over dessert cards to calculate
-                foreach (var card in cards.Where(c => !c.IsCalculated && c.CardType.SushiType() == SushiType.Dessert))
-                {
-                    // Calculate end game action through the command of the card type
-                    var command = _serviceProvider.GetCommand(card.CardType.GetClass());
-                    if (command != null)
-                    {
-                        await command.OnEndGame(card);
-                    }
-                }
                 game.Phase = Phase.EndGame;
             }
             else
@@ -391,7 +382,7 @@ namespace game.bll.Infrastructure
             await _mediator.Publish(new RemoveGameEvent { GameId = game.Id }, cancellationToken);
 
             // Send over event to user container
-            var isOver = game.Phase == Phase.EndGame;
+            var isOver = game.Phase == Phase.Result;
             foreach (var player in game.Players)
             {
                 await _endpoint.Publish(new GameEndDTO
@@ -401,6 +392,55 @@ namespace game.bll.Infrastructure
                     GameName = game.Name,
                 }, cancellationToken);
             }
+        }
+
+        public async Task Handle(ProceedEndGameCommand request, CancellationToken cancellationToken)
+        {
+            // Get game entity
+            var game = _unitOfWork.GameRepository.Get(
+                    transform: x => x.AsNoTracking(),
+                    filter: x => x.Id == request.User!.GetGameIdFromJwt()
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
+            if (game == null) throw new EntityNotFoundException(nameof(Game));
+
+            // Validate if first player played
+            _validator = new FirstPlayerValidator(game, request.User);
+            if (!_validator.Validate())
+            {
+                throw new ValidationErrorException(nameof(ProceedEndRoundCommand));
+            }
+
+            // Get cards on the board
+            var cards = _unitOfWork.BoardCardRepository.Get(
+                    filter: x => x.GameId == game.Id,
+                    transform: x => x.AsNoTracking()
+                );
+
+            // Iterate over dessert cards to calculate
+            foreach (var card in cards.Where(c => c.CardType.SushiType() == SushiType.Dessert))
+            {
+                // Calculate end game action through the command of the card type
+                var command = _serviceProvider.GetCommand(card.CardType.GetClass());
+                if (command != null)
+                {
+                    await command.OnEndGame(card);
+                }
+            }
+            game.Phase = Phase.Result;
+            _unitOfWork.GameRepository.Update(game);
+            await _unitOfWork.Save();
+
+            // Get game entity
+            var gameForCache = _unitOfWork.GameRepository.Get(
+                    transform: x => x.AsNoTracking(),
+                    filter: x => x.Id == request.User!.GetGameIdFromJwt(),
+                    includeProperties: "Players.Board.Cards" // for cache
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
+            if (game == null) throw new EntityNotFoundException(nameof(Game));
+
+            // Send refresh to users and cache
+            var gameViewModel = _mapper.Map<GameViewModel>(gameForCache);
+            await _mediator.Publish(new RefreshGameEvent { GameViewModel = gameViewModel }, cancellationToken);
         }
     }
 }

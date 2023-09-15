@@ -7,6 +7,7 @@
         AfterTurn,
         EndTurn,
         EndRound,
-        EndGame
+        EndGame,
+        Result
     }
 }

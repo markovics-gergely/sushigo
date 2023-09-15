@@ -62,7 +62,7 @@ namespace game.api.Controllers
         }
 
         /// <summary>
-        /// Create game
+        /// End turn
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -76,7 +76,7 @@ namespace game.api.Controllers
         }
 
         /// <summary>
-        /// Create game
+        /// End round
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -85,6 +85,20 @@ namespace game.api.Controllers
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
             var command = new ProceedEndRoundCommand(user);
+            await _mediator.Send(command, cancellationToken);
+            return Ok();
+        }
+
+        /// <summary>
+        /// End game
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost("end-game")]
+        public async Task<ActionResult<GameViewModel>> EndGameAsync(CancellationToken cancellationToken)
+        {
+            var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
+            var command = new ProceedEndGameCommand(user);
             await _mediator.Send(command, cancellationToken);
             return Ok();
         }

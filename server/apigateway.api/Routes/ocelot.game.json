@@ -154,6 +154,23 @@
       }
     },
     {
+      "DownstreamPathTemplate": "/Game/end-game",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "game.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/game/end-game",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "game",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
       "DownstreamPathTemplate": "/Game",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

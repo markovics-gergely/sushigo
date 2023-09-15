@@ -1,3 +1,5 @@
+import { environment } from "src/environments/environment";
+
 // ***********************************************
 // This example namespace declaration will help
 // with Intellisense and code completion in your
@@ -41,3 +43,28 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('login', (username: string, password: string) => {
+  cy.session(username, () => {
+    let body = new URLSearchParams();
+
+    body.set('username', username);
+    body.set('password', password);
+    body.set('grant_type', environment.grant_type);
+    body.set('client_id', environment.client_id);
+    body.set('client_secret', environment.client_secret);
+
+    cy.request({
+      method: 'POST',
+      url: `${environment.baseUrl}/user/login`,
+      body: body.toString(),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).then(({ body }) => {
+      window.localStorage.setItem('accessToken', body.access_token);
+      window.localStorage.setItem('refreshToken', body.refresh_token);
+    });
+  });
+  cy.visit('/');
+});

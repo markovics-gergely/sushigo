@@ -7,7 +7,10 @@
     "start": "npm run config -- --env=dev && ng serve",
     "build": "npm run config -- --env=prod && ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "e2e": "ng e2e",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "private": true,
   "dependencies": {
@@ -45,6 +48,7 @@
     "@angular/cli": "^16.2.0",
     "@angular/compiler-cli": "^16.2.0",
     "@angular/localize": "^16.2.0",
+    "@cypress/schematic": "^2.5.1",
     "@types/jasmine": "~4.3.5",
     "@types/yargs": "^17.0.24",
     "jasmine-core": "~5.1.0",
@@ -54,6 +58,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "tslib": "^2.6.2",
-    "typescript": "~5.1.6"
+    "typescript": "~5.1.6",
+    "cypress": "latest"
   }
 }

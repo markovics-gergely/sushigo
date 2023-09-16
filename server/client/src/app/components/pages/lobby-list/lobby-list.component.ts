@@ -39,14 +39,11 @@ export class LobbyListComponent {
   }
 
   public join(lobby: ILobbyItemViewModel) {
-    this.loadingService.start();
     this.lobbyService.startJoinLobby(lobby).subscribe({
       next: (lobby: ILobbyViewModel | undefined) => {
         if (!lobby) return;
         this.router.navigate([`lobby/${lobby.id}`]);
       }
-    }).add(() => {
-      this.loadingService.stop();
     });
   }
 }

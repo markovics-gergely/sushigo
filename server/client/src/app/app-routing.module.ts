@@ -11,6 +11,7 @@ import { HubGuard } from './guards/hub.guard';
 import { LoginGuard } from './guards/login.guard';
 import { LobbyGuard } from './guards/lobby.guard';
 import { GameComponent } from './components/pages/game/game.component';
+import { gameGuard } from './guards/game.guard';
 
 const routes: Routes = [
   {
@@ -53,7 +54,7 @@ const routes: Routes = [
     path: 'game',
     component: GameComponent,
     data: { name: 'game', hub: ['friend', 'game'] },
-    canActivate: [AclGuard, HubGuard]
+    canActivate: [AclGuard, gameGuard, HubGuard]
   },
   {
     path: '**',

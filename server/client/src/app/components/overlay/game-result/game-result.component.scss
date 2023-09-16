@@ -1,0 +1,59 @@
+.foil {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background-color: rgba($color: #000000, $alpha: 0.6);
+  color: var(--color-text);
+
+  .result-card {
+    min-width: 300px;
+    min-height: 300px;
+
+    .result-header {
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        border-radius: 2px 2px 0 0;
+
+        .result-title {
+            padding-bottom: 10px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+    }
+
+    .result-content {
+        flex: 1 1 0;
+        overflow-y: auto;
+    }
+
+    .result-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+
+        p {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+            padding: 10px;
+
+            &.result-points {
+                margin-left: auto;
+                i { vertical-align: text-top; }
+            }
+        }
+    }
+
+    .result-actions {
+        background-color: var(--color-primary);
+        color: var(--color-text-light) !important;
+        border-radius: 0 0 2px 2px;
+    }
+  }
+}

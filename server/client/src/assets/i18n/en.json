@@ -174,11 +174,13 @@
       "AfterTurn": "After turn of {{player}} ",
       "EndTurn": "End of turn",
       "EndRound": "End of round",
-      "EndGame": "End of game"
+      "EndGame": "End of game",
+      "Result": "Results"
     },
     "button": {
       "end-turn": "End the turn",
       "end-round": "End the round",
+      "end-game": "End the game",
       "skip-after": "Skip"
     },
     "round": "Round {{round}}",

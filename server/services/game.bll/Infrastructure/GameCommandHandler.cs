@@ -430,6 +430,13 @@ namespace game.bll.Infrastructure
             _unitOfWork.GameRepository.Update(game);
             await _unitOfWork.Save();
 
+            // Delete board cards
+            _unitOfWork.BoardCardRepository.Get(
+                transform: x => x.AsNoTracking(),
+                filter: x => x.GameId == game.Id
+            ).ToList().ForEach(_unitOfWork.BoardCardRepository.Delete);
+            await _unitOfWork.Save();
+
             // Get game entity
             var gameForCache = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),

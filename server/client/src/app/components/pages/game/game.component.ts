@@ -4,7 +4,7 @@ import { CardService } from 'src/app/services/card.service';
 import { GameService } from 'src/app/services/game.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { TokenService } from 'src/app/services/token.service';
-import { CardTypeUtil } from 'src/shared/deck.models';
+import { CardType, CardTypeUtil } from 'src/shared/deck.models';
 import { Additional, AdditionalUtil, IBoardViewModel, ICardViewModel, IGameViewModel, IPlayerViewModel, Phase, PhaseUtil } from 'src/shared/game.models';
 
 @Component({
@@ -55,6 +55,14 @@ export class GameComponent {
     });
   }
 
+  protected endGame() {
+    this.loadingService.start();
+    this.gameService.proceedEndGame().subscribe({
+      next: () => this.loadingService.stop(),
+      error: () => this.loadingService.stop()
+    });
+  }
+
   protected skipAfter() {
     this.loadingService.start();
     this.cardService.skipAfterTurn().subscribe({
@@ -71,6 +79,10 @@ export class GameComponent {
     return this.gameService.canEndRound;
   }
 
+  protected get canEndGame(): boolean {
+    return this.gameService.canEndGame;
+  }
+
   protected get canPlayCard(): boolean {
     return this.gameService.canPlayCard;
   }
@@ -80,7 +92,11 @@ export class GameComponent {
   }
 
   protected getImageUrl(card: ICardViewModel): string {
-    const imageName = CardTypeUtil.getString(card.cardType) + (AdditionalUtil.getFromRecord(card.additionalInfo, Additional.Points) ?? "") + ".png";
+    let points = AdditionalUtil.getFromRecord(card.additionalInfo, Additional.Points);
+    if (CardTypeUtil.equals(card.cardType, CardType.Fruit)) {
+      points = points?.padStart(3, '0');
+    }
+    const imageName = CardTypeUtil.getString(card.cardType) + (points ?? "") + ".png";
     return `/gamefiles/files/images/${imageName}`;
   }
 

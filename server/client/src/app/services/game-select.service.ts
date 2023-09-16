@@ -258,11 +258,15 @@ export class GameSelectService {
   }
 
   public isSelectable(value: IHandCardViewModel, hand: boolean): boolean {
+    const boardFocus = Boolean(this.selectType && [SelectType.OwnBoardCard, SelectType.OwnBoardCards].includes(this.selectType));
     if (hand) {
-      return (this.inTurn || this.selectType === SelectType.OwnHandCard) && !value.isSelected && ![SelectType.OwnBoardCard, SelectType.OwnBoardCards].includes(this.selectType!);
+      const handFocus = this.inTurn || this.selectType === SelectType.OwnHandCard;
+      const notSelectedBefore = !value.isSelected;
+      const handFocusOrDeselect = value.id === this._selectedCard?.id || !boardFocus;
+      return handFocus && notSelectedBefore && handFocusOrDeselect;
     } else {
       if (this.inTurn) {
-        return CardTypeUtil.getSelectType(value.cardType) !== SelectType.None;
+        return boardFocus;
       } else if (this.afterTurn) {
         return CardTypeUtil.hasAfterTurn(value.cardType);
       }

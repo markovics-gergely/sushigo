@@ -1,0 +1,20 @@
+<div class="foil" *ngIf="show">
+  <mat-card class="result-card">
+    <mat-card-header class="result-header">
+      <mat-card-title class="result-title">{{
+        "game.phase.Result" | translate
+      }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="result-content">
+      <div class="result-row" *ngFor="let p of players; index as i">
+        <p>{{ getPlacement(p) }}.</p>
+        <p>{{ p.userName }}</p>
+        <p class="result-points">( {{ p.points }} <i class="bx bx-sushi"></i> )</p>
+      </div>
+      <mat-divider></mat-divider>
+    </mat-card-content>
+    <mat-card-actions *ngIf="canRemoveGame" class="result-actions">
+      <button mat-button style="color: var(--color-text-light);" (click)="deleteGame()">{{ 'confirm.game.delete.title' | translate }}</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

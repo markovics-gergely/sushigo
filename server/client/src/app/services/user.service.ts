@@ -13,6 +13,7 @@ import {
 import { EditUserComponent } from '../components/dialog/edit-user/edit-user.component';
 import { LoadingService } from './loading.service';
 import { BaseServiceService } from './abstract/base-service.service';
+import { Subscription } from 'cypress/types/net-stubbing';
 
 @Injectable({
   providedIn: 'root',
@@ -82,8 +83,8 @@ export class UserService extends BaseServiceService {
     });
   }
 
-  public refreshUser(): void {
-    this.client.get<IUserViewModel>(`${this.baseUrl}`).subscribe((user: IUserViewModel) => {
+  public refreshUser() {
+    return this.client.get<IUserViewModel>(`${this.baseUrl}`).subscribe((user: IUserViewModel) => {
       this._userEventEmitter.next(user);
     });
   }

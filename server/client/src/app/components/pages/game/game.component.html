@@ -24,6 +24,16 @@
       mat-flat-button
       color="primary"
       class="proceed-button"
+      (click)="endGame()"
+      *ngIf="canEndGame"
+      [matTooltip]="'game.button.end-game' | translate"
+    >
+      <i class="bx bxs-chevrons-right"></i>
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      class="proceed-button"
       (click)="skipAfter()"
       *ngIf="canPlayAfterCard"
       [matTooltip]="'game.button.skip-after' | translate"

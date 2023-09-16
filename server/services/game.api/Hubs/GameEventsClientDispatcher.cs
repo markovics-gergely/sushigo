@@ -11,7 +11,8 @@ namespace game.api.Hubs
     public class GameEventsClientDispatcher : 
         INotificationHandler<RefreshGameEvent>,
         INotificationHandler<EndTurnEvent>,
-        INotificationHandler<EndRoundEvent>
+        INotificationHandler<EndRoundEvent>,
+        INotificationHandler<RemoveGameEvent>
     {
         private readonly IHubContext<GameEventsHub, IGameEventsHub> _context;
         /// <summary>
@@ -51,6 +52,16 @@ namespace game.api.Hubs
         public async Task Handle(EndTurnEvent notification, CancellationToken cancellationToken)
         {
             await _context.Clients.Group(notification.GameId.ToString()).EndTurn(cancellationToken);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="notification"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task Handle(RemoveGameEvent notification, CancellationToken cancellationToken)
+        {
+            await _context.Clients.Group(notification.GameId.ToString()).RemoveGame(cancellationToken);
         }
     }
 }

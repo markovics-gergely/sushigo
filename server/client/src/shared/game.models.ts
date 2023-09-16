@@ -8,6 +8,7 @@ export enum Phase {
   EndTurn,
   EndRound,
   EndGame,
+  Result,
 }
 
 export enum Additional {

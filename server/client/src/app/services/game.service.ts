@@ -82,6 +82,10 @@ export class GameService extends BaseServiceService {
     return this.client.post<void>(`${this.baseUrl}/end-round`, {});
   }
 
+  public proceedEndGame(): Observable<void> {
+    return this.client.post<void>(`${this.baseUrl}/end-game`, {});
+  }
+
   public get canEndTurn(): boolean {
     return this.tokenService.isOwnPlayer(this._gameEventEmitter.value?.actualPlayerId) && PhaseUtil.equals(this._gameEventEmitter.value?.phase, Phase.EndTurn);
   }
@@ -90,12 +94,20 @@ export class GameService extends BaseServiceService {
     return this.tokenService.isOwnPlayer(this._gameEventEmitter.value?.actualPlayerId) && PhaseUtil.equals(this._gameEventEmitter.value?.phase, Phase.EndRound);
   }
 
+  public get canEndGame(): boolean {
+    return this.tokenService.isOwnPlayer(this._gameEventEmitter.value?.actualPlayerId) && PhaseUtil.equals(this._gameEventEmitter.value?.phase, Phase.EndGame);
+  }
+
   public get canPlayCard(): boolean {
     return this.tokenService.isOwnPlayer(this._gameEventEmitter.value?.actualPlayerId) && PhaseUtil.equals(this._gameEventEmitter.value?.phase, Phase.Turn);
   }
 
   public get canPlayAfterCard(): boolean {
     return this.tokenService.isOwnPlayer(this._gameEventEmitter.value?.actualPlayerId) && PhaseUtil.equals(this._gameEventEmitter.value?.phase, Phase.AfterTurn);
+  }
+
+  public get isOver(): boolean {
+    return PhaseUtil.equals(this._gameEventEmitter.value?.phase, Phase.Result);
   }
 
   public get deckType(): DeckType {

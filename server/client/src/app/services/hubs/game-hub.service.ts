@@ -24,6 +24,10 @@ export class GameHubService extends HubService {
     this.hubConnection?.on('EndRound', () => {
       
     });
+    this.hubConnection?.on('RemoveGame', () => {
+      console.log('RemoveGame');
+      
+    });
   }
 
   protected override onHubConnected?(): void {

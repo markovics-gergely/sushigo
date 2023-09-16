@@ -175,11 +175,13 @@
       "EndTurn": "Kör vége",
       "EndRound": "Menet vége",
       "EndGame": "Játék vége",
-      "skip-after": "Kihagyás"
+      "Result": "Eredmények"
     },
     "button": {
       "end-turn": "Kör befejezése",
-      "end-round": "Menet befejezése"
+      "end-round": "Menet befejezése",
+      "end-game": "Játék befejezése",
+      "skip-after": "Kihagyás"
     },
     "round": "{{round}}. Menet",
     "name": "Név: {{name}}",

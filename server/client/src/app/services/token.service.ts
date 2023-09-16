@@ -5,7 +5,7 @@ import jwt_decode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DeckType } from 'src/shared/deck.models';
-import { IPlayerViewModel } from 'src/shared/game.models';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,9 @@ export class TokenService {
   private readonly langCookieName = environment.language_token_name;
   private readonly themeCookieName = environment.theme_token_name;
 
+  private _userEventEmitter = new BehaviorSubject<IUserTokenViewModel | undefined>(undefined);
+  public get userEventEmitter(): Observable<IUserTokenViewModel | undefined> { return this._userEventEmitter; }
+  
   constructor(
     private cookieService: CookieService,
     private router: Router,
@@ -25,8 +28,6 @@ export class TokenService {
   public set userToken(user: IUser) {
     this.token = user.access_token;
     this.refreshToken = user.refresh_token;
-    console.log(this.router.url);
-    
     if (this.user?.lobby) {
       this.router.navigateByUrl(`/lobby/${this.user.lobby}`);
     } else if(this.router.url.startsWith('/lobby/')) {
@@ -38,6 +39,7 @@ export class TokenService {
   }
 
   private set token(token: string) {
+    this._userEventEmitter.next(jwt_decode(token));
     this.cookieService.set(this.cookieName, token);
   }
 
@@ -54,7 +56,13 @@ export class TokenService {
   }
 
   public get user(): IUserTokenViewModel | undefined {
-    return this.token ? jwt_decode(this.token) : undefined;
+    if (this._userEventEmitter.value === undefined) {
+      const token = this.token;
+      if (token) {
+        this._userEventEmitter.next(jwt_decode(token));
+      }
+    }
+    return this._userEventEmitter.value;
   }
 
   public get expires(): Date | undefined {

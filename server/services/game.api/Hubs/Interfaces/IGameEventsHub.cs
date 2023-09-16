@@ -26,5 +26,11 @@ namespace game.api.Hubs.Interfaces
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task EndRound(CancellationToken cancellationToken);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task RemoveGame(CancellationToken cancellationToken);
     }
 }

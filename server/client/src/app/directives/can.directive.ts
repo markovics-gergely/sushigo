@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { AppRole } from 'src/shared/user.models';
 import { AclService } from '../services/acl.service';
+import { TokenService } from '../services/token.service';
 
 @Directive({
   selector: '[can]',
@@ -18,8 +19,14 @@ export class CanDirective {
     private aclService: AclService,
     private element: ElementRef,
     private templateRef: TemplateRef<any>,
-    private viewContainer: ViewContainerRef
-  ) {}
+    private viewContainer: ViewContainerRef,
+    tokenService: TokenService
+  ) {
+    tokenService.userEventEmitter.subscribe(() => {
+      viewContainer.clear();
+      this.updateView();
+    });
+  }
 
   @Input()
   set can(val: (AppRole | '*') | Array<(AppRole | '*' | '!')>) {

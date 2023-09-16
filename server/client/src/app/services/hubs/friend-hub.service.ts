@@ -5,6 +5,7 @@ import { IUserNameViewModel } from 'src/shared/user.models';
 import { FriendService } from '../friend.service';
 import { RefreshService } from '../refresh.service';
 import { HubService } from './abstract/hub.service';
+import { UserService } from '../user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,8 @@ export class FriendHubService extends HubService {
   constructor(
     injector: Injector,
     private friendService: FriendService,
-    private refreshService: RefreshService
+    private refreshService: RefreshService,
+    private userService: UserService
   ) {
     super(injector);
   }
@@ -51,7 +53,10 @@ export class FriendHubService extends HubService {
       }
     );
     this.hubConnection?.on('RefreshUser', () => {
+      console.log('refreshing user');
+      
       this.refreshService.refreshUser();
+      this.userService.refreshUser();
     });
   }
 }

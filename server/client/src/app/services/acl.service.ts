@@ -8,8 +8,14 @@ import { DeckType } from 'src/shared/deck.models';
   providedIn: 'root'
 })
 export class AclService {
+  private roles: AppRole[] = [];
 
-  constructor(private tokenService: TokenService) { }
+  constructor(private tokenService: TokenService) {
+    this.tokenService.userEventEmitter.subscribe((user) => {
+      const values = user?.role ?? [];
+      this.roles = Array.isArray(values) ? values : [values];
+    });
+  }
 
   public can(role: AclPage | '*'): boolean {
     const roles = ACL[role];
@@ -30,7 +36,7 @@ export class AclService {
   }
 
   public hasRoles(roles: (AppRole | '*' | '!')[]): boolean {
-    const has = this.tokenService.roles.some(role => roles.includes(role));
+    const has = this.roles.some(role => roles.includes(role));
     return roles.includes('!') ? !has : has;
   }
 }

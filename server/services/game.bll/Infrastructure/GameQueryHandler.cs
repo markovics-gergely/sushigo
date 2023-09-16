@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using game.bll.Infrastructure.Events;
 using game.bll.Infrastructure.Queries;
 using game.bll.Infrastructure.ViewModels;
 using game.dal.Domain;
@@ -36,8 +35,7 @@ namespace game.bll.Infrastructure
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.User!.GetGameIdFromJwt(),
                     includeProperties: "Players.Board.Cards"
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(EndRoundEvent));
-            if (game == null) throw new EntityNotFoundException(nameof(EndRoundEvent));
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
 
             return Task.FromResult(_mapper.Map<GameViewModel>(game));
         }
@@ -65,7 +63,6 @@ namespace game.bll.Infrastructure
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.User.GetPlayerIdFromJwt()
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Player));
-            if (player == null) throw new EntityNotFoundException(nameof(Player));
 
             // Get card entities
             var cards = _unitOfWork.HandCardRepository.Get(

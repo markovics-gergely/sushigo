@@ -108,6 +108,9 @@ export class CardTypeUtil {
         return false;
     }
   }
+  public static equals(cardType: CardType, cardType2: CardType): boolean {
+    return CardTypeUtil.getString(cardType) === CardTypeUtil.getString(cardType2);
+  }
 }
 
 export class DeckTypeUtil {

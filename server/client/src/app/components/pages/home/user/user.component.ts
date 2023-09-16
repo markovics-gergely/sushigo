@@ -20,13 +20,15 @@ export class UserComponent implements OnInit {
     private tokenService: TokenService,
     private confirmService: ConfirmService,
     private loadingService: LoadingService,
-    private shopService: ShopService,
-  ) { }
+    private shopService: ShopService
+  ) {}
 
   ngOnInit(): void {
-    this.userService.userEventEmitter.subscribe((user: IUserViewModel | undefined) => {
-      this._user = user;
-    });
+    this.userService.userEventEmitter.subscribe(
+      (user: IUserViewModel | undefined) => {
+        this._user = user;
+      }
+    );
     this.userService.refreshUser();
   }
 
@@ -50,7 +52,10 @@ export class UserComponent implements OnInit {
 
   public claimParty() {
     this.loadingService.start();
-    this.shopService.claimParty().subscribe().add(() => this.loadingService.stop());
+    this.shopService
+      .claimParty()
+      .subscribe()
+      .add(() => { this.loadingService.stop(); });
   }
 
   public get partyClaimed(): boolean {

@@ -89,6 +89,12 @@ export class UserService extends BaseServiceService {
     });
   }
 
+  public deleteUser() {
+    return this.client.delete<IUserViewModel | undefined>(`${this.baseUrl}`).subscribe(() => {
+      this._userEventEmitter.next(undefined);
+    });
+  }
+
   public get userEventEmitter(): Observable<IUserViewModel | undefined> {
     return this._userEventEmitter;
   }

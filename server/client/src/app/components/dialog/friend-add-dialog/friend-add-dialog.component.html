@@ -2,11 +2,11 @@
 <mat-dialog-content [formGroup]="form" *ngIf="form" class="form">
   <mat-form-field appearance="outline">
     <mat-label>{{ 'friends.add-dialog.username' | translate }}</mat-label>
-    <input matInput placeholder="Username" formControlName="name" />
+    <input id="add-friend-input" matInput placeholder="Username" formControlName="name" />
   </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions *ngIf="form">
-  <button mat-flat-button color="primary" (click)="add()" [disabled]="!valid">
+  <button id="add-friend-input-button" mat-flat-button color="primary" (click)="add()" [disabled]="!valid">
     {{ 'friends.add-dialog.submit' | translate }}
   </button>
   <button mat-flat-button color="warn" (click)="cancel()">

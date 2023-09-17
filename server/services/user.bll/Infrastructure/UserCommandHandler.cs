@@ -14,12 +14,14 @@ using shared.bll.Exceptions;
 using shared.dal.Models;
 using shared.bll.Extensions;
 using shared.bll.Validators.Implementations;
+using Microsoft.EntityFrameworkCore;
 
 namespace user.bll.Infrastructure
 {
     public class UserCommandHandler :
         IRequestHandler<CreateUserCommand, bool>,
         IRequestHandler<EditUserCommand, UserViewModel>,
+        IRequestHandler<RemoveUserCommand, UserViewModel?>,
         IRequestHandler<ClaimPartyCommand, UserViewModel>,
         IRequestHandler<ClaimDeckCommand, UserViewModel>,
         IRequestHandler<JoinLobbyCommand, UserViewModel>,
@@ -252,6 +254,41 @@ namespace user.bll.Infrastructure
             await _unitOfWork.Save();
             await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
             return _mapper.Map<UserViewModel>(userEntity);
+        }
+
+        public async Task<UserViewModel?> Handle(RemoveUserCommand request, CancellationToken cancellationToken)
+        {
+            if (request.User == null)
+            {
+                throw new EntityNotFoundException("User not found");
+            }
+            var userEntity = _unitOfWork.UserRepository.Get(
+                filter: x => x.Id.ToString() == request.User.GetUserIdFromJwt(),
+                includeProperties: nameof(ApplicationUser.Avatar)
+                ).FirstOrDefault();
+            if (userEntity == null)
+            {
+                throw new EntityNotFoundException("User not found");
+            }
+
+            var friends = _unitOfWork.FriendRepository.Get(
+                    filter: x => x.SenderId == userEntity.Id || x.ReceiverId == userEntity.Id,
+                    transform: x => x.AsNoTracking()
+                ).ToList();
+            foreach ( var friend in friends )
+            {
+                _unitOfWork.FriendRepository.Delete(friend);
+                await _unitOfWork.Save();
+                await _mediator.Publish(new RemoveFriendEvent
+                {
+                    ReceiverId = friend.Id,
+                    SenderId = userEntity.Id
+                }, cancellationToken);
+            }
+            var roles = await _userManager.GetRolesAsync(userEntity);
+            await _userManager.RemoveFromRolesAsync(userEntity, roles);
+            await _userManager.DeleteAsync(userEntity);
+            return null;
         }
     }
 }

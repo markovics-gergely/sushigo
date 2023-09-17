@@ -6,6 +6,7 @@ using IdentityServer4.Models;
 using user.dal.Domain;
 using user.dal;
 using shared.dal.Models;
+using IdentityServer4.Services;
 
 namespace user.api.Extensions
 {
@@ -52,6 +53,14 @@ namespace user.api.Extensions
                 })
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddResourceOwnerValidator<ResourceOwnerPasswordValidatorWithEmailAndUsername<ApplicationUser>>();
+
+            services.AddSingleton<ICorsPolicyService>((container) => {
+                var logger = container.GetRequiredService<ILogger<DefaultCorsPolicyService>>();
+                return new DefaultCorsPolicyService(logger)
+                {
+                    AllowAll = true
+                };
+            });
         }
 
         private static IEnumerable<IdentityResource> GetIdentityResources(IConfiguration configuration)
@@ -115,6 +124,7 @@ namespace user.api.Extensions
                     }.Concat(scopes).ToList(),
                     AllowOfflineAccess = true,
                     RefreshTokenExpiration = TokenExpiration.Sliding,
+                    RefreshTokenUsage = TokenUsage.ReUse,
                     AlwaysSendClientClaims = true,
                     UpdateAccessTokenClaimsOnRefresh = true
                 }

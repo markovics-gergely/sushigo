@@ -8,6 +8,10 @@
       "title": "Log out",
       "message": "Are you sure you want to log out?"
     },
+    "delete": {
+      "title": "Delete account",
+      "message": "Are you sure you want to delete your account?"
+    },
     "lobby": {
       "leave": {
         "title": "Leave lobby",

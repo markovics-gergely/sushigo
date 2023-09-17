@@ -46,15 +46,15 @@
   <div class="detail">
     <mat-card class="detail-item">
       <div class="name">{{ "home.user.username" | translate }}</div>
-      <mat-card-title class="value">{{ user.userName }}</mat-card-title>
+      <mat-card-title class="value" id="home-username">{{ user.userName }}</mat-card-title>
     </mat-card>
     <mat-card class="detail-item">
       <div class="name">{{ "home.user.name" | translate }}</div>
-      <mat-card-title class="value" [matTooltip]="user.name">{{ user.name }}</mat-card-title>
+      <mat-card-title class="value" [matTooltip]="user.name" id="home-name">{{ user.name }}</mat-card-title>
     </mat-card>
     <mat-card class="detail-item">
       <div class="name">{{ "home.user.email" | translate }}</div>
-      <mat-card-title class="value" [matTooltip]="user.email">{{ user.email }}</mat-card-title>
+      <mat-card-title class="value" [matTooltip]="user.email" id="home-email">{{ user.email }}</mat-card-title>
     </mat-card>
   </div>
 </div>

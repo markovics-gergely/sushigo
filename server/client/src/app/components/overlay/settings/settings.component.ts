@@ -36,6 +36,8 @@ export class SettingsComponent extends AbstractOpenableComponent {
         return true;
       case 'remove-game':
         return this.gameService.isFirst;
+      case 'delete-user':
+        return true;
       default:
         return false;
     }
@@ -53,6 +55,9 @@ export class SettingsComponent extends AbstractOpenableComponent {
       case 'remove-game':
         this.removeGame();
         break;
+      case 'delete-user':
+        this.deleteUser();
+        break;
       default:
         break;
     }
@@ -64,6 +69,18 @@ export class SettingsComponent extends AbstractOpenableComponent {
       .subscribe((result: boolean) => {
         if (result) {
           this.tokenService.clearCookies();
+        }
+      });
+  }
+
+  private deleteUser() {
+    this.confirmService
+      .confirm('delete', '250px')
+      .subscribe((result: boolean) => {
+        if (result) {
+          this.userService.deleteUser().add(() => {
+            this.tokenService.clearCookies();
+          });
         }
       });
   }

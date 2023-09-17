@@ -34,9 +34,13 @@ namespace user.bll.Infrastructure
                 transform: x => x.AsNoTracking()).FirstOrDefault();
             if (friendUserEntity == null)
             {
-                throw new EntityNotFoundException(nameof(friendUserEntity) + " user not found");
+                throw new ValidationErrorException("Invalid friend request");
             }
             var userguid = Guid.Parse(request.User?.GetUserIdFromJwt() ?? "");
+            if (friendUserEntity.Id == userguid)
+            {
+                throw new ValidationErrorException("Invalid friend request");
+            }
             var friendEntity = _unitOfWork.FriendRepository.Get(filter: x =>
                 (x.SenderId == userguid && x.ReceiverId == friendUserEntity.Id)
                 || (x.SenderId == friendUserEntity.Id && x.ReceiverId == userguid)

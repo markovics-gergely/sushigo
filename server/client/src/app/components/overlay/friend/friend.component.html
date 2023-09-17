@@ -14,13 +14,20 @@
     mat-flat-button
     color="primary"
     class="friend-button"
+    id="friend-button"
     (click)="switchOpen()"
     [ngClass]="getHeaderClass(undefined)"
   >
     <i class="bx bx-group"></i>
   </button>
   <div class="friend-header" [ngClass]="open ? 'open' : ''">
-    <button mat-flat-button color="none" class="add-button" (click)="openAddFriend()">
+    <button
+      id="friend-add-button"
+      mat-flat-button
+      color="none"
+      class="add-button"
+      (click)="openAddFriend()"
+    >
       <i class="bx bx-plus"></i>
     </button>
     <div class="title" [ngClass]="open ? 'open' : ''">
@@ -36,6 +43,7 @@
       <mat-expansion-panel
         expanded="true"
         (afterExpand)="clearCount('friends')"
+        id="friend-list"
         [ngClass]="open ? '' : 'closing'"
       >
         <mat-expansion-panel-header
@@ -53,7 +61,6 @@
         <div
           *ngFor="let friend of friends"
           class="friend-wrapper"
-          class="friend-wrapper"
         >
           <div class="friend-name">
             {{ friend.userName }}
@@ -64,7 +71,8 @@
               [ngClass]="friend.status ? 'ok' : ''"
             ></i>
             <button
-              mat-flat-button color="none"
+              mat-flat-button
+              color="none"
               class="decline-button"
               (click)="declineFriend(friend)"
             >
@@ -73,7 +81,7 @@
           </div>
         </div>
       </mat-expansion-panel>
-      <mat-expansion-panel (afterExpand)="clearCount('sent')">
+      <mat-expansion-panel (afterExpand)="clearCount('sent')" id="sent-list">
         <mat-expansion-panel-header
           class="friend-list-header"
           [ngClass]="getHeaderClass(sentCount)"
@@ -86,7 +94,10 @@
             {{ "friends.sent" | translate }}
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div *ngFor="let request of sent" class="friend-wrapper">
+        <div
+          *ngFor="let request of sent"
+          class="friend-wrapper"
+        >
           <div class="friend-name">
             {{ request.userName }}
           </div>
@@ -96,7 +107,8 @@
               [ngClass]="request.status ? 'ok' : ''"
             ></i>
             <button
-              mat-flat-button color="none"
+              mat-flat-button
+              color="none"
               class="decline-button"
               (click)="declineFriend(request)"
             >
@@ -105,7 +117,10 @@
           </div>
         </div>
       </mat-expansion-panel>
-      <mat-expansion-panel (afterExpand)="clearCount('received')">
+      <mat-expansion-panel
+        (afterExpand)="clearCount('received')"
+        id="received-list"
+      >
         <mat-expansion-panel-header
           class="friend-list-header"
           [ngClass]="getHeaderClass(receivedCount)"
@@ -118,7 +133,10 @@
             {{ "friends.received" | translate }}
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div *ngFor="let request of received" class="friend-wrapper">
+        <div
+          *ngFor="let request of received"
+          class="friend-wrapper"
+        >
           <div class="friend-name">
             {{ request.userName }}
           </div>
@@ -128,7 +146,8 @@
               [ngClass]="request.status ? 'ok' : ''"
             ></i>
             <button
-              mat-flat-button color="none"
+              mat-flat-button
+              color="none"
               class="accept-button"
               (click)="addFriend(request.userName)"
             >

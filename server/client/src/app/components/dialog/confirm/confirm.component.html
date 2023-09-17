@@ -3,8 +3,8 @@
   <p>{{ "confirm." + type + ".message" | translate }}</p>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-flat-button color="primary" (click)="accept()" cdkFocusInitial>
+  <button id="confirm-accept" mat-flat-button color="primary" (click)="accept()" cdkFocusInitial>
     {{ 'confirm.buttons.yes' | translate }}
   </button>
-  <button mat-flat-button color="warn" (click)="decline()">{{ 'confirm.buttons.no' | translate }}</button>
+  <button id="confirm-decline" mat-flat-button color="warn" (click)="decline()">{{ 'confirm.buttons.no' | translate }}</button>
 </mat-dialog-actions>

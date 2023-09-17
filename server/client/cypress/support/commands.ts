@@ -62,8 +62,8 @@ function login(username: string, password: string) {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     }).then(({ body }) => {
-      window.localStorage.setItem('accessToken', body.access_token);
-      window.localStorage.setItem('refreshToken', body.refresh_token);
+      cy.setCookie(environment.token_name, body.access_token);
+      cy.setCookie(environment.refresh_token_name, body.refresh_token);
     });
   });
   cy.visit('/');

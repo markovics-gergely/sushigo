@@ -4,6 +4,7 @@
     *ngIf="createForm"
     method="post"
     class="form-table"
+    id="create-lobby-form"
     [formGroup]="createForm"
   >
     <mat-form-field appearance="outline">
@@ -31,10 +32,10 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-flat-button color="warn" (click)="cancel()">
+  <button id="lobby-create-cancel" mat-flat-button color="warn" (click)="cancel()">
     {{ "lobby-list.create-dialog.cancel" | translate }}
   </button>
-  <button mat-flat-button color="primary" (click)="submit()" [disabled]="!valid">
+  <button id="lobby-create-button" mat-flat-button color="primary" (click)="submit()" [disabled]="!valid">
     {{ "lobby-list.create-dialog.submit" | translate }}
   </button>
 </mat-dialog-actions>

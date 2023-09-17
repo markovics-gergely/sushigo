@@ -8,6 +8,10 @@
       "title": "Kilépés",
       "message": "Biztosan ki akar lépni?"
     },
+    "delete": {
+      "title": "Fiók törlése",
+      "message": "Biztosan törölni akarja a fiókját?"
+    },
     "lobby": {
       "leave": {
         "title": "Váróterem elhagyása",

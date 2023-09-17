@@ -72,6 +72,19 @@ namespace user.api.Controllers
         }
 
         /// <summary>
+        /// Remove a user
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        [HttpDelete]
+        public async Task<ActionResult> RemoveUserAsync(CancellationToken cancellationToken)
+        {
+            var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
+            var command = new RemoveUserCommand(user);
+            await _mediator.Send(command, cancellationToken);
+            return Ok();
+        }
+
+        /// <summary>
         /// Get users with the given role
         /// </summary>
         /// <param name="role">Searched role</param>

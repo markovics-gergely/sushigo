@@ -56,9 +56,10 @@
       >
         <mat-card
           class="board-card"
-          *ngFor="let card of selectedPlayer!.board.cards"
+          *ngFor="let card of selectedPlayer!.board.cards; index as i"
+          [@appear]="{ value: ':enter', params: { delay: (i + 1) * 200 } }"
         >
-          <img [src]="getImageUrl(card) | imgPath" alt="board-card" [ngClass]="{ tagged: isTagged(card) }"/>
+          <img [src]="getImageUrl(card) | imgPath" alt="board-card" [ngClass]="{ tagged: isTagged(card), loaded: card.imageLoaded}" (load)="card.imageLoaded = true"/>
         </mat-card>
       </div>
     </ng-scrollbar>
@@ -68,10 +69,11 @@
           <mat-card
             class="player"
             [ngClass]="{ selected: selectedPlayer === player }"
-            *ngFor="let player of game.players"
+            *ngFor="let player of game.players, index as i"
             [matTooltip]="player.userName"
             matTooltipPosition="left"
             (click)="selectedPlayer = player"
+            [@slideInOut]="{ value: ':enter', params: { delay: i * 300 } }"
           >
             <span class="player-name">{{ player.userName.substring(0, 1) }}</span>
             <img

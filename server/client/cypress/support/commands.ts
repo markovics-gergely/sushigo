@@ -44,6 +44,17 @@ import { environment } from "src/environments/environment";
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+function generateFixtures() {
+  const uuid = () => Cypress._.random(0, 1e6);
+  const uuid2 = () => Cypress._.random(0, 1e6);
+  
+  cy.writeFile('cypress/fixtures/users.json', {
+    username1: `Test_Name${uuid()}`,
+    username2: `Test_Name${uuid2()}`,
+    lobbyName: `Test_Lobby${uuid()}`,
+  });
+}
+
 function login(username: string, password: string) {
   cy.session(username, () => {
     let body = new URLSearchParams();
@@ -66,7 +77,27 @@ function login(username: string, password: string) {
       cy.setCookie(environment.refresh_token_name, body.refresh_token);
     });
   });
-  cy.visit('/');
+  cy.visit('/login');
+};
+
+function register(username: string, password: string) {
+  const body = {
+    userName: username,
+    firstName: username,
+    lastName: username,
+    email: `${username}@${username}.hu`,
+    password: password,
+    confirmedPassword: password,
+  };
+  cy.request({
+    method: 'POST',
+    url: `${environment.baseUrl}/user/registration`,
+    body,
+  }).then(() => {
+    login(username, password);
+  });
 };
 
 Cypress.Commands.add('login', login);
+Cypress.Commands.add('register', register);
+Cypress.Commands.add('generateFixtures', generateFixtures);

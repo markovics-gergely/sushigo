@@ -58,4 +58,17 @@ export class RefreshService {
         this.loadingService.stop();
       });
   }
+
+  public refreshUserWithoutLoading() {
+    return this.refreshToken()
+      .subscribe({
+        next: (response) => {
+          this.tokenService.userToken = response;
+        },
+        error: (err) => {
+          console.log(err);
+          this.tokenService.clearCookies();
+        },
+      });
+  }
 }

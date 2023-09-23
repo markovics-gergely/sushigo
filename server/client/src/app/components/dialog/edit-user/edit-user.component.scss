@@ -22,5 +22,7 @@
 
     .avatar-name {
         margin-left: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }

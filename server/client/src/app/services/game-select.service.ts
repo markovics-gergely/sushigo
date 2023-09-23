@@ -264,12 +264,10 @@ export class GameSelectService {
       const notSelectedBefore = !value.isSelected;
       const handFocusOrDeselect = value.id === this._selectedCard?.id || !boardFocus;
       return handFocus && notSelectedBefore && handFocusOrDeselect;
-    } else {
-      if (this.inTurn) {
-        return boardFocus;
-      } else if (this.afterTurn) {
-        return CardTypeUtil.hasAfterTurn(value.cardType);
-      }
+    } else if (this.inTurn) {
+      return boardFocus;
+    } else if (this.afterTurn) {
+      return CardTypeUtil.hasAfterTurn(value.cardType);
     }
     return false;
   }

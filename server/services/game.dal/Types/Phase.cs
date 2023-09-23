@@ -4,6 +4,7 @@
     {
         None,
         Turn,
+        MenuSelect,
         AfterTurn,
         EndTurn,
         EndRound,

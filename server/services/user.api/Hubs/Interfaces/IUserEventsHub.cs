@@ -12,5 +12,10 @@ namespace user.api.Hubs.Interfaces
         /// </summary>
         /// <returns></returns>
         Task RefreshUser();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Task RemoveGame();
     }
 }

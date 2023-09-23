@@ -4,6 +4,7 @@ import { CardType, DeckType } from './deck.models';
 export enum Phase {
   None,
   Turn,
+  MenuSelect,
   AfterTurn,
   EndTurn,
   EndRound,
@@ -77,6 +78,7 @@ export interface ICardViewModel {
   id: string;
   cardType: CardType;
   additionalInfo: Record<Additional, string>;
+  imageLoaded?: boolean;
 }
 
 export interface IBoardCardViewModel extends ICardViewModel {}

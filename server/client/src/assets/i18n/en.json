@@ -92,7 +92,8 @@
       }
     },
     "history": {
-      "title": "History"
+      "title": "History",
+      "place": "{{place}}. place"
     }
   },
   "shop": {
@@ -194,6 +195,7 @@
       "title": "Select a card",
       "submit": "Select",
       "cancel": "Cancel"
-    }
+    },
+    "over": "Game over"
   }
 }

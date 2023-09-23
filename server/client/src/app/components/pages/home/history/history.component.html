@@ -1,6 +1,16 @@
 <mat-card class="history-banner">
   <h1>{{ "home.history.title" | translate }}</h1>
 </mat-card>
-<mat-card class="history-content">
+<ng-scrollbar class="history-scroll">
+  <div scrollViewport class="history-viewport">
+    <mat-card class="history-content">
+      <div class="history-row" *ngFor="let h of history; index as i">
+        <p>{{ (h.created + 'Z') | date : 'MM.dd H:mm' : 'UTC+2' }}</p>
+        <p class="name">{{ h.name }}</p>
+        <p>{{ 'home.history.place' | translate: { place: h.placement } }}</p>
+        <p class="history-points">( {{ h.point }} <i class="bx bx-sushi"></i> )</p>
+      </div>
+    </mat-card>
+  </div>
+</ng-scrollbar>
 
-</mat-card>

@@ -27,6 +27,8 @@ namespace user.bll.MappingProfiles
 
             CreateMap<ApplicationUser, UserNameViewModel>()
                 .ReverseMap();
+
+            CreateMap<History, HistoryViewModel>();
         }
     }
 }

@@ -3,6 +3,7 @@
     *ngIf="messageForm"
     method="post"
     class="message-form"
+    id="message-form"
     [formGroup]="messageForm"
     (ngSubmit)="sendMessage()"
   >
@@ -17,6 +18,7 @@
     </mat-form-field>
     <button
       class="message-button"
+      id="message-button"
       mat-flat-button
       [disabled]="!valid"
       color="primary"
@@ -29,7 +31,8 @@
   <div class="text-wrapper" id="msgwrapper">
     <div
       class="text"
-      *ngFor="let message of messages"
+      *ngFor="let message of messages; index as i"
+      [id]="'msg-' + i"
       [ngClass]="ownMessage(message) ? 'own' : ''"
     >
       <b

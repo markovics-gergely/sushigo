@@ -1,11 +1,8 @@
 using game.bll.Infrastructure.Commands.Card.Utils.Implementations;
-using game.dal;
 using game.dal.Domain;
-using game.dal.UnitOfWork.Implementations;
 using game.dal.UnitOfWork.Interfaces;
 using game.test.MockData;
 using Moq;
-using shared.dal.Repository.Interfaces;
 using System.Linq.Expressions;
 
 namespace game.test

@@ -15,6 +15,7 @@
       class="lobby-nav-button back"
       mat-flat-button
       color="accent"
+      id="lobby-leave-button"
       (click)="leave()"
     >
       <i class="bx bx-arrow-back"></i>
@@ -24,6 +25,8 @@
       mat-flat-button
       [ngClass]="own.ready ? 'true' : 'false'"
       *ngIf="own"
+      id="lobby-ready-button"
+      [disabled]="readyProcess"
       (click)="ready()"
     >
       <i class="bx bx-check" *ngIf="!own.ready"></i>
@@ -34,6 +37,7 @@
       mat-flat-button
       color="accent"
       *ngIf="isCreator"
+      id="lobby-edit-button"
       (click)="edit()"
     >
       <i class="bx bx-edit"></i>
@@ -43,6 +47,7 @@
       mat-flat-button
       *ngIf="isCreator"
       [disabled]="!valid"
+      id="lobby-start-button"
       (click)="start()"
     >
       <i class="bx bx-send"></i>
@@ -51,16 +56,16 @@
       class="lobby-banner hideable"
       [ngClass]="isCreator ? 'creator' : ''"
     >
-      <h1>{{ lobby.name }}</h1>
+      <h1 id="lobby-banner">{{ lobby.name }}</h1>
     </mat-card>
   </mat-grid-tile>
   <mat-grid-tile [colspan]="0" [rowspan]="1" [sm]="12">
     <mat-card class="lobby-banner">
-      <h1>{{ lobby.name }}</h1>
+      <h1 id="lobby-banner">{{ lobby.name }}</h1>
     </mat-card>
   </mat-grid-tile>
   <mat-grid-tile [colspan]="3" [md]="12" [rowspan]="3">
-    <mat-card class="player-list">
+    <mat-card class="player-list" id="player-list">
       <mat-card class="player-item" *ngFor="let player of players">
         <div class="avatar">
           <img
@@ -77,10 +82,11 @@
             [ngStyle]="player.imageLoaded ? {} : { display: 'none' }"
           />
         </div>
-        <div class="name">{{ player.userName }}</div>
+        <div class="name" id="player-name">{{ player.userName }}</div>
         <div
           class="ready"
           [ngClass]="player.ready ? 'true' : 'false'"
+          id="player-ready"
           (click)="remove(player)"
         >
           <i class="bx bx-check" *ngIf="player.ready"></i>
@@ -90,19 +96,19 @@
     </mat-card>
   </mat-grid-tile>
   <mat-grid-tile [colspan]="9" [md]="12" [rowspan]="3" [xsr]="5">
-    <div class="lobby-details">
+    <div class="lobby-details" id="lobby-details">
       <div class="detail">
         <mat-card class="detail-item">
           <div class="name creator">{{ "lobby.creator" | translate }}</div>
-          <mat-card-title class="value">{{ creator }}</mat-card-title>
+          <mat-card-title class="value" id="lobby-creator">{{ creator }}</mat-card-title>
         </mat-card>
         <mat-card class="detail-item">
           <div class="name password">{{ "lobby.password" | translate }}</div>
-          <mat-card-title class="value" [matTooltip]="lobby.password">{{ lobby.password }}</mat-card-title>
+          <mat-card-title class="value" [matTooltip]="lobby.password" id="lobby-password">{{ lobby.password }}</mat-card-title>
         </mat-card>
         <mat-card class="detail-item">
           <div class="name date">{{ "lobby.date" | translate }}</div>
-          <mat-card-title class="value">{{ lobby.created | date : "YYYY.MM.dd HH:mm" }}</mat-card-title>
+          <mat-card-title class="value" id="lobby-date">{{ lobby.created | date : "YYYY.MM.dd HH:mm" }}</mat-card-title>
         </mat-card>
       </div>
       <div class="image" *ngIf="deck">

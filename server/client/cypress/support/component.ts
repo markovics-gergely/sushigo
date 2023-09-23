@@ -30,6 +30,8 @@ declare global {
     interface Chainable {
       mount: typeof mount;
       login(username: string, password: string): Chainable<any>;
+      register(username: string, password: string): Chainable<any>;
+      generateFixtures(): Chainable<any>;
     }
   }
 }

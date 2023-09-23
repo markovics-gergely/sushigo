@@ -1,3 +1,4 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CardService } from 'src/app/services/card.service';
@@ -11,6 +12,28 @@ import { Additional, AdditionalUtil, IBoardViewModel, ICardViewModel, IGameViewM
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss'],
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({ transform: 'translateX(-120%)' }),
+        animate('300ms {{delay}}ms ease-in', style({ transform: 'translateX(0%)' })),
+      ], { params: { delay: 0 } }),
+      transition(':leave', [
+        style({ transform: 'translateX(0%)' }),
+        animate('300ms {{delay}}ms ease-out', style({ transform: 'translateX(120%)' })),
+      ], { params: { delay: 0 } }),
+    ]),
+    trigger('appear', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('200ms {{delay}}ms ease-in', style({ opacity: 1 })),
+      ], { params: { delay: 0 } }),
+      transition(':leave', [
+        style({ opacity: 1 }),
+        animate('200ms ease-out', style({ opacity: 0 })),
+      ], { params: { delay: 0 } }),
+    ]),
+  ],
 })
 export class GameComponent {
   private _game: IGameViewModel | undefined;

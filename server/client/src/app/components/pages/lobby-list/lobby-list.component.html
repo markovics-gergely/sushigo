@@ -25,7 +25,7 @@
       </div>
     </button>
   </mat-grid-tile>
-  <mat-grid-tile [colspan]="6" [rowspan]="1">
+  <mat-grid-tile [colspan]="12" [rowspan]="1" *can="['Party', '!']">
     <button
       mat-flat-button
       color="none"
@@ -39,7 +39,21 @@
       </div>
     </button>
   </mat-grid-tile>
-  <mat-grid-tile [colspan]="6" [rowspan]="1">
+  <mat-grid-tile [colspan]="6" [rowspan]="1" *can="'Party'">
+    <button
+      mat-flat-button
+      color="none"
+      routerLink="/home"
+      id="home-button"
+      class="lobby-list-link left"
+    >
+      <div class="lobby-list-link-content">
+        <img src="/assets/home-icon.png" alt="home-logo" />
+        <span class="label">{{ "lobby-list.nav.home" | translate }}</span>
+      </div>
+    </button>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="6" [rowspan]="1" *can="'Party'">
     <button
       mat-flat-button
       color="none"

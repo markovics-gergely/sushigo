@@ -15,7 +15,8 @@ namespace user.bll.Infrastructure
     public class UserQueryHandler :
         IRequestHandler<GetUserQuery, UserViewModel>,
         IRequestHandler<GetUserByIdQuery, UserViewModel>,
-        IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>
+        IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>,
+        IRequestHandler<GetHistoryQuery, IEnumerable<HistoryViewModel>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -73,6 +74,17 @@ namespace user.bll.Infrastructure
             }
             var userViewModel = _mapper.Map<UserViewModel>(userEntity);
             return Task.FromResult(userViewModel);
+        }
+
+        public Task<IEnumerable<HistoryViewModel>> Handle(GetHistoryQuery request, CancellationToken cancellationToken)
+        {
+            var userId = request.User?.GetUserIdFromJwt() ?? "";
+            var historyEntity = _unitOfWork.HistoryRepository.Get(
+                filter: x => x.UserId.ToString() == userId,
+                transform: x => x.AsNoTracking())
+                .ToList();
+            var historyViewModel = _mapper.Map<IEnumerable<HistoryViewModel>>(historyEntity);
+            return Task.FromResult(historyViewModel);
         }
     }
 }

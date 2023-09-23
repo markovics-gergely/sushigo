@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using shared.bll.Extensions;
+using shared.bll.Infrastructure.Queries;
 using System.Security.Claims;
-using user.bll.Infrastructure.Queries.Cache;
 using user.bll.Infrastructure.ViewModels;
 
 namespace user.bll.Infrastructure.Queries

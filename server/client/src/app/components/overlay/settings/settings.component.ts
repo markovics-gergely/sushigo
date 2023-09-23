@@ -37,7 +37,7 @@ export class SettingsComponent extends AbstractOpenableComponent {
       case 'remove-game':
         return this.gameService.isFirst;
       case 'delete-user':
-        return true;
+        return !this.tokenService.game && !this.tokenService.lobby;
       default:
         return false;
     }

@@ -27,6 +27,8 @@ export class UserComponent implements OnInit {
     this.userService.userEventEmitter.subscribe(
       (user: IUserViewModel | undefined) => {
         this._user = user;
+        console.log(user);
+        
       }
     );
     this.userService.refreshUser();

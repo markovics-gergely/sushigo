@@ -82,10 +82,10 @@ export class CardTypeUtil {
     }
   }
   public static getSelectTypeAfterPlay(cardType: CardType): SelectType {
-    switch (CardType[cardType.toString() as keyof typeof CardType]) {
-      case CardType.Chopsticks:
+    switch (CardTypeUtil.getString(cardType)) {
+      case CardTypeUtil.getString(CardType.Chopsticks):
         return SelectType.OwnHandCard;
-      case CardType.Spoon:
+      case CardTypeUtil.getString(CardType.Spoon):
         return SelectType.CardType;
       default:
         return SelectType.None;

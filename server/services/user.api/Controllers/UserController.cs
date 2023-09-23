@@ -99,6 +99,20 @@ namespace user.api.Controllers
         }
 
         /// <summary>
+        /// Get history
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>History</returns>
+        [Authorize(Roles = RoleTypes.Classic)]
+        [HttpGet("history")]
+        public async Task<ActionResult<IEnumerable<HistoryViewModel>>> GetHistoryAsync(CancellationToken cancellationToken)
+        {
+            var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
+            var query = new GetHistoryQuery(user);
+            return Ok(await _mediator.Send(query, cancellationToken));
+        }
+
+        /// <summary>
         /// Edit actual user data
         /// </summary>
         /// <param name="userDTO">values to edit</param>

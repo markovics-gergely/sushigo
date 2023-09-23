@@ -149,7 +149,9 @@ namespace user.bll.Infrastructure
 
         public async Task Handle(EditUserRoleCommand request, CancellationToken cancellationToken)
         {
-            var userEntity = _unitOfWork.UserRepository.Get(filter: x => x.Id == request.DTO.Id).FirstOrDefault();
+            var userEntity = _unitOfWork.UserRepository.Get(
+                filter: x => x.Id == request.DTO.Id
+                ).FirstOrDefault();
             if (userEntity == null)
             {
                 throw new EntityNotFoundException("User not found");
@@ -163,7 +165,10 @@ namespace user.bll.Infrastructure
 
         public async Task<UserViewModel> Handle(ClaimPartyCommand request, CancellationToken cancellationToken)
         {
-            var userEntity = _unitOfWork.UserRepository.Get(filter: x => x.Id == request.PartyBoughtDTO.UserId).FirstOrDefault();
+            var userEntity = _unitOfWork.UserRepository.Get(
+                filter: x => x.Id == request.PartyBoughtDTO.UserId,
+                includeProperties: nameof(ApplicationUser.Avatar)
+                ).FirstOrDefault();
             if (userEntity == null)
             {
                 throw new EntityNotFoundException("User not found");
@@ -187,7 +192,10 @@ namespace user.bll.Infrastructure
 
         public async Task<UserViewModel> Handle(ClaimDeckCommand request, CancellationToken cancellationToken)
         {
-            var userEntity = _unitOfWork.UserRepository.Get(filter: x => x.Id == request.DeckBoughtDTO.UserId).FirstOrDefault();
+            var userEntity = _unitOfWork.UserRepository.Get(
+                filter: x => x.Id == request.DeckBoughtDTO.UserId,
+                includeProperties: nameof(ApplicationUser.Avatar)
+                ).FirstOrDefault();
             if (userEntity == null)
             {
                 throw new EntityNotFoundException("User not found");
@@ -212,7 +220,10 @@ namespace user.bll.Infrastructure
 
         public async Task<UserViewModel> Handle(JoinLobbyCommand request, CancellationToken cancellationToken)
         {
-            var userEntity = _unitOfWork.UserRepository.Get(filter: x => x.Id == request.LobbyJoinedDTO.UserId).FirstOrDefault();
+            var userEntity = _unitOfWork.UserRepository.Get(
+                filter: x => x.Id == request.LobbyJoinedDTO.UserId,
+                includeProperties: nameof(ApplicationUser.Avatar)
+                ).FirstOrDefault();
             if (userEntity == null)
             {
                 throw new EntityNotFoundException(nameof(ApplicationUser));
@@ -226,7 +237,10 @@ namespace user.bll.Infrastructure
 
         public async Task<UserViewModel> Handle(JoinGameCommand request, CancellationToken cancellationToken)
         {
-            var userEntity = _unitOfWork.UserRepository.Get(filter: x => x.Id == request.GameJoinedSingleDTO.UserId).FirstOrDefault();
+            var userEntity = _unitOfWork.UserRepository.Get(
+                filter: x => x.Id == request.GameJoinedSingleDTO.UserId,
+                includeProperties: nameof(ApplicationUser.Avatar)
+                ).FirstOrDefault();
             if (userEntity == null)
             {
                 throw new EntityNotFoundException(nameof(ApplicationUser));
@@ -242,7 +256,10 @@ namespace user.bll.Infrastructure
 
         public async Task<UserViewModel> Handle(EndGameCommand request, CancellationToken cancellationToken)
         {
-            var userEntity = _unitOfWork.UserRepository.Get(filter: x => x.Id == request.GameEndDTO.UserId).FirstOrDefault();
+            var userEntity = _unitOfWork.UserRepository.Get(
+                filter: x => x.Id == request.GameEndDTO.UserId,
+                includeProperties: nameof(ApplicationUser.Avatar)
+                ).FirstOrDefault();
             if (userEntity == null)
             {
                 throw new EntityNotFoundException(nameof(ApplicationUser));
@@ -252,7 +269,21 @@ namespace user.bll.Infrastructure
             userEntity.Experience += request.GameEndDTO.Points;
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
-            await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
+            if (request.GameEndDTO.Points > 0)
+            {
+                var history = new History
+                {
+                    UserId = request.GameEndDTO.UserId,
+                    Placement = request.GameEndDTO.Placement,
+                    Point = request.GameEndDTO.Points,
+                    Name = request.GameEndDTO.GameName,
+                    Created = DateTime.UtcNow
+                };
+                _unitOfWork.HistoryRepository.Insert(history);
+                await _unitOfWork.Save();
+                await _mediator.Publish(new RefreshHistoryEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
+            }
+            await _mediator.Publish(new RemoveGameEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
             return _mapper.Map<UserViewModel>(userEntity);
         }
 
@@ -284,6 +315,15 @@ namespace user.bll.Infrastructure
                     ReceiverId = friend.Id,
                     SenderId = userEntity.Id
                 }, cancellationToken);
+            }
+            var history = _unitOfWork.HistoryRepository.Get(
+                    filter: x => x.UserId == userEntity.Id,
+                    transform: x => x.AsNoTracking()
+                ).ToList();
+            foreach ( var h in history )
+            {
+                _unitOfWork.HistoryRepository.Delete(h);
+                await _unitOfWork.Save();
             }
             var roles = await _userManager.GetRolesAsync(userEntity);
             await _userManager.RemoveFromRolesAsync(userEntity, roles);

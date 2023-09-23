@@ -4,9 +4,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using shared.bll.Exceptions;
+using shared.bll.Infrastructure.Queries;
 using shared.bll.Settings;
 using System.Text;
-using user.bll.Infrastructure.Queries.Cache;
 
 namespace user.bll.Infrastructure.Pipelines
 {

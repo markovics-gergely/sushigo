@@ -1,3 +1,4 @@
+import { trigger, transition, style, animate } from '@angular/animations';
 import { Component, Input } from '@angular/core';
 import { CardService } from 'src/app/services/card.service';
 import { GameSelectService } from 'src/app/services/game-select.service';
@@ -7,7 +8,19 @@ import { IBoardViewModel, IHandViewModel } from 'src/shared/game.models';
 @Component({
   selector: 'app-hand',
   templateUrl: './hand.component.html',
-  styleUrls: ['./hand.component.scss']
+  styleUrls: ['./hand.component.scss'],
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({ transform: 'translateY(-120%)' }),
+        animate('200ms {{delay}}ms ease-in', style({ transform: 'translateY(0%)' })),
+      ], { params: { delay: 0 } }),
+      transition(':leave', [
+        style({ transform: 'translateY(0%)' }),
+        animate('200ms ease-out', style({ transform: 'translateY(120%)' })),
+      ], { params: { delay: 0 } }),
+    ]),
+  ],
 })
 export class HandComponent {
   private _hand: IHandViewModel | undefined;

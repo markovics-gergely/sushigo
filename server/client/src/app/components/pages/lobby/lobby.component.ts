@@ -7,6 +7,7 @@ import { IDeckItemViewModel } from 'src/shared/deck.models';
 import { ShopService } from 'src/app/services/shop.service';
 import { TokenService } from 'src/app/services/token.service';
 import { GameService } from 'src/app/services/game.service';
+import { isEqual } from 'lodash';
 
 @Component({
   selector: 'app-lobby',
@@ -49,15 +50,12 @@ export class LobbyComponent {
   }
 
   private processLobby(lobby: ILobbyViewModel | undefined) {
+    if (isEqual(lobby, this._lobby)) return;
     this._lobby = lobby;
     if (lobby) {
-      console.log(lobby);
-
       this.shopService
         .getDeck(lobby.deckType)
         .subscribe((deck: IDeckItemViewModel) => {
-          console.log(deck);
-
           this._deck = deck;
           this._deck.imageLoaded = true;
         });
@@ -121,9 +119,10 @@ export class LobbyComponent {
     this.lobbyService.removePlayer(player.id);
   }
 
+  protected readyProcess: boolean = false;
   public ready(): void {
     if (!this.own) return;
-    this.loadingService.start();
+    this.readyProcess = true;
     this.lobbyService
       .ready({ playerId: this.own.id, ready: !this.own.ready })
       .subscribe({
@@ -132,7 +131,7 @@ export class LobbyComponent {
         },
       })
       .add(() => {
-        this.loadingService.stop();
+        this.readyProcess = false;
       });
   }
 

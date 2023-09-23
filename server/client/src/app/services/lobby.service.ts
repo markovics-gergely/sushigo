@@ -138,7 +138,7 @@ export class LobbyService extends BaseServiceService {
 
   public addPlayer(player: IPlayerViewModel) {
     const lobby = this._lobbyEventEmitter.value;
-    if (lobby && lobby.players.every((p) => p.id !== player.id)) {
+    if (lobby?.players.every((p) => p.id !== player.id)) {
       lobby.players.push(player);
       this._lobbyEventEmitter.next(lobby);
     }

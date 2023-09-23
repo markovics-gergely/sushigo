@@ -24,6 +24,8 @@
 
 .hand-scroll {
   width: calc(100% - 150px);
+  --scrollbar-hover-size: 10px;
+  --scrollbar-padding: 8px;
 }
 
 .hand-container {
@@ -84,6 +86,7 @@
     animation: accent-pulsate linear 2s infinite;
     border-radius: 5px;
     margin: 5px;
+    padding: 0 5px;
     height: calc(100% - 10px);
     .card-wrapper {
       width: auto;

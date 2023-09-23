@@ -4,6 +4,7 @@
     *ngIf="joinForm"
     method="post"
     class="form-table"
+    id="join-lobby-form"
     [formGroup]="joinForm"
   >
     <mat-form-field appearance="outline">
@@ -29,10 +30,10 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-flat-button color="warn" (click)="cancel()">
+  <button id="lobby-join-cancel" mat-flat-button color="warn" (click)="cancel()">
     {{ "lobby-list.join-dialog.cancel" | translate }}
   </button>
-  <button mat-flat-button color="primary" (click)="submit()" [disabled]="!valid">
+  <button id="lobby-join-button" mat-flat-button color="primary" (click)="submit()" [disabled]="!valid">
     {{ "lobby-list.join-dialog.submit" | translate }}
   </button>
 </mat-dialog-actions>

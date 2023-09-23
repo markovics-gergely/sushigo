@@ -71,7 +71,7 @@ export class GameService extends BaseServiceService {
 
   public refreshGame(game: IGameViewModel): void {
     this._gameEventEmitter.next(game);
-    this.cardService.loadHand();
+    this.cardService.refreshHand();
   }
 
   public proceedEndTurn(): Observable<void> {

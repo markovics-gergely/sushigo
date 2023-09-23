@@ -108,6 +108,23 @@
       }
     },
     {
+      "DownstreamPathTemplate": "/User/history",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/user/history",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "user",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
       "DownstreamPathTemplate": "/Friend",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

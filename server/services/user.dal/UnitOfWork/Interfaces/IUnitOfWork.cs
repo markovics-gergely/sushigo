@@ -7,6 +7,7 @@ namespace user.dal.UnitOfWork.Interfaces
     {
         IGenericRepository<ApplicationUser> UserRepository { get; }
         IGenericRepository<Friend> FriendRepository { get; }
+        IGenericRepository<History> HistoryRepository { get; }
 
         Task Save();
     }

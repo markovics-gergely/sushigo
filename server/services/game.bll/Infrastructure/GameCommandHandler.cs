@@ -383,11 +383,13 @@ namespace game.bll.Infrastructure
 
             // Send over event to user container
             var isOver = game.Phase == Phase.Result;
+            var placement = game.Players.Select(p => p.Points).Distinct().OrderDescending().ToList();
             foreach (var player in game.Players)
             {
                 await _endpoint.Publish(new GameEndDTO
                 {
                     Points = isOver ? player.Points : 0,
+                    Placement = isOver ? placement.FindIndex(p => p == player.Points) + 1 : 0,
                     UserId = player.UserId,
                     GameName = game.Name,
                 }, cancellationToken);

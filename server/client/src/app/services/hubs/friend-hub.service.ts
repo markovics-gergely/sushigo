@@ -6,6 +6,7 @@ import { FriendService } from '../friend.service';
 import { RefreshService } from '../refresh.service';
 import { HubService } from './abstract/hub.service';
 import { UserService } from '../user.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,8 @@ export class FriendHubService extends HubService {
     injector: Injector,
     private friendService: FriendService,
     private refreshService: RefreshService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {
     super(injector);
   }
@@ -46,17 +48,19 @@ export class FriendHubService extends HubService {
         this.friendService.loadStatuses(statuses);
       }
     );
-    this.hubConnection?.on(
-      'FriendStatus',
-      (status: IFriendStatusViewModel) => {
-        this.friendService.loadStatuses([status]);
-      }
-    );
+    this.hubConnection?.on('FriendStatus', (status: IFriendStatusViewModel) => {
+      this.friendService.loadStatuses([status]);
+    });
     this.hubConnection?.on('RefreshUser', () => {
-      console.log('refreshing user');
-      
       this.refreshService.refreshUser();
       this.userService.refreshUser();
+    });
+    this.hubConnection?.on('RemoveGame', () => {
+      this.refreshService.refreshUserWithoutLoading().add(() => {
+        this.userService.refreshUser().add(() => {
+          this.router.navigate(['lobby']).catch(console.error);
+        });
+      });
     });
   }
 }

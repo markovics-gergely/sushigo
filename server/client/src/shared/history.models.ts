@@ -1,6 +1,6 @@
 export interface IHistoryViewModel {
-    id: string;
-    type: string;
-    date: string;
-    placement: string;
+    name: string;
+    placement: number;
+    point: number;
+    created: string;
 }

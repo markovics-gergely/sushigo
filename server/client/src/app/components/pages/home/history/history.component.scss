@@ -34,9 +34,43 @@
   }
 }
 
-.history-content {
+.history-scroll {
   width: calc(100% - 20px);
   height: calc(100% - 63px);
   margin: 0 10px;
-  background-color: rgba($color: black, $alpha: 0.1);
+  .history-viewport {
+    border-radius: 5px;
+    height: 100%;
+    background-color: rgba($color: black, $alpha: 0.1);
+  }
+}
+
+.history-content {
+  width: 100%;
+  margin: 0;
+  padding-right: 5px;
+  background: none;
+  box-shadow: none;
+
+  .history-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+
+    p {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        padding: 10px;
+
+        &.history-points {
+            margin-left: auto;
+            i { vertical-align: text-top; }
+        }
+
+        &.name {
+          padding: 10px 0;
+        }
+    }
+}
 }

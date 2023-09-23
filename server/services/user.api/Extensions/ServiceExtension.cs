@@ -3,6 +3,7 @@ using shared.dal.Repository.Implementations;
 using shared.dal.Repository.Interfaces;
 using user.bll.Infrastructure;
 using user.bll.Infrastructure.Commands;
+using user.bll.Infrastructure.Events;
 using user.bll.Infrastructure.Pipelines;
 using user.bll.Infrastructure.Queries;
 using user.bll.Infrastructure.ViewModels;
@@ -43,6 +44,9 @@ namespace user.api.Extensions
             services.AddTransient<IRequestHandler<GetUserQuery, UserViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetUserByIdQuery, UserViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>, UserQueryHandler>();
+            services.AddTransient<IRequestHandler<GetHistoryQuery, IEnumerable<HistoryViewModel>>, UserQueryHandler>();
+
+            services.AddTransient<INotificationHandler<RefreshHistoryEvent>, HistoryNotificationHandler>();
 
             services.AddTransient(typeof(IDbContextProvider), typeof(DbContextProvider<UserDbContext>));
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));

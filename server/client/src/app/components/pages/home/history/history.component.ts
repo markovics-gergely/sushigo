@@ -26,4 +26,8 @@ export class HistoryComponent implements OnInit {
   public get history(): IHistoryViewModel[] {
     return this._history;
   }
+
+  protected get timezone(): string {
+    return (-new Date().getTimezoneOffset() / 60).toString();
+  }
 }

@@ -24,6 +24,7 @@ export class ChatComponent implements OnInit {
     private loadingService: LoadingService,
     ) {}
 
+  protected lobbyProcess: boolean = false;
   ngOnInit(): void {
     this._messageForm = new FormGroup({
       text: new FormControl(''),
@@ -31,13 +32,13 @@ export class ChatComponent implements OnInit {
     this.lobbyService.lobbyEventEmitter.subscribe({
       next: (lobby) => {
         if (lobby) {
-          this.loadingService.start();
+          this.lobbyProcess = true;
           this.messageService.getMessages(lobby.id).subscribe({
             next: (messages: IMessageViewModel[]) => {
               this._messages = messages;
             }
           }).add(() => {
-            this.loadingService.stop();
+            this.lobbyProcess = false;
           });
         }
       }

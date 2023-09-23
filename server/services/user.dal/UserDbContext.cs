@@ -71,6 +71,12 @@ namespace user.dal
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);
 
+            builder.Entity<History>()
+                .HasOne(h => h.User)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired();
+
             builder.Entity<ApplicationRole>()
                 .HasData(
                     new ApplicationRole

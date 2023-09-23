@@ -3,6 +3,10 @@ import { HubService } from './abstract/hub.service';
 import { GameService } from '../game.service';
 import { environment } from 'src/environments/environment';
 import { IGameViewModel } from 'src/shared/game.models';
+import { Router } from '@angular/router';
+import { UserService } from '../user.service';
+import { SnackService } from '../snack.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +14,7 @@ import { IGameViewModel } from 'src/shared/game.models';
 export class GameHubService extends HubService {
   protected override readonly baseUrl: string = `${environment.baseUrl}/game-hubs/game-hub`;
 
-  constructor(injector: Injector, private gameService: GameService) {
+  constructor(injector: Injector, private gameService: GameService, private snackService: SnackService, private translateService: TranslateService) {
     super(injector);
   }
 
@@ -25,8 +29,8 @@ export class GameHubService extends HubService {
       
     });
     this.hubConnection?.on('RemoveGame', () => {
-      console.log('RemoveGame');
-      
+      this.snackService.openSnackBar(this.translateService.instant('game.over'));
+      this.gameService.gameEventEmitter.next(undefined);
     });
   }
 

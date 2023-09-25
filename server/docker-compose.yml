@@ -36,7 +36,7 @@ services:
         - sushisqlserver
 
   game.api:
-    image: ${DOCKER_REGISTRY-}shopapi
+    image: ${DOCKER_REGISTRY-}gameapi
     build:
       context: .
       dockerfile: services/game.api/Dockerfile

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using Moq;
 using shared.dal.Models;
 using shared.dal.Repository.Interfaces;
+using StackExchange.Redis;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using user.bll.Infrastructure;
@@ -504,6 +505,81 @@ namespace user.test
             mediator.Verify(m => m.Publish(It.Is<RemoveGameEvent>(e => e.UserId == user.Id.ToString()), It.IsAny<CancellationToken>()), Times.Once());
             mediator.Verify(m => m.Publish(It.Is<RefreshHistoryEvent>(e => e.UserId == user.Id.ToString()), It.IsAny<CancellationToken>()), Times.Once());
             historyRepo.Verify(r => r.Insert(It.Is<History>(h => h.Name == history.Name && h.UserId == history.UserId && h.Placement == history.Placement && h.Point == history.Point)), Times.Once());
+        }
+
+        [Fact]
+        public async Task RemoveUserAsync()
+        {
+            // Arrange
+            var guid = Guid.NewGuid();
+            var gameGuid = Guid.NewGuid();
+            var playerGuid = Guid.NewGuid();
+            var friendGuid = Guid.NewGuid();
+            var friendUserId = Guid.NewGuid();
+            var user = new ApplicationUser
+            {
+                Id = guid,
+                UserName = "Test",
+                FirstName = "Test",
+                LastName = "Test",
+                Email = "Test@Test.hu",
+                Experience = RoleTypes.DeckExp,
+            };
+            var history = new History
+            {
+                Id = Guid.NewGuid(),
+                Name = "Test",
+                UserId = guid,
+                Placement = 1,
+                Point = 10
+            };
+            var friend = new Friend
+            {
+                Id = friendGuid,
+                SenderId = guid,
+                ReceiverId = friendUserId,
+                Pending = false
+            };
+            var userRepo = RepositoryMockData.GetMockRepositoryWithGet(new List<ApplicationUser> { user });
+            var historyRepo = RepositoryMockData.GetMockRepositoryWithGet(new List<History> { history });
+            historyRepo.Setup(r => r.Delete(history));
+            var friendsRepo = RepositoryMockData.GetMockRepositoryWithGet(new List<Friend> { friend });
+            friendsRepo.Setup(f => f.Delete(friend));
+            var unitOfWork = RepositoryMockData.MockUnitOfWork;
+            unitOfWork.Setup(u => u.UserRepository).Returns(userRepo.Object);
+            unitOfWork.Setup(u => u.HistoryRepository).Returns(historyRepo.Object);
+            unitOfWork.Setup(u => u.FriendRepository).Returns(friendsRepo.Object);
+            var mediator = RepositoryMockData.MockMediator;
+            mediator.Setup(m => m.Publish(It.Is<RemoveFriendEvent>(e => e.SenderId == user.Id && e.ReceiverId == friendUserId), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            var userManager = RepositoryMockData.MockUserManager;
+            userManager.Setup(u => u.GetRolesAsync(user)).Returns(Task.FromResult<IList<string>>(new List<string> { RoleTypes.Party }));
+            userManager.Setup(u => u.RemoveFromRolesAsync(user, new List<string> { RoleTypes.Party })).Returns(Task.FromResult(IdentityResult.Success));
+            userManager.Setup(u => u.DeleteAsync(user)).Returns(Task.FromResult(IdentityResult.Success));
+            var userCommandHandler = new UserCommandHandler(
+                unitOfWork.Object,
+                RepositoryMockData.MockMapper.Object,
+                RepositoryMockData.MockRoleManager.Object,
+                userManager.Object,
+                RepositoryMockData.MockFileConfigurationService.Object,
+                RepositoryMockData.MockFileRepository.Object,
+                mediator.Object
+                );
+            var identity = new ClaimsIdentity();
+            identity.AddClaim(new Claim(JwtClaimTypes.Subject, guid.ToString()));
+            var command = new RemoveUserCommand(new ClaimsPrincipal(identity));
+
+            // Act
+            var result = await userCommandHandler.Handle(command, new CancellationToken());
+
+            // Assert
+            Assert.Null(result);
+            friendsRepo.Verify(f => f.Delete(It.Is<Friend>(fr => fr.SenderId == guid && fr.ReceiverId == friendUserId)), Times.Once());
+            historyRepo.Verify(h => h.Delete(history), Times.Once());
+            unitOfWork.Verify(p => p.Save(), Times.Exactly(2));
+            mediator.Verify(m => m.Publish(It.Is<RemoveFriendEvent>(e => e.SenderId == guid && e.ReceiverId == friendUserId), It.IsAny<CancellationToken>()), Times.Once());
+            userManager.Verify(u => u.GetRolesAsync(user), Times.Once());
+            userManager.Verify(u => u.RemoveFromRolesAsync(user, new List<string> { RoleTypes.Party }), Times.Once());
+            userManager.Verify(u => u.DeleteAsync(user), Times.Once());
         }
     }
 }

@@ -312,7 +312,7 @@ namespace user.bll.Infrastructure
                 await _unitOfWork.Save();
                 await _mediator.Publish(new RemoveFriendEvent
                 {
-                    ReceiverId = friend.Id,
+                    ReceiverId = userEntity.Id == friend.ReceiverId ? friend.SenderId : friend.ReceiverId,
                     SenderId = userEntity.Id
                 }, cancellationToken);
             }

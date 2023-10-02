@@ -76,8 +76,6 @@ export class LobbyService extends BaseServiceService {
   }
 
   public joinLobby(joinLobby: IJoinLobbyDTO): Observable<ILobbyViewModel> {
-    console.log(joinLobby);
-    
     return this.client.post<ILobbyViewModel>(`${this.baseUrl}/join`, joinLobby);
   }
 
@@ -140,6 +138,7 @@ export class LobbyService extends BaseServiceService {
     const lobby = this._lobbyEventEmitter.value;
     if (lobby?.players.every((p) => p.id !== player.id)) {
       lobby.players.push(player);
+      lobby.event = 'addPlayer';
       this._lobbyEventEmitter.next(lobby);
     }
   }
@@ -148,6 +147,7 @@ export class LobbyService extends BaseServiceService {
     const lobby = this._lobbyEventEmitter.value;
     if (!lobby) return;
     lobby.players = lobby.players.filter((p) => p.id !== playerId);
+    lobby.event = 'removePlayer';
     this._lobbyEventEmitter.next(lobby);
   }
 

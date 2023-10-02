@@ -185,7 +185,7 @@ export class GameSelectService {
         this._selectedBoardCards.push(value);
       }
     } else if (this.afterTurn && value && CardTypeUtil.hasAfterTurn(value.cardType)) {
-      if (value === this._selectedCard) {
+      if (value.id === this._selectedCard?.id) {
         this._selectedCard = undefined;
         return;
       }

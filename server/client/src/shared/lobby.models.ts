@@ -1,5 +1,6 @@
 import { DeckType } from "./deck.models";
 
+export type LobbyEvent = "ready" | "deckType" | "addPlayer" | "removePlayer";
 export interface IPlayerViewModel {
     id: string;
     userId: string;
@@ -18,6 +19,9 @@ export interface ILobbyViewModel {
     created: Date;
     deckType: DeckType;
     players: Array<IPlayerViewModel>;
+    readyEvent?: boolean;
+    deckTypeEvent?: boolean;
+    event?: LobbyEvent;
 }
 
 export interface ILobbyItemViewModel {

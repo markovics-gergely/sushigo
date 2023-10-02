@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DeckType, IDeckViewModel } from 'src/shared/deck.models';
+import { DeckType, DeckTypeUtil, IDeckViewModel } from 'src/shared/deck.models';
 import { ShopService } from 'src/app/services/shop.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AclService } from 'src/app/services/acl.service';
@@ -24,7 +24,7 @@ export class EditLobbyComponent implements OnInit {
 
   ngOnInit(): void {
     this._editForm = new FormGroup({
-      deckType: new FormControl(this._data, Validators.required),
+      deckType: new FormControl(DeckTypeUtil.getString(this._data), Validators.required),
     });
     this.shopService.decks.subscribe((decks) => (this._decks = decks));
   }
@@ -53,11 +53,11 @@ export class EditLobbyComponent implements OnInit {
     return this._decks.find((deck) => deck.deckType === this._editForm?.value.deckType)!;
   }
 
-  public get deckType(): DeckType {
-    return this._editForm?.value.deckType;
+  public get deckType(): string {
+    return DeckTypeUtil.getString(this._editForm?.value.deckType);
   }
 
   public original(deck: IDeckViewModel): boolean {
-    return deck.deckType === this._data;
+    return DeckTypeUtil.equals(deck.deckType, this._data);
   }
 }

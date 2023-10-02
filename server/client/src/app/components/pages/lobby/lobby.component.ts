@@ -50,6 +50,28 @@ export class LobbyComponent {
   }
 
   private processLobby(lobby: ILobbyViewModel | undefined) {
+    if (lobby?.event === 'ready') {
+      this._lobby?.players.forEach((p, i) => {
+        p.ready = lobby.players[i].ready;
+      });
+      lobby.event = undefined;
+      return;
+    }
+    if (lobby?.event === 'deckType') {
+      if (!this._lobby) return;
+      this._lobby?.players.forEach((p, i) => {
+        p.ready = lobby.players[i].ready;
+      });
+      this._lobby.deckType = lobby.deckType;
+      this.shopService
+        .getDeck(lobby.deckType)
+        .subscribe((deck: IDeckItemViewModel) => {
+          this._deck = deck;
+          this._deck.imageLoaded = true;
+        });
+      lobby.event = undefined;
+      return;
+    }
     if (isEqual(lobby, this._lobby)) return;
     this._lobby = lobby;
     if (lobby) {
@@ -125,11 +147,7 @@ export class LobbyComponent {
     this.readyProcess = true;
     this.lobbyService
       .ready({ playerId: this.own.id, ready: !this.own.ready })
-      .subscribe({
-        next: (lobby: ILobbyViewModel) => {
-          this.processLobby(lobby);
-        },
-      })
+      .subscribe({})
       .add(() => {
         this.readyProcess = false;
       });

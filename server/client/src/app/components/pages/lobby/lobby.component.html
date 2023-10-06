@@ -108,7 +108,7 @@
         </mat-card>
         <mat-card class="detail-item">
           <div class="name date">{{ "lobby.date" | translate }}</div>
-          <mat-card-title class="value" id="lobby-date">{{ lobby.created | date : "YYYY.MM.dd HH:mm" }}</mat-card-title>
+          <mat-card-title class="value" id="lobby-date">{{ lobby.created + 'Z' | date : "YYYY.MM.dd HH:mm" : timezone }}</mat-card-title>
         </mat-card>
       </div>
       <div class="image" *ngIf="deck">

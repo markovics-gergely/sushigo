@@ -2,7 +2,6 @@
 using game.dal.Domain;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using shared.bll.Exceptions;
 using shared.dal.Models;
 using System.Security.Claims;
 
@@ -41,13 +40,7 @@ namespace game.bll.Infrastructure.Commands.Card
 
         public async Task OnEndTurn(Player player, HandCard handCard)
         {
-            // Get game entity
-            var game = _unitOfWork.GameRepository.Get(
-                    transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == player.GameId
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(UramakiCommand));
-            if (game == null) throw new EntityNotFoundException(nameof(game));
-            
+            await _simpleAddToBoard.AddToBoard(player, handCard);
         }
     }
 }

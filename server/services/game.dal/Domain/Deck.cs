@@ -45,5 +45,14 @@ namespace game.dal.Domain
             AdditionalInfo[cardType] = string.Join(',', pointList.ToArray());
             return int.Parse(item);
         }
+
+        public void PushInfoItem(CardType cardType, int item)
+        {
+            if (!AdditionalInfo.ContainsKey(cardType)) return;
+
+            var pointList = new Queue<string>(AdditionalInfo[cardType].Split(','));
+            pointList.Enqueue(item.ToString());
+            AdditionalInfo[cardType] = string.Join(',', pointList.ToArray());
+        }
     }
 }

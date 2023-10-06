@@ -1,4 +1,4 @@
-<mat-card class="profile-banner">
+<mat-card class="profile-banner" *ngIf="user">
   <h1>{{ "home.user.title" | translate }}</h1>
 </mat-card>
 <div class="profile-detail" *ngIf="user">

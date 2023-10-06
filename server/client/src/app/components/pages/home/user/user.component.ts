@@ -26,9 +26,10 @@ export class UserComponent implements OnInit {
   ngOnInit(): void {
     this.userService.userEventEmitter.subscribe(
       (user: IUserViewModel | undefined) => {
+        if (user && this._user) {
+          user.avatarLoaded = this._user.avatarLoaded;
+        }
         this._user = user;
-        console.log(user);
-        
       }
     );
     this.userService.refreshUser();

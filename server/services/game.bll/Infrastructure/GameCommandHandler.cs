@@ -10,8 +10,10 @@ using game.dal.UnitOfWork.Interfaces;
 using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using shared.bll.Exceptions;
 using shared.bll.Extensions;
+using shared.bll.Validators.Implementations;
 using shared.bll.Validators.Interfaces;
 using shared.dal.Models;
 using System;
@@ -23,7 +25,8 @@ namespace game.bll.Infrastructure
         IRequestHandler<ProceedEndTurnCommand>,
         IRequestHandler<ProceedEndRoundCommand>,
         IRequestHandler<ProceedEndGameCommand>,
-        IRequestHandler<RemoveGameCommand>
+        IRequestHandler<RemoveGameCommand>,
+        IRequestHandler<MenuCardSelectCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IServiceProvider _serviceProvider;
@@ -67,7 +70,7 @@ namespace game.bll.Infrastructure
             // Shuffle players
             var players = _mapper.Map<List<Player>>(request.CreateGameDTO.Players).OrderBy(x => Guid.NewGuid()).ToList();
             var handSize = Game.GetHandCount(players.Count);
-            
+
             // Create players and cards in their hands
             var lastGuid = new Guid();
             foreach (var player in players)
@@ -450,6 +453,81 @@ namespace game.bll.Infrastructure
             // Send refresh to users and cache
             var gameViewModel = _mapper.Map<GameViewModel>(gameForCache);
             await _mediator.Publish(new RefreshGameEvent { GameViewModel = gameViewModel }, cancellationToken);
+        }
+
+        public Task Handle(MenuCardSelectCommand request, CancellationToken cancellationToken)
+        {
+            if (request.User == null) throw new EntityNotFoundException(nameof(request.User));
+
+            // Get player entity
+            var player = _unitOfWork.PlayerRepository.Get(
+                    transform: x => x.AsNoTracking(),
+                    filter: x => x.Id == request.User.GetPlayerIdFromJwt()
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Player));
+
+            // Get game entity
+            var game = _unitOfWork.GameRepository.Get(
+                    transform: x => x.AsNoTracking(),
+                    filter: x => x.Id == player.GameId
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
+
+            var deck = _unitOfWork.DeckRepository.Get(
+                transform: x => x.AsNoTracking(),
+                    filter: x => x.Id == game.DeckId
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Deck));
+
+            // Validate if actual player played and in the turn
+            _validator = new AndCondition(
+                new ActualPlayerValidator(game, request.User),
+                new PhaseValidator(game, Phase.MenuSelect)
+            );
+            if (!_validator.Validate())
+            {
+                throw new ValidationErrorException(nameof(PlayCardCommand));
+            }
+
+            var menuCard = _unitOfWork.HandCardRepository.Get(
+                                   filter: x => x.Id == request.HandCardId && x.HandId == player.HandId,
+                                                      transform: x => x.AsNoTracking()
+                                                                     ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(HandCard));
+            if (!menuCard.AdditionalInfo.ContainsKey(Additional.MenuCards))
+            {
+                throw new ValidationErrorException(nameof(PlayMenuCardCommand));
+            }
+            List<HandCard>? selectables = JsonConvert.DeserializeObject<List<HandCard>>(menuCard.AdditionalInfo[Additional.MenuCards]) ?? throw new ValidationErrorException(nameof(PlayMenuCardCommand));
+            if (!selectables.Any(x => x.Id == request.HandCardId))
+            {
+                throw new ValidationErrorException(nameof(PlayMenuCardCommand));
+            }
+            foreach (var selectable in selectables)
+            {
+                if (selectable.Id == request.HandCardId)
+                {
+                    // Create the card to add to the board
+                    var boardCard = new BoardCard
+                    {
+                        CardType = selectable.CardType,
+                        BoardId = player.BoardId,
+                        GameId = player.GameId,
+                        AdditionalInfo = selectable.AdditionalInfo,
+                    };
+                    _unitOfWork.BoardCardRepository.Insert(boardCard);
+                }
+                else
+                {
+                    deck.Cards.Add(selectable.CardType);
+                    if (selectable.AdditionalInfo.ContainsKey(Additional.Points))
+                    {
+                        deck.PushInfoItem(selectable.CardType, int.Parse(selectable.AdditionalInfo[Additional.Points]));
+                    }
+                }
+            }
+            game.Phase = Phase.Turn;
+            _unitOfWork.HandCardRepository.Delete(menuCard);
+            _unitOfWork.DeckRepository.Update(deck);
+            _unitOfWork.GameRepository.Update(game);
+            _unitOfWork.PlayerRepository.Update(player);
+            return _unitOfWork.Save();
         }
     }
 }

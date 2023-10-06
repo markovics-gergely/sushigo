@@ -1,7 +1,7 @@
-<mat-card class="history-banner">
+<mat-card class="history-banner" *ngIf="history">
   <h1>{{ "home.history.title" | translate }}</h1>
 </mat-card>
-<ng-scrollbar class="history-scroll">
+<ng-scrollbar class="history-scroll" *ngIf="history">
   <div scrollViewport class="history-viewport">
     <mat-card class="history-content">
       <div class="history-row" *ngFor="let h of history; index as i">

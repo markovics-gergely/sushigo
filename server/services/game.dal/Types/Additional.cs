@@ -6,5 +6,6 @@
         Points = 1,
         Tagged = 2,
         CardIds = 3,
+        MenuCards = 4,
     }
 }

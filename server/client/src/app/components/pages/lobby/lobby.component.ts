@@ -175,4 +175,8 @@ export class LobbyComponent {
       this.loadingService.stop();
     });
   }
+
+  protected get timezone(): string {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }
 }

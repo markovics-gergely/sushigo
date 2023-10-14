@@ -72,8 +72,6 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
 }
 
-app.UseHangfireDashboard();
-
 app.UseProblemDetails();
 
 if (app.Environment.IsDevelopment())
@@ -101,6 +99,13 @@ app.UseCors("CorsPolicy");
 app.Use(AuthenticationExtension.AuthQueryStringToHeader);
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[] { new HangfireAuthorizationFilter() }
+});
+var backgroundJobs = app.Services.GetRequiredService<IBackgroundJobClient>();
+backgroundJobs.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
 
 app.MapControllers();
 app.MapHangfireDashboard();

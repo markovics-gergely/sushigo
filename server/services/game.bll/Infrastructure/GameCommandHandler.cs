@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using game.bll.Extensions;
 using game.bll.Infrastructure.Commands;
 using game.bll.Infrastructure.Commands.Card.Utils;
 using game.bll.Infrastructure.Events;
@@ -7,6 +8,7 @@ using game.bll.Validators;
 using game.dal.Domain;
 using game.dal.Types;
 using game.dal.UnitOfWork.Interfaces;
+using Hangfire;
 using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +18,6 @@ using shared.bll.Extensions;
 using shared.bll.Validators.Implementations;
 using shared.bll.Validators.Interfaces;
 using shared.dal.Models;
-using System;
 
 namespace game.bll.Infrastructure
 {
@@ -33,15 +34,17 @@ namespace game.bll.Infrastructure
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly IPublishEndpoint _endpoint;
+        private readonly IBackgroundJobClient _client;
         private IValidator? _validator;
 
-        public GameCommandHandler(IUnitOfWork unitOfWork, IServiceProvider serviceProvider, IMapper mapper, IMediator mediator, IPublishEndpoint endpoint)
+        public GameCommandHandler(IUnitOfWork unitOfWork, IServiceProvider serviceProvider, IMapper mapper, IMediator mediator, IPublishEndpoint endpoint, IBackgroundJobClient client)
         {
             _unitOfWork = unitOfWork;
             _serviceProvider = serviceProvider;
             _mapper = mapper;
             _mediator = mediator;
             _endpoint = endpoint;
+            _client = client;
         }
 
         public async Task<GameViewModel> Handle(CreateGameCommand request, CancellationToken cancellationToken)
@@ -138,16 +141,25 @@ namespace game.bll.Infrastructure
 
         public async Task Handle(ProceedEndTurnCommand request, CancellationToken cancellationToken)
         {
+            var gameId = request.GameId ?? request.User!.GetGameIdFromJwt();
+            MediatorExtensions.Delete($"end-turn-{gameId}");
+
             // Get game entity
             var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == request.User!.GetGameIdFromJwt()
+                    filter: x => x.Id == gameId
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
-            if (game == null) throw new EntityNotFoundException(nameof(Game));
 
-            // Validate if first player played
-            _validator = new FirstPlayerValidator(game, request.User);
-            if (!_validator.Validate())
+            if (!request.IsJob)
+            {
+                // Validate if first player played
+                _validator = new FirstPlayerValidator(game, request.User);
+                if (!_validator.Validate())
+                {
+                    throw new ValidationErrorException(nameof(ProceedEndTurnCommand));
+                }
+            }
+            else if (game.Phase != Phase.EndTurn)
             {
                 throw new ValidationErrorException(nameof(ProceedEndTurnCommand));
             }
@@ -213,7 +225,7 @@ namespace game.bll.Infrastructure
             // Get game entity
             var gameForCache = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == request.User!.GetGameIdFromJwt(),
+                    filter: x => x.Id == gameId,
                     includeProperties: "Players.Board.Cards" // for cache
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
             if (game == null) throw new EntityNotFoundException(nameof(Game));
@@ -227,34 +239,41 @@ namespace game.bll.Infrastructure
             {
                 await _mediator.Publish(new EndRoundEvent
                 {
-                    GameId = game.Id,
-                    Principal = request.User!
+                    GameId = game.Id
                 }, cancellationToken);
             }
         }
 
         public async Task Handle(ProceedEndRoundCommand request, CancellationToken cancellationToken)
         {
+            var gameId = request.GameId ?? request.User!.GetGameIdFromJwt();
+            MediatorExtensions.Delete($"end-round-{gameId}");
+
             // Get game entity
             var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == request.User!.GetGameIdFromJwt()
+                    filter: x => x.Id == gameId
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
-            if (game == null) throw new EntityNotFoundException(nameof(Game));
 
-            // Validate if first player played
-            _validator = new FirstPlayerValidator(game, request.User);
-            if (!_validator.Validate())
+            if (!request.IsJob)
+            {
+                // Validate if first player played
+                _validator = new FirstPlayerValidator(game, request.User);
+                if (!_validator.Validate())
+                {
+                    throw new ValidationErrorException(nameof(ProceedEndRoundCommand));
+                }
+            }
+            else if (game.Phase != Phase.EndRound)
             {
                 throw new ValidationErrorException(nameof(ProceedEndRoundCommand));
             }
-
+            
             // Get deck entity
             var deck = _unitOfWork.DeckRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == game.DeckId
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game.Deck));
-            if (deck == null) throw new EntityNotFoundException(nameof(Game.Deck));
 
             // Get cards on the board
             var cards = _unitOfWork.BoardCardRepository.Get(
@@ -331,7 +350,7 @@ namespace game.bll.Infrastructure
             // Get game entity
             var gameForCache = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == request.User!.GetGameIdFromJwt(),
+                    filter: x => x.Id == gameId,
                     includeProperties: "Players.Board.Cards" // for cache
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
             if (game == null) throw new EntityNotFoundException(nameof(Game));
@@ -348,7 +367,7 @@ namespace game.bll.Infrastructure
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.User!.GetGameIdFromJwt(),
                     includeProperties: nameof(Game.Players)
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(EndRoundEvent));
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
 
             // Validate if first player removed
             _validator = new FirstPlayerValidator(game, request.User);

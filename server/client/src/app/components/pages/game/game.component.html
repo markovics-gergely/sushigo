@@ -45,6 +45,8 @@
     </mat-card>
     <mat-card class="game-banner" [matTooltip]="gameInfo" matTooltipClass="game-tooltip" #infoTooltip="matTooltip" (click)="infoTooltip.toggle()">
       <span>{{ phaseTranslatable | translate: { player: actualPlayer?.userName } }}</span>
+      <span class="game-counter" *ngIf="counter > 0 && counter <= 30">{{ counter }}</span>
+      <span class="game-counter" *ngIf="counter === 0"><i class="bx bx-loader-alt bx-spin"></i></span>
     </mat-card>
   </div>
   <div class="game-board">

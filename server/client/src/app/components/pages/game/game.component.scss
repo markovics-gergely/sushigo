@@ -85,6 +85,13 @@
         @include media-style-below(xs) {
           font-size: 30px;
         }
+
+        &.game-counter {
+          position: absolute;
+          right: 10px;
+          width: auto;
+          opacity: 0.7;
+        }
       }
       &.round {
         width: auto;

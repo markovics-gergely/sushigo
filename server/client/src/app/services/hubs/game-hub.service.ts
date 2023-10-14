@@ -3,8 +3,6 @@ import { HubService } from './abstract/hub.service';
 import { GameService } from '../game.service';
 import { environment } from 'src/environments/environment';
 import { IGameViewModel } from 'src/shared/game.models';
-import { Router } from '@angular/router';
-import { UserService } from '../user.service';
 import { SnackService } from '../snack.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -23,10 +21,10 @@ export class GameHubService extends HubService {
       this.gameService.refreshGame(game);
     });
     this.hubConnection?.on('EndTurn', () => {
-      
+      this.gameService.refreshCounter();
     });
     this.hubConnection?.on('EndRound', () => {
-      
+      this.gameService.refreshCounter();
     });
     this.hubConnection?.on('RemoveGame', () => {
       this.snackService.openSnackBar(this.translateService.instant('game.over'));

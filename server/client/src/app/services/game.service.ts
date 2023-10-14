@@ -17,6 +17,7 @@ export class GameService extends BaseServiceService {
   protected override readonly basePath: string = 'game';
 
   private _gameEventEmitter = new BehaviorSubject<IGameViewModel | undefined>(undefined);
+  private _gameCountEventEmitter = new BehaviorSubject<number>(-1);
 
   constructor(
     injector: Injector,
@@ -36,6 +37,7 @@ export class GameService extends BaseServiceService {
       .subscribe((game: IGameViewModel) => {
         this._gameEventEmitter.next(game);
         this.cardService.loadHand();
+        this._gameCountEventEmitter.next(-1);
       }).add(() => {
         this.loadingService.stop();
       });
@@ -43,6 +45,24 @@ export class GameService extends BaseServiceService {
 
   public get gameEventEmitter(): BehaviorSubject<IGameViewModel | undefined> {
     return this._gameEventEmitter;
+  }
+
+  public get gameCountEventEmitter(): BehaviorSubject<number> {
+    return this._gameCountEventEmitter;
+  }
+
+  private gameCounterFunction(): void {
+    setTimeout(() => {
+      if (this._gameCountEventEmitter.value > 0) {
+        this._gameCountEventEmitter.next(this._gameCountEventEmitter.value - 1);
+        this.gameCounterFunction();
+      }
+    }, 1000);
+  }
+
+  public refreshCounter(count: number = 30): void {
+    this._gameCountEventEmitter.next(count);
+    this.gameCounterFunction();
   }
 
   public removeGame(): void {
@@ -71,14 +91,17 @@ export class GameService extends BaseServiceService {
 
   public refreshGame(game: IGameViewModel): void {
     this._gameEventEmitter.next(game);
+    this._gameCountEventEmitter.next(-1);
     this.cardService.refreshHand();
   }
 
   public proceedEndTurn(): Observable<void> {
+    this._gameCountEventEmitter.next(-1);
     return this.client.post<void>(`${this.baseUrl}/end-turn`, {});
   }
 
   public proceedEndRound(): Observable<void> {
+    this._gameCountEventEmitter.next(-1);
     return this.client.post<void>(`${this.baseUrl}/end-round`, {});
   }
 

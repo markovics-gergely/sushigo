@@ -1,7 +1,9 @@
-﻿using game.bll.Infrastructure.Commands;
+﻿using game.api.Extensions;
+using game.bll.Infrastructure.Commands;
 using game.bll.Infrastructure.DataTransferObjects;
 using game.bll.Infrastructure.Queries;
 using game.bll.Infrastructure.ViewModels;
+using Hangfire;
 using IdentityServer4.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -21,16 +23,18 @@ namespace game.api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IBackgroundJobClient _backgroundJobClient;
 
         /// <summary>
         /// Constructor for dependency injection
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="serviceProvider"></param>
-        public CardController(IMediator mediator, IServiceProvider serviceProvider)
+        public CardController(IMediator mediator, IServiceProvider serviceProvider, IBackgroundJobClient backgroundJobClient)
         {
             _mediator = mediator;
             _serviceProvider = serviceProvider;
+            _backgroundJobClient = backgroundJobClient;
         }
 
         /// <summary>

@@ -143,4 +143,8 @@ export class GameComponent {
       (player) => this.game?.actualPlayerId === player.id
     );
   }
+
+  protected get counter(): number {
+    return this.gameService.gameCountEventEmitter.value;
+  }
 }

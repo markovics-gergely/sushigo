@@ -71,7 +71,7 @@ namespace game.bll.Infrastructure
             }
             catch { }
             game.Phase = dal.Types.Phase.EndTurn;
-            _mediator.Publish(new EndTurnEvent { GameId = game.Id, Principal = user }, cancellationToken);
+            _mediator.Publish(new EndTurnEvent { GameId = game.Id }, cancellationToken);
             return game.FirstPlayerId;
         }
 
@@ -96,7 +96,7 @@ namespace game.bll.Infrastructure
             // Validate if actual player played and in the turn
             _validator = new AndCondition(
                 new ActualPlayerValidator(game, request.User),
-                new PhaseValidator(game, dal.Types.Phase.Turn)
+                new PhaseValidator(game, Phase.Turn)
             );
             if (!_validator.Validate())
             {
@@ -151,12 +151,12 @@ namespace game.bll.Infrastructure
                 // Change phase if there is any player who can still play
                 if (afterPlayers.Any())
                 {
-                    game.Phase = dal.Types.Phase.AfterTurn;
+                    game.Phase = Phase.AfterTurn;
                     game.ActualPlayerId = game.PlayerIds.FirstOrDefault(afterPlayers.Contains);
                 }
                 else
                 {
-                    game.Phase = dal.Types.Phase.EndTurn;
+                    game.Phase = Phase.EndTurn;
                     game.ActualPlayerId = game.FirstPlayerId;
                 }
             }
@@ -175,9 +175,9 @@ namespace game.bll.Infrastructure
             await _mediator.Publish(new RefreshGameEvent { GameViewModel = _mapper.Map<GameViewModel>(gameForCache) }, cancellationToken);
 
             // If the turn is over send end turn event
-            if (game.Phase == dal.Types.Phase.EndTurn)
+            if (game.Phase == Phase.EndTurn)
             {
-                await _mediator.Publish(new EndTurnEvent { GameId = game.Id, Principal = request.User }, cancellationToken);
+                await _mediator.Publish(new EndTurnEvent { GameId = game.Id }, cancellationToken);
             }
         }
 
@@ -196,7 +196,7 @@ namespace game.bll.Infrastructure
             // Validate if actual player played and after the turn
             _validator = new AndCondition(
                 new ActualPlayerValidator(game, request.User),
-                new PhaseValidator(game, dal.Types.Phase.AfterTurn)
+                new PhaseValidator(game, Phase.AfterTurn)
             );
             if (!_validator.Validate())
             {

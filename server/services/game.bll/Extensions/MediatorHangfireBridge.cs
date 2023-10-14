@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
-namespace game.api.Extensions
+namespace game.bll.Extensions
 {
     /// <summary>
     /// 
@@ -9,20 +10,22 @@ namespace game.api.Extensions
     public class MediatorHangfireBridge
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<MediatorHangfireBridge> _logger;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="mediator"></param>
-        public MediatorHangfireBridge(IMediator mediator)
+        public MediatorHangfireBridge(IMediator mediator, ILogger<MediatorHangfireBridge> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public async Task Send(IRequest command)
+        private async Task Send(IRequest command)
         {
             await _mediator.Send(command);
         }
@@ -35,6 +38,7 @@ namespace game.api.Extensions
         [DisplayName("{0}")]
         public async Task Send(string jobName, IRequest command)
         {
+            _logger.LogInformation($"Executing job {jobName}");
             await _mediator.Send(command);
         }
     }

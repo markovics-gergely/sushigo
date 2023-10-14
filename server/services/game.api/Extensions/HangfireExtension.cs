@@ -1,5 +1,7 @@
-﻿using game.api.Extensions;
+﻿using game.bll.Infrastructure.Commands;
+using game.bll.Infrastructure.DataTransferObjects;
 using Hangfire;
+using Hangfire.SqlServer;
 using MediatR;
 using Newtonsoft.Json;
 
@@ -36,20 +38,14 @@ namespace game.api.Extensions
                             .UseSimpleAssemblyNameTypeSerializer()
                             .UseRecommendedSerializerSettings()
                             .UseMediatR()
-                            .UseInMemoryStorage());
+                            .UseInMemoryStorage()
+                /*.UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection"), new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero
+                })*/);
             services.AddHangfireServer();
         }
-
-        /*public static void UseJobs(IMediator mediator, long jobId, CreateJobDTO createJobDTO)
-        {
-            if (createJobDTO.PeriodType == null || createJobDTO.PeriodType == PeriodType.Nothing)
-            {
-                mediator.Schedule($"{jobId} - {createJobDTO.Name}", new UseJobCommand(jobId), createJobDTO.SchemedTransaction.DateTime);
-            }
-            else
-            {
-                mediator.AddOrUpdate($"{jobId} - {createJobDTO.Name}", new UseJobCommand(jobId), GetCronByPeriodType(createJobDTO.PeriodType, createJobDTO.StartTime));
-            }
-        }*/
     }
 }

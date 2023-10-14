@@ -7,3 +7,5 @@ token_name=sushitoken
 refresh_token_name=rsushitoken
 language_token_name=langsushitoken
 theme_token_name=themesushitoken
+end_round_token_name=endroundsushitoken
+end_turn_token_name=endturnsushitoken

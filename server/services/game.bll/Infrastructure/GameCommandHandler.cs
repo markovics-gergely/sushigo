@@ -179,7 +179,8 @@ namespace game.bll.Infrastructure
             foreach (var player in players)
             {
                 // Get selected card
-                var selected = selectedCards[player.HandId];
+                selectedCards.TryGetValue(player.HandId, out var selected);
+                if (selected == null) continue;
 
                 // Get command associated with card
                 var command = _serviceProvider.GetCommand(selected.CardType.GetClass());
@@ -425,7 +426,6 @@ namespace game.bll.Infrastructure
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.User!.GetGameIdFromJwt()
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
-            if (game == null) throw new EntityNotFoundException(nameof(Game));
 
             // Validate if first player played
             _validator = new FirstPlayerValidator(game, request.User);

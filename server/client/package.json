@@ -52,7 +52,7 @@
     "@types/jasmine": "~4.3.5",
     "@types/lodash": "^4.14.198",
     "@types/yargs": "^17.0.24",
-    "cypress": "latest",
+    "cypress": "^13.3.2",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.2",
     "karma-chrome-launcher": "~3.2.0",

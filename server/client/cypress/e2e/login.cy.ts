@@ -6,6 +6,7 @@ describe('login', () => {
   it('register', () => {
     cy.fixture('users').then((users) => {
       cy.visit('/register');
+      cy.wait(500);
       cy.get('#userName')
         .type(users.username1)
         .should('have.value', users.username1);

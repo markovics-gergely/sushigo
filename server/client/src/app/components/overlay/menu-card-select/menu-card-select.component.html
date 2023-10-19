@@ -1,0 +1,29 @@
+<div class="foil" *ngIf="show">
+  <mat-card class="select-card">
+    <mat-card-header class="select-header">
+      <mat-card-title class="select-title">{{
+        "game.phase.Result" | translate
+      }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="select-content">
+      <ng-scrollbar
+        track="horizontal"
+        trackClass="hand-track"
+        thumbClass="hand-thumb"
+        class="hand-scroll"
+        visibility="hover"
+      >
+        <div class="card-container" scrollViewport>
+          <app-card-wrapper
+            class="card-wrapper"
+            *ngFor="let card of selectables; index as i"
+            [hand]="true"
+            [card]="card"
+            [@slideInOut]="{ value: ':enter', params: { delay: i * 100 } }"
+            (click)="selectCard(card)"
+          ></app-card-wrapper>
+        </div>
+      </ng-scrollbar>
+    </mat-card-content>
+  </mat-card>
+</div>

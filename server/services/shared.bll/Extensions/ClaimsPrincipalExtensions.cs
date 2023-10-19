@@ -7,17 +7,37 @@ namespace shared.bll.Extensions
     {
         public static string GetUserIdFromJwt(this ClaimsPrincipal claimsPrincipal)
         {
-            return claimsPrincipal.Claims.First(x => x.Type == "sub").Value;
+            try
+            {
+                try
+                {
+                    return claimsPrincipal.Claims.First(x => x.Type == "sub").Value;
+                }
+                catch { return string.Empty; }
+            }
+            catch { try { return string.Empty; } catch { return string.Empty; } }
         }
 
         public static string GetUserNameFromJwt(this ClaimsPrincipal claimsPrincipal)
         {
-            return claimsPrincipal.Claims.First(x => x.Type == "name").Value;
+            try
+            {
+                try
+                {
+                    return claimsPrincipal.Claims.First(x => x.Type == "name").Value;
+                }
+                catch { return string.Empty; }
+            }
+            catch { try { return string.Empty; } catch { return string.Empty; } }
         }
 
         public static int GetUserExpFromJwt(this ClaimsPrincipal claimsPrincipal)
         {
-            return int.Parse(claimsPrincipal.Claims.First(x => x.Type == RoleTypes.ExpClaim).Value);
+            try
+            {
+                return int.Parse(claimsPrincipal.Claims.First(x => x.Type == RoleTypes.ExpClaim).Value);
+            }
+            catch { return 0; }
         }
 
         public static IEnumerable<DeckType> GetUserDecksFromJwt(this ClaimsPrincipal claimsPrincipal)
@@ -27,17 +47,29 @@ namespace shared.bll.Extensions
 
         public static string GetUserAvatarFromJwt(this ClaimsPrincipal claimsPrincipal)
         {
-            return claimsPrincipal.Claims.First(x => x.Type == RoleTypes.AvatarClaim).Value;
+            try
+            {
+                return claimsPrincipal.Claims.First(x => x.Type == RoleTypes.AvatarClaim).Value;
+            }
+            catch { return string.Empty; }
         }
 
         public static string GetUserLobbyFromJwt(this ClaimsPrincipal claimsPrincipal)
         {
-            return claimsPrincipal.Claims.First(x => x.Type == RoleTypes.LobbyClaim).Value;
+            try
+            {
+                return claimsPrincipal.Claims.First(x => x.Type == RoleTypes.LobbyClaim).Value;
+            }
+            catch { return string.Empty; }
         }
 
         public static Guid GetPlayerIdFromJwt(this ClaimsPrincipal claimsPrincipal)
         {
-            return Guid.Parse(claimsPrincipal.Claims.First(x => x.Type == RoleTypes.PlayerClaim).Value);
+            try
+            {
+                return Guid.Parse(claimsPrincipal.Claims.First(x => x.Type == RoleTypes.PlayerClaim).Value);
+            }
+            catch { return Guid.Empty; }
         }
 
         public static Guid GetGameIdFromJwt(this ClaimsPrincipal claimsPrincipal)

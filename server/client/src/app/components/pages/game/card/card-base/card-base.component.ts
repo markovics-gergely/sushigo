@@ -21,9 +21,6 @@ export class CardBaseComponent {
   constructor(private gameSelectService: GameSelectService, private gameService: GameService) {}
 
   protected selectCard() {
-    
-    console.log('canPlay', this.card, this.hand, this.gameSelectService.selectType, this.canPlay);
-    
     if (!this.canPlay) return;
     if (this.hand) {
       this.gameSelectService.selectHandCard(this.card);

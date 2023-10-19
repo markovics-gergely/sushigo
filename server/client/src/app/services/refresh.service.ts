@@ -50,7 +50,6 @@ export class RefreshService {
           this.tokenService.userToken = response;
         },
         error: (err) => {
-          console.log(err);
           this.tokenService.clearCookies();
         },
       })
@@ -66,7 +65,6 @@ export class RefreshService {
           this.tokenService.userToken = response;
         },
         error: (err) => {
-          console.log(err);
           this.tokenService.clearCookies();
         },
       });

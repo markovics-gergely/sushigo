@@ -47,14 +47,10 @@ namespace game.bll.Infrastructure
                 ).Where(a => a.CardType.HasAfterTurn()).Select(a => a.BoardId).ToList();
 
             // Get player ids who can play after the turn
-            var afterPlayers = new List<Guid>();
-            if (afterBoards.Any())
-            {
-                afterPlayers = _unitOfWork.PlayerRepository.Get(
-                    transform: x => x.AsNoTracking(),
-                    filter: x => afterBoards.Contains(x.BoardId)
-                ).Select(a => a.Id).ToList();
-            }
+            var afterPlayers = _unitOfWork.PlayerRepository.Get(
+                transform: x => x.AsNoTracking(),
+                filter: x => x.GameId == game.Id
+            ).Where(x => afterBoards.Contains(x.BoardId) || x.SelectedCardType.HasAfterTurnInHand() == true).Select(a => a.Id).ToList();
             var playerList = game.PlayerIds.ToList();
             var actualId = user.GetPlayerIdFromJwt();
             try
@@ -70,7 +66,7 @@ namespace game.bll.Infrastructure
                 }
             }
             catch { }
-            game.Phase = dal.Types.Phase.EndTurn;
+            game.Phase = Phase.EndTurn;
             _mediator.Publish(new EndTurnEvent { GameId = game.Id }, cancellationToken);
             return game.FirstPlayerId;
         }
@@ -84,14 +80,12 @@ namespace game.bll.Infrastructure
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.User.GetPlayerIdFromJwt()
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Player));
-            if (player == null) throw new EntityNotFoundException(nameof(Player));
 
             // Get game entity
             var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == player.GameId
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
-            if (game == null) throw new EntityNotFoundException(nameof(Game));
 
             // Validate if actual player played and in the turn
             _validator = new AndCondition(
@@ -108,7 +102,6 @@ namespace game.bll.Infrastructure
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.PlayCardDTO.HandCardId
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(HandCard));
-            if (handCard == null) throw new EntityNotFoundException(nameof(HandCard));
 
             // Set selected card
             player.SelectedCardId = handCard.Id;
@@ -126,6 +119,12 @@ namespace game.bll.Infrastructure
             _unitOfWork.HandCardRepository.Update(handCard);
             await _unitOfWork.Save();
 
+            // Get command associated with card
+            var command = _serviceProvider.GetCommand(handCard.CardType.GetClass());
+            if (command == null) throw new EntityNotFoundException(nameof(command));
+
+            await command.OnPlayCard(handCard);
+
             // Increment actual player to the player sitting next to
             // or set first player with after turn action
             if (game.FirstPlayerId != player.NextPlayerId)
@@ -140,14 +139,10 @@ namespace game.bll.Infrastructure
                 ).Where(a => a.CardType.HasAfterTurn()).Select(a => a.BoardId).ToList();
 
                 // Get player ids who can play after the turn
-                var afterPlayers = new List<Guid>();
-                if (afterBoards.Any())
-                {
-                    afterPlayers = _unitOfWork.PlayerRepository.Get(
-                        transform: x => x.AsNoTracking(),
-                        filter: x => afterBoards.Contains(x.BoardId)
-                    ).Select(a => a.Id).ToList();
-                }
+                var afterPlayers = _unitOfWork.PlayerRepository.Get(
+                    transform: x => x.AsNoTracking(),
+                    filter: x => x.GameId == game.Id
+                ).Where(x => afterBoards.Contains(x.BoardId) || x.SelectedCardType.HasAfterTurnInHand() == true).Select(a => a.Id).ToList();
                 // Change phase if there is any player who can still play
                 if (afterPlayers.Any())
                 {
@@ -234,15 +229,30 @@ namespace game.bll.Infrastructure
                 throw new ValidationErrorException(nameof(PlayAfterTurnCommand));
             }
 
-            // Search card entity used
-            var boardCard = _unitOfWork.BoardCardRepository.Get(
-                    transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == request.PlayAfterTurnDTO.BoardCardId
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(BoardCard));
-            if (boardCard == null) throw new EntityNotFoundException(nameof(BoardCard));
+            CardType cardType;
+            if (request.PlayAfterTurnDTO.BoardCardId != null)
+            {
+                // Search card entity used
+                var boardCard = _unitOfWork.BoardCardRepository.Get(
+                        transform: x => x.AsNoTracking(),
+                        filter: x => x.Id == request.PlayAfterTurnDTO.BoardCardId
+                    ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(BoardCard));
+
+                cardType = boardCard.CardType;
+            }
+            else
+            {
+                // Search card entity used
+                var handCard = _unitOfWork.HandCardRepository.Get(
+                        transform: x => x.AsNoTracking(),
+                        filter: x => x.Id == request.PlayAfterTurnDTO.HandCardId
+                    ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(HandCard));
+
+                cardType = handCard.CardType;
+            }
 
             // Get command associated with card
-            var command = _serviceProvider.GetCommand(boardCard.CardType.GetClass());
+            var command = _serviceProvider.GetCommand(cardType.GetClass());
             if (command == null) throw new EntityNotFoundException(nameof(command));
 
             // Get player entity of the user
@@ -250,7 +260,6 @@ namespace game.bll.Infrastructure
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.User.GetPlayerIdFromJwt()
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Player));
-            if (player == null) throw new EntityNotFoundException(nameof(Player));
 
             // play the action of the card used
             await command.OnAfterTurn(player, request.PlayAfterTurnDTO);

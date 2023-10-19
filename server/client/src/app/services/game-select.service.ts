@@ -190,7 +190,6 @@ export class GameSelectService {
         return;
       }
       this._selectedCard = value;
-      console.log(this.selectType);
       if (this.selectType === SelectType.CardType) {
         const dialogRef = this.dialog.open(CardTypeSelectComponent);
         dialogRef.afterClosed().subscribe((card: CardType | undefined) => {

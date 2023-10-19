@@ -186,7 +186,6 @@ export class LobbyService extends BaseServiceService {
     });
     return dialogRef.afterClosed().pipe(
       switchMap((result: { deckType: DeckType}) => {
-        console.log(result);
         if (result) {
           return this.client.post<ILobbyViewModel>(`${this.baseUrl}/deck`, { deckType: result.deckType, lobbyId });
         } else return of(undefined);

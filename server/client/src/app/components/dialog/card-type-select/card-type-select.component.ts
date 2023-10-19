@@ -28,7 +28,6 @@ export class CardTypeSelectComponent implements OnInit {
     this._selectForm = new FormGroup({
       card: new FormControl(undefined, Validators.required),
     });
-    console.log(DeckTypeUtil.getString(this.gameService.deckType));
     this.shopService.getDeck(this.gameService.deckType).subscribe((deck) => { this._deck = deck;});
   }
 

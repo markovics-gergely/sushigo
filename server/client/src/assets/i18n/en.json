@@ -175,7 +175,7 @@
   },
   "game": {
     "phase": {
-      "Turn": "In turn of {{player}}",
+      "Turn": "Turn of {{player}}",
       "AfterTurn": "After turn of {{player}} ",
       "EndTurn": "End of turn",
       "EndRound": "End of round",

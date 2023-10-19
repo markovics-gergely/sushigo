@@ -102,5 +102,14 @@
                 _ => false,
             };
         }
+
+        public static bool HasAfterTurnInHand(this CardType? cardType)
+        {
+            return cardType switch
+            {
+                CardType.Menu => true,
+                _ => false,
+            };
+        }
     }
 }

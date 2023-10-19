@@ -12,6 +12,7 @@ namespace game.bll.Infrastructure.Commands.Card.Utils
         public Task OnEndTurn(Player player, HandCard handCard);
         public Task OnAfterTurn(Player player, PlayAfterTurnDTO playAfterTurnDTO) { return Task.CompletedTask; }
         public Task OnEndGame(BoardCard boardCard) { return Task.CompletedTask; }
+        public Task OnPlayCard(HandCard handCard) { return Task.CompletedTask; }
     }
 
     public static class CardExtensions

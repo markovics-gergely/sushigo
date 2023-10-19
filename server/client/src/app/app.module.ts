@@ -67,6 +67,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import {MatListModule, MatNavList} from '@angular/material/list';
 import { CardTypeSelectComponent } from './components/dialog/card-type-select/card-type-select.component';
 import { GameResultComponent } from './components/overlay/game-result/game-result.component';
+import { MenuCardSelectComponent } from './components/overlay/menu-card-select/menu-card-select.component';
 
 export function jwtOptionsFactory(tokenService: TokenService) {
   return {
@@ -110,6 +111,7 @@ registerLocaleData(localeHu);
     HandComponent,
     CardTypeSelectComponent,
     GameResultComponent,
+    MenuCardSelectComponent,
   ],
   imports: [
     BrowserModule,

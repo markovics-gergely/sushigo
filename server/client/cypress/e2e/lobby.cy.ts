@@ -36,6 +36,7 @@ describe('Lobby tests', () => {
       cy.location('pathname', { timeout: 5000 }).should('contain', '/home');
 
       cy.visit('/lobby');
+      cy.wait(500);
       cy.get('#create-lobby').click();
       cy.get('#create-lobby-form #name')
         .type(users.lobbyName)

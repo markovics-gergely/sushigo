@@ -17,6 +17,7 @@ export enum Additional {
   Points,
   Tagged,
   CardIds,
+  MenuCards,
 }
 
 const isNumeric = (value: string): boolean =>
@@ -135,7 +136,8 @@ export interface ICreateGameDTO {
 }
 
 export interface IPlayAfterTurnDTO {
-  boardCardId: string;
+  boardCardId?: string;
+  handCardId?: string;
   additionalInfo: Record<Additional, string>;
 }
 

@@ -1,6 +1,6 @@
 import { Injectable, Injector } from '@angular/core';
 import { BaseServiceService } from './abstract/base-service.service';
-import { ICreateGameDTO, IGameViewModel, Phase, PhaseUtil } from 'src/shared/game.models';
+import { ICreateGameDTO, IGameViewModel, IPlayerViewModel, Phase, PhaseUtil } from 'src/shared/game.models';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -139,5 +139,9 @@ export class GameService extends BaseServiceService {
 
   public get isFirst(): boolean {
     return this.tokenService.isOwnPlayer(this._gameEventEmitter.value?.actualPlayerId);
+  }
+
+  public get ownPlayer(): IPlayerViewModel | undefined {
+    return this._gameEventEmitter.value?.players.find(p => p.id === this.tokenService.player);
   }
 }

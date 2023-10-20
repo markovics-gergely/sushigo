@@ -6,8 +6,6 @@ import { LoadingService } from 'src/app/services/loading.service';
 import { CardType, CardTypeUtil } from 'src/shared/deck.models';
 import {
   IGameViewModel,
-  PhaseUtil,
-  Phase,
   IPlayerViewModel,
   IHandViewModel,
   IHandCardViewModel,
@@ -48,7 +46,7 @@ export class MenuCardSelectComponent {
     gameService.gameEventEmitter.subscribe(
       (game: IGameViewModel | undefined) => {
         this._game = game;
-        if (!game) return;
+        if (!game || !this.show) return;
         cardService.refreshHand();
       }
     );
@@ -83,18 +81,10 @@ export class MenuCardSelectComponent {
   get show() {
     const cardType = this.gameService.ownPlayer?.selectedCardType;
     return (
-      PhaseUtil.equals(this._game?.phase, Phase.AfterTurn) &&
+      this.gameService.canPlayAfterCard &&
       cardType &&
       CardTypeUtil.equals(cardType, CardType.Menu)
     );
-  }
-
-  get players() {
-    return this.game?.players.sort((a, b) => b.points - a.points) ?? [];
-  }
-
-  getPlacement(player: IPlayerViewModel) {
-    return this.players.findIndex((p) => p.points === player.points) + 1;
   }
 
   get selectedMenuCard(): IHandCardViewModel | undefined {

@@ -50,7 +50,7 @@
         height: calc(100% - 10px);
         .card-wrapper {
           width: auto;
-          height: 100%;
+          height: auto;
           cursor: pointer;
 
           ::ng-deep .hand-card {

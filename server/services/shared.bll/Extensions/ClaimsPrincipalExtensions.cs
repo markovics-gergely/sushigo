@@ -1,4 +1,5 @@
-﻿using shared.dal.Models;
+﻿using IdentityModel;
+using shared.dal.Models;
 using System.Security.Claims;
 
 namespace shared.bll.Extensions
@@ -7,28 +8,16 @@ namespace shared.bll.Extensions
     {
         public static string GetUserIdFromJwt(this ClaimsPrincipal claimsPrincipal)
         {
-            try
-            {
-                try
-                {
-                    return claimsPrincipal.Claims.First(x => x.Type == "sub").Value;
-                }
-                catch { return string.Empty; }
-            }
-            catch { try { return string.Empty; } catch { return string.Empty; } }
+            return claimsPrincipal.Claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Subject)?.Value ?? string.Empty;
         }
 
         public static string GetUserNameFromJwt(this ClaimsPrincipal claimsPrincipal)
         {
             try
             {
-                try
-                {
-                    return claimsPrincipal.Claims.First(x => x.Type == "name").Value;
-                }
-                catch { return string.Empty; }
+                return claimsPrincipal.Claims.First(x => x.Type == JwtClaimTypes.Name).Value;
             }
-            catch { try { return string.Empty; } catch { return string.Empty; } }
+            catch { return string.Empty; }
         }
 
         public static int GetUserExpFromJwt(this ClaimsPrincipal claimsPrincipal)

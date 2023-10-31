@@ -19,8 +19,7 @@ export class LobbyHubService extends HubService {
     private lobbyService: LobbyService,
     private route: ActivatedRoute,
     private router: Router,
-    private messageService: MessageService,
-    private loadingService: LoadingService
+    private messageService: MessageService
   ) {
     super(injector);
     route.params.subscribe((params) => {

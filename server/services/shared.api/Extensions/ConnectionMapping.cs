@@ -31,8 +31,7 @@
         {
             lock (_connections)
             {
-                HashSet<string>? connections;
-                if (!_connections.TryGetValue(key, out connections))
+                if (!_connections.TryGetValue(key, out HashSet<string>? connections))
                 {
                     connections = new HashSet<string>();
                     _connections.Add(key, connections);

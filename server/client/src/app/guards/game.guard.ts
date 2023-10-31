@@ -1,8 +1,8 @@
 import { inject } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { TokenService } from '../services/token.service';
 
-export const gameGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
+export const gameGuard: CanActivateFn = () => {
   const tokenService = inject(TokenService);
   const router = inject(Router);
   if (!tokenService.game) {

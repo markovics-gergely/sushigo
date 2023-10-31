@@ -1,15 +1,12 @@
 import { inject } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateFn } from '@angular/router';
 import { FriendHubService } from '../services/hubs/friend-hub.service';
 import { HubService } from '../services/hubs/abstract/hub.service';
 import { LobbyHubService } from '../services/hubs/lobby-hub.service';
 import { LobbyListHubService } from '../services/hubs/lobby-list-hub.service';
 import { GameHubService } from '../services/hubs/game-hub.service';
 
-export const HubGuard: CanActivateFn = (
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot
-  ) => {
+export const HubGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const hubs = {
     friend: inject(FriendHubService),
     lobby: inject(LobbyHubService),
@@ -25,4 +22,4 @@ export const HubGuard: CanActivateFn = (
     }
   });
   return true;
-}
+};

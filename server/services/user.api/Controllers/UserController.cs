@@ -101,14 +101,15 @@ namespace user.api.Controllers
         /// <summary>
         /// Get history
         /// </summary>
+        /// <param name="bypass"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>History</returns>
         [Authorize(Roles = RoleTypes.Classic)]
         [HttpGet("history")]
-        public async Task<ActionResult<IEnumerable<HistoryViewModel>>> GetHistoryAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<HistoryViewModel>>> GetHistoryAsync([FromQuery] bool bypass, CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
-            var query = new GetHistoryQuery(user);
+            var query = new GetHistoryQuery(user, bypass);
             return Ok(await _mediator.Send(query, cancellationToken));
         }
 

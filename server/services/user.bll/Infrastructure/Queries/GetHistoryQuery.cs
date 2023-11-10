@@ -13,9 +13,10 @@ namespace user.bll.Infrastructure.Queries
         public string CacheKey => $"history-{User?.GetUserIdFromJwt()}";
         public TimeSpan? SlidingExpiration { get; set; }
 
-        public GetHistoryQuery(ClaimsPrincipal? user = null)
+        public GetHistoryQuery(ClaimsPrincipal? user = null, bool bypass = false)
         {
             User = user;
+            BypassCache = bypass;
         }
     }
 }

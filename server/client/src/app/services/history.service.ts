@@ -10,6 +10,6 @@ export class HistoryService extends BaseServiceService {
   protected override readonly basePath: string = 'user/history';
 
   public get history(): Observable<IHistoryViewModel[]> {
-    return this.client.get<IHistoryViewModel[]>(`${this.baseUrl}`);
+    return this.client.get<IHistoryViewModel[]>(`${this.baseUrl}?bypass=true`);
   }
 }

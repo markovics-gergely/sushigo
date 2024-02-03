@@ -22,7 +22,7 @@ namespace lobby.api.Controllers
         private readonly IMediator _mediator;
 
         /// <summary>
-        /// Constructor for dependency injection
+        /// Inject mediator
         /// </summary>
         /// <param name="mediator"></param>
         public LobbyController(IMediator mediator)

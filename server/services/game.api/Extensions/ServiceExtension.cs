@@ -81,7 +81,6 @@ namespace game.api.Extensions
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CommandCachingBehavior<,>));
 
             services.AddTransient(typeof(ISimpleAddPoint), typeof(SimpleAddPoint));
             services.AddTransient(typeof(ISimpleAddToBoard), typeof(SimpleAddToBoard));

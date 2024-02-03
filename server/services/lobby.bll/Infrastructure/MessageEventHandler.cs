@@ -4,11 +4,9 @@ using lobby.bll.Infrastructure.ViewModels;
 using lobby.dal.UnitOfWork.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using shared.bll.Settings;
-using System.Text;
+using shared.dal.Repository.Interfaces;
+using shared.dal.Settings;
 
 namespace lobby.bll.Infrastructure
 {
@@ -17,27 +15,27 @@ namespace lobby.bll.Infrastructure
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IDistributedCache _cache;
+        private readonly ICacheRepository _cacheRepository;
         private readonly CacheSettings _settings;
 
-        public MessageEventHandler(IUnitOfWork unitOfWork, IMapper mapper, IDistributedCache cache, IOptions<CacheSettings> settings)
+        public MessageEventHandler(IUnitOfWork unitOfWork, IMapper mapper, ICacheRepository cacheRepository, IOptions<CacheSettings> settings)
         {
             _unitOfWork = unitOfWork;
-            _cache = cache;
-            _settings = settings.Value;
             _mapper = mapper;
+            _cacheRepository = cacheRepository;
+            _settings = settings.Value;
         }
 
         public async Task Handle(AddMessageEvent notification, CancellationToken cancellationToken)
         {
+            // Get messages from database
             var messages = _unitOfWork.MessageRepository.Get(
                     transform: x => x.AsNoTracking().OrderByDescending(m => m.DateTime).Take(_settings.MessageLimit)
                 ).ToList();
             var messagesViewModel = _mapper.Map<IEnumerable<MessageViewModel>>(messages);
 
-            var options = new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(_settings.SlidingExpiration) };
-            var serializedData = Encoding.Default.GetBytes(JsonConvert.SerializeObject(messagesViewModel));
-            await _cache.SetAsync($"messages-{notification.LobbyId}", serializedData, options, cancellationToken);
+            // Store messages in cache
+            await _cacheRepository.Put($"messages-{notification.LobbyId}", messagesViewModel, null, cancellationToken);
         }
     }
 }

@@ -8,24 +8,13 @@ using Microsoft.AspNetCore.SignalR;
 namespace lobby.api.Hubs
 {
     /// <summary>
-    /// 
+    /// Hub center for lobby events
     /// </summary>
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class LobbyEventsHub : Hub<ILobbyEventsHub>
     {
-        private readonly IMediator _mediator;
-
         /// <summary>
-        /// Initialize
-        /// </summary>
-        /// <param name="mediator"></param>
-        public LobbyEventsHub(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
-        /// <summary>
-        /// 
+        /// Add user to their lobby group on connection
         /// </summary>
         /// <returns></returns>
         public override Task OnConnectedAsync()
@@ -33,23 +22,9 @@ namespace lobby.api.Hubs
             var group = Context.User?.GetUserLobbyFromJwt() ?? Context.GetHttpContext()?.Request.Query["lobby"].SingleOrDefault();
             if (group != null)
             {
-                string id = Context.User?.GetUserIdFromJwt() ?? "";
-                Connections.LobbyConnections.Add(id, Context.ConnectionId);
                 Groups.AddToGroupAsync(Context.ConnectionId, group);
             }
             return base.OnConnectedAsync();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="exception"></param>
-        /// <returns></returns>
-        public override Task OnDisconnectedAsync(Exception? exception)
-        {
-            string id = Context.User?.GetUserIdFromJwt() ?? "";
-            Connections.LobbyConnections.Remove(id, Context.ConnectionId);
-            return base.OnDisconnectedAsync(exception);
         }
     }
 }

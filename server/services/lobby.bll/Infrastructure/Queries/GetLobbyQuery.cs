@@ -1,6 +1,7 @@
 ﻿using lobby.bll.Infrastructure.ViewModels;
 using MediatR;
 using shared.bll.Infrastructure.Queries;
+using shared.dal.Models.Cache;
 using System.Security.Claims;
 
 namespace lobby.bll.Infrastructure.Queries
@@ -9,7 +10,7 @@ namespace lobby.bll.Infrastructure.Queries
     {
         public Guid LobbyId { get; private set; }
         public ClaimsPrincipal? User { get; set; }
-        public bool BypassCache { get; set; } = false;
+        public CacheMode CacheMode { get; set; } = CacheMode.Get;
         public string CacheKey => $"lobby-{LobbyId}";
         public TimeSpan? SlidingExpiration { get; set; }
 

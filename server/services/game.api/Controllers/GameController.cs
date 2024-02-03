@@ -7,6 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using shared.dal.Models;
+using shared.dal.Models.Cache;
 
 namespace game.api.Controllers
 {
@@ -43,7 +44,10 @@ namespace game.api.Controllers
         public async Task<ActionResult<GameViewModel>> GetGameAsync([FromQuery] bool bypass, CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
-            var query = new GetGameQuery(user, bypass);
+            var query = new GetGameQuery(user)
+            {
+                CacheMode = bypass ? CacheMode.Bypass : CacheMode.Get
+            };
             return Ok(await _mediator.Send(query, cancellationToken));
         }
 

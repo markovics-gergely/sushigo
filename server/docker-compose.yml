@@ -89,6 +89,9 @@ services:
     image: rabbitmq:3-management
     hostname: rabbitmq
     tty: true
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
     healthcheck:
       test: rabbitmq-diagnostics -q ping
       interval: 30s

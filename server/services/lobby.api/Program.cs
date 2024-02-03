@@ -1,7 +1,6 @@
 using Hellang.Middleware.ProblemDetails;
 using lobby.api.Extensions;
 using lobby.api.Hubs;
-using shared.bll.Settings;
 using lobby.dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -12,6 +11,7 @@ using shared.Api.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 
+// Add database context from connection string
 builder.Services.AddDbContext<LobbyDbContext>(options =>
 {
     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), opt =>
@@ -29,7 +29,7 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Progr
 builder.Services.AddRabbitExtensions();
 builder.Services.AddServiceExtensions();
 builder.Services.AddConfigurations(configuration);
-builder.Services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
+builder.Services.Configure<shared.dal.Settings.CacheSettings>(configuration.GetSection("CacheSettings"));
 builder.Services.AddSwaggerExtension(configuration);
 
 builder.Services.AddSignalR();
@@ -63,6 +63,7 @@ app.UseProblemDetails();
 
 if (app.Environment.IsDevelopment())
 {
+    // Add Swagger UI
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
@@ -74,6 +75,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+// Add static file storage
 var configService = app.Services.GetRequiredService<IFileConfigurationService>();
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -81,6 +83,7 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = $"/{configService.GetStaticFileRequestPath()}"
 });
 
+// Add endpoint routing and protection
 app.UseRouting();
 app.UseCors("CorsPolicy");
 app.Use(AuthenticationExtension.AuthQueryStringToHeader);
@@ -89,6 +92,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Add Hub endpoints
 app.MapHub<LobbyListEventsHub>("/lobby-list-hub").RequireCors("CorsPolicy");
 app.MapHub<LobbyEventsHub>("/lobby-hub").RequireCors("CorsPolicy");
 

@@ -4,7 +4,6 @@ using lobby.bll.Infrastructure.ViewModels;
 using lobby.dal.UnitOfWork.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using shared.bll.Validators.Interfaces;
 
 namespace lobby.bll.Infrastructure
 {

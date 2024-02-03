@@ -7,8 +7,8 @@ using IdentityServer4.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using shared.Api.Extensions;
-using shared.bll.Settings;
 using shared.dal.Configurations.Interfaces;
+using shared.dal.Settings;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);

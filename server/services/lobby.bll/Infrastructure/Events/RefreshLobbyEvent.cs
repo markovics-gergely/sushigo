@@ -3,10 +3,10 @@ using MediatR;
 
 namespace lobby.bll.Infrastructure.Events
 {
-    public class AddLobbyEvent : INotification
+    public class RefreshLobbyEvent : INotification
     {
         public LobbyViewModel Lobby { get; init; }
-        public AddLobbyEvent(LobbyViewModel lobby)
+        public RefreshLobbyEvent(LobbyViewModel lobby)
         {
             Lobby = lobby;
         }

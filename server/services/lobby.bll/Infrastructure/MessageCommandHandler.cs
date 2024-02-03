@@ -30,27 +30,30 @@ namespace lobby.bll.Infrastructure
 
         public async Task<MessageViewModel> Handle(CreateMessageCommand request, CancellationToken cancellationToken)
         {
+            // Get lobby and player entities
             var lobby = _unitOfWork.LobbyRepository.Get(
                     includeProperties: nameof(Lobby.Players),
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.Message.LobbyId
-                ).FirstOrDefault();
-            if (lobby == null)
-            {
-                throw new EntityNotFoundException(nameof(AddPlayerCommand));
-            }
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Lobby));
+
+            // Validate the right to send a message
             _validator = new OwnLobbyValidator(lobby, request.User);
             if (!_validator.Validate())
             {
                 throw new ValidationErrorException(nameof(CreateMessageCommand));
             }
+
+            // Build message entity
             var messageEntity = _mapper.Map<Message>(request.Message);
             messageEntity.DateTime = DateTime.Now;
             messageEntity.UserId = Guid.Parse(request.User?.GetUserIdFromJwt() ?? "");
             messageEntity.UserName = request.User?.GetUserNameFromJwt() ?? "";
             _unitOfWork.MessageRepository.Insert(messageEntity);
             await _unitOfWork.Save();
+
             var messageViewModel = _mapper.Map<MessageViewModel>(messageEntity);
+            // Send message to SignalR and cache
             await _mediator.Publish(new AddMessageEvent(messageViewModel, request.Message.LobbyId), cancellationToken);
             return messageViewModel;
         }

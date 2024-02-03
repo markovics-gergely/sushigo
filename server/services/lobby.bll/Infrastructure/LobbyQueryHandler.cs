@@ -40,15 +40,13 @@ namespace lobby.bll.Infrastructure
                     includeProperties: nameof(Lobby.Players),
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.LobbyId
-                ).FirstOrDefault();
-            if (lobby == null )
-            {
-                throw new EntityNotFoundException(nameof(Lobby));
-            }
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Lobby));
+
+            // Validate if user is in lobby
             _validator = new OwnLobbyValidator(lobby, request.User);
             if (!_validator.Validate())
             {
-                throw new ValidationErrorException("No permission for lobby");
+                throw new ValidationErrorException(nameof(GetLobbyQuery));
             }
             return Task.FromResult(_mapper.Map<LobbyViewModel>(lobby));
         }

@@ -1,10 +1,10 @@
 ﻿using MediatR;
+using shared.bll.Infrastructure.Pipelines;
 using shared.dal.Repository.Implementations;
 using shared.dal.Repository.Interfaces;
 using user.bll.Infrastructure;
 using user.bll.Infrastructure.Commands;
 using user.bll.Infrastructure.Events;
-using user.bll.Infrastructure.Pipelines;
 using user.bll.Infrastructure.Queries;
 using user.bll.Infrastructure.ViewModels;
 using user.dal;
@@ -54,7 +54,6 @@ namespace user.api.Extensions
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CommandCachingBehavior<,>));
 
             services.AddDistributedMemoryCache();
         }

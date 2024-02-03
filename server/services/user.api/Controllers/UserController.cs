@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using shared.dal.Configurations.Interfaces;
 using shared.dal.Models;
+using shared.dal.Models.Cache;
 using user.bll.Infrastructure.Commands;
 using user.bll.Infrastructure.DataTransferObjects;
 using user.bll.Infrastructure.Queries;
@@ -109,7 +110,10 @@ namespace user.api.Controllers
         public async Task<ActionResult<IEnumerable<HistoryViewModel>>> GetHistoryAsync([FromQuery] bool bypass, CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
-            var query = new GetHistoryQuery(user, bypass);
+            var query = new GetHistoryQuery(user)
+            {
+                CacheMode = bypass ? CacheMode.Bypass : CacheMode.Get
+            };
             return Ok(await _mediator.Send(query, cancellationToken));
         }
 

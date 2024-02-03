@@ -1,4 +1,4 @@
-﻿namespace shared.bll.Settings
+﻿namespace shared.dal.Settings
 {
     public class CacheSettings
     {

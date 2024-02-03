@@ -1,18 +1,14 @@
 ﻿using lobby.bll.Infrastructure.DataTransferObjects;
 using lobby.bll.Infrastructure.ViewModels;
 using MediatR;
-using shared.bll.Infrastructure.Queries;
 using System.Security.Claims;
 
 namespace lobby.bll.Infrastructure.Commands
 {
-    public class UpdateLobbyDeckCommand : IRequest<LobbyViewModel>, ICacheableMediatrCommandResponse
+    public class UpdateLobbyDeckCommand : IRequest<LobbyViewModel>
     {
         public ClaimsPrincipal? User { get; private set; }
         public UpdateLobbyDTO UpdateLobbyDTO { get; private set; }
-        public bool BypassCache { get; set; } = false;
-        public string CacheKey => $"lobby-{UpdateLobbyDTO.LobbyId}";
-        public TimeSpan? SlidingExpiration { get; set; }
 
         public UpdateLobbyDeckCommand(UpdateLobbyDTO updateLobbyDTO, ClaimsPrincipal? user = null)
         {

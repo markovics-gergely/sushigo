@@ -3,12 +3,12 @@
 namespace lobby.api.Hubs.Interfaces
 {
     /// <summary>
-    /// 
+    /// Lobby list events hub interface
     /// </summary>
     public interface ILobbyListEventsHub
     {
         /// <summary>
-        /// 
+        /// Event for adding a lobby to the lobby list
         /// </summary>
         /// <param name="lobbyItemViewModel"></param>
         /// <param name="cancellationToken"></param>
@@ -16,7 +16,7 @@ namespace lobby.api.Hubs.Interfaces
         Task AddLobby(LobbyItemViewModel lobbyItemViewModel, CancellationToken cancellationToken);
 
         /// <summary>
-        /// 
+        /// Event for removing a lobby from the lobby list
         /// </summary>
         /// <param name="lobbyId"></param>
         /// <param name="cancellationToken"></param>

@@ -37,7 +37,6 @@ namespace shop.api.Extensions
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CommandCachingBehavior<,>));
 
             services.AddDistributedMemoryCache();
         }

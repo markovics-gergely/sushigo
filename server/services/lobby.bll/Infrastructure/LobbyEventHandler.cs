@@ -4,29 +4,25 @@ using lobby.bll.Infrastructure.ViewModels;
 using lobby.dal.UnitOfWork.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using shared.bll.Settings;
-using System.Text;
+using shared.dal.Repository.Interfaces;
 
 namespace lobby.bll.Infrastructure
 {
     public class LobbyEventHandler :
+        INotificationHandler<RefreshLobbyEvent>,
+        INotificationHandler<UpdateDeckTypeEvent>,
         INotificationHandler<PlayerReadyEvent>,
         INotificationHandler<AddLobbyEvent>,
         INotificationHandler<RemoveLobbyEvent>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IDistributedCache _cache;
-        private readonly CacheSettings _settings;
+        private readonly ICacheRepository _cacheRepository;
 
-        public LobbyEventHandler(IUnitOfWork unitOfWork, IMapper mapper, IDistributedCache cache, IOptions<CacheSettings> settings)
+        public LobbyEventHandler(IUnitOfWork unitOfWork, IMapper mapper, ICacheRepository cacheRepository)
         {
             _unitOfWork = unitOfWork;
-            _cache = cache;
-            _settings = settings.Value;
+            _cacheRepository = cacheRepository;
             _mapper = mapper;
         }
 
@@ -35,21 +31,26 @@ namespace lobby.bll.Infrastructure
             await RefreshLobby(notification.LobbyViewModel, cancellationToken);
         }
 
+        public async Task Handle(RefreshLobbyEvent notification, CancellationToken cancellationToken)
+        {
+            await RefreshLobby(notification.Lobby, cancellationToken);
+        }
+
         public async Task Handle(AddLobbyEvent notification, CancellationToken cancellationToken)
         {
             await RefreshLobbies(cancellationToken);
+            await RefreshLobby(notification.Lobby, cancellationToken);
         }
 
         public async Task Handle(RemoveLobbyEvent notification, CancellationToken cancellationToken)
         {
             await RefreshLobbies(cancellationToken);
+            await _cacheRepository.Delete($"lobby-{notification.LobbyId}", cancellationToken);
         }
 
         private async Task RefreshLobby(LobbyViewModel lobby, CancellationToken cancellationToken)
         {
-            var options = new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(_settings.SlidingExpiration) };
-            var serializedData = Encoding.Default.GetBytes(JsonConvert.SerializeObject(lobby));
-            await _cache.SetAsync($"lobby-{lobby.Id}", serializedData, options, cancellationToken);
+            await _cacheRepository.Put($"lobby-{lobby.Id}", lobby, null, cancellationToken);
         }
 
         private async Task RefreshLobbies(CancellationToken cancellationToken)
@@ -58,9 +59,12 @@ namespace lobby.bll.Infrastructure
                     transform: x => x.AsNoTracking().OrderByDescending(l => l.Created)
                 ).ToList();
             var lobbiesViewModel = _mapper.Map<IEnumerable<LobbyItemViewModel>>(lobbies);
-            var options = new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(_settings.SlidingExpiration) };
-            var serializedData = Encoding.Default.GetBytes(JsonConvert.SerializeObject(lobbiesViewModel));
-            await _cache.SetAsync("lobbies", serializedData, options, cancellationToken);
+            await _cacheRepository.Put("lobbies", lobbiesViewModel, null, cancellationToken);
+        }
+
+        public async Task Handle(UpdateDeckTypeEvent notification, CancellationToken cancellationToken)
+        {
+            await RefreshLobby(notification.LobbyViewModel, cancellationToken);
         }
     }
 }

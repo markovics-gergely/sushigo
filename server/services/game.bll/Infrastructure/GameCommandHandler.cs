@@ -26,8 +26,7 @@ namespace game.bll.Infrastructure
         IRequestHandler<ProceedEndTurnCommand>,
         IRequestHandler<ProceedEndRoundCommand>,
         IRequestHandler<ProceedEndGameCommand>,
-        IRequestHandler<RemoveGameCommand>,
-        IRequestHandler<MenuCardSelectCommand>
+        IRequestHandler<RemoveGameCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IServiceProvider _serviceProvider;
@@ -67,11 +66,13 @@ namespace game.bll.Infrastructure
                 DeckType = request.CreateGameDTO.DeckType
             };
 
-            // Generate additional card informations
+            // Generate additional card informations based on deck type
             deck.AddDeckInfo();
 
             // Shuffle players
             var players = _mapper.Map<List<Player>>(request.CreateGameDTO.Players).OrderBy(x => Guid.NewGuid()).ToList();
+
+            // Get hand size based on count of players
             var handSize = Game.GetHandCount(players.Count);
 
             // Create players and cards in their hands
@@ -142,6 +143,8 @@ namespace game.bll.Infrastructure
         public async Task Handle(ProceedEndTurnCommand request, CancellationToken cancellationToken)
         {
             var gameId = request.GameId ?? request.User!.GetGameIdFromJwt();
+
+            // Delete end turn job
             MediatorExtensions.Delete($"end-turn-{gameId}");
 
             // Get game entity
@@ -150,16 +153,12 @@ namespace game.bll.Infrastructure
                     filter: x => x.Id == gameId
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
 
-            if (!request.IsJob)
-            {
-                // Validate if first player played
-                _validator = new FirstPlayerValidator(game, request.User);
-                if (!_validator.Validate())
-                {
-                    throw new ValidationErrorException(nameof(ProceedEndTurnCommand));
-                }
-            }
-            else if (game.Phase != Phase.EndTurn)
+            // Validate player if it is not a job
+            _validator = request.IsJob ? new PhaseValidator(game, Phase.EndTurn) : new AndCondition(
+                new ActualPlayerValidator(game, request.User),
+                new PhaseValidator(game, Phase.EndTurn)
+            );
+            if (!_validator.Validate())
             {
                 throw new ValidationErrorException(nameof(ProceedEndTurnCommand));
             }
@@ -170,12 +169,13 @@ namespace game.bll.Infrastructure
                     transform: x => x.AsNoTracking()
                 );
 
-            // Get played cards by hand
+            // Get played cards by ordered by hand id
             var selectedCards = _unitOfWork.HandCardRepository.Get(
                     filter: x => x.GameId == game.Id && x.IsSelected,
                     transform: x => x.AsNoTracking()
                     ).ToDictionary(x => x.HandId);
 
+            // Iterate over the players
             foreach (var player in players)
             {
                 // Get selected card
@@ -202,6 +202,8 @@ namespace game.bll.Infrastructure
                     filter: x => x.GameId == game.Id,
                     transform: x => x.AsNoTracking()
                     ).Any();
+
+            // If there are hand cards, swap hands
             if (handCards)
             {
                 // Swap hands with each other
@@ -223,13 +225,12 @@ namespace game.bll.Infrastructure
 
             await _unitOfWork.Save();
 
-            // Get game entity
+            // Get game entity for cache
             var gameForCache = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == gameId,
                     includeProperties: "Players.Board.Cards" // for cache
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
-            if (game == null) throw new EntityNotFoundException(nameof(Game));
 
             // Send refresh to users and cache
             var gameViewModel = _mapper.Map<GameViewModel>(gameForCache);
@@ -248,6 +249,8 @@ namespace game.bll.Infrastructure
         public async Task Handle(ProceedEndRoundCommand request, CancellationToken cancellationToken)
         {
             var gameId = request.GameId ?? request.User!.GetGameIdFromJwt();
+
+            // Delete end round job
             MediatorExtensions.Delete($"end-round-{gameId}");
 
             // Get game entity
@@ -256,16 +259,12 @@ namespace game.bll.Infrastructure
                     filter: x => x.Id == gameId
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
 
-            if (!request.IsJob)
-            {
-                // Validate if first player played
-                _validator = new FirstPlayerValidator(game, request.User);
-                if (!_validator.Validate())
-                {
-                    throw new ValidationErrorException(nameof(ProceedEndRoundCommand));
-                }
-            }
-            else if (game.Phase != Phase.EndRound)
+            // Validate player if it is not a job
+            _validator = request.IsJob ? new PhaseValidator(game, Phase.EndRound) : new AndCondition(
+                new ActualPlayerValidator(game, request.User),
+                new PhaseValidator(game, Phase.EndRound)
+            );
+            if (!_validator.Validate())
             {
                 throw new ValidationErrorException(nameof(ProceedEndRoundCommand));
             }
@@ -274,15 +273,15 @@ namespace game.bll.Infrastructure
             var deck = _unitOfWork.DeckRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == game.DeckId
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game.Deck));
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Deck));
 
             // Get cards on the board
             var cards = _unitOfWork.BoardCardRepository.Get(
                     filter: x => x.GameId == game.Id,
-                    transform: x => x.AsNoTracking()
-                );
+                    transform: x => x.AsNoTracking());
 
             // Iterate over cards that are not already calculated
+            // Filter out dessert cards
             foreach (var card in cards.Where(c => !c.IsCalculated && c.CardType.SushiType() != SushiType.Dessert))
             {
                 // Calculate end round action through the command of the card type
@@ -293,7 +292,7 @@ namespace game.bll.Infrastructure
                 }
             }
 
-            // Delete board cards
+            // Delete board cards that are not dessert
             _unitOfWork.BoardCardRepository.Get(
                 transform: x => x.AsNoTracking(),
                 filter: x => x.GameId == game.Id
@@ -304,6 +303,7 @@ namespace game.bll.Infrastructure
             {
                 game.Phase = Phase.EndGame;
             }
+            // Otherwise start the next round
             else
             {
                 // Start the next round
@@ -348,13 +348,12 @@ namespace game.bll.Infrastructure
             _unitOfWork.GameRepository.Update(game);
             await _unitOfWork.Save();
 
-            // Get game entity
+            // Get game entity for cache
             var gameForCache = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == gameId,
                     includeProperties: "Players.Board.Cards" // for cache
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
-            if (game == null) throw new EntityNotFoundException(nameof(Game));
 
             // Send refresh to users and cache
             var gameViewModel = _mapper.Map<GameViewModel>(gameForCache);
@@ -363,14 +362,14 @@ namespace game.bll.Infrastructure
 
         public async Task Handle(RemoveGameCommand request, CancellationToken cancellationToken)
         {
-            // Get game entity
+            // Get game entity with players
             var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.User!.GetGameIdFromJwt(),
                     includeProperties: nameof(Game.Players)
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
 
-            // Validate if first player removed
+            // Validate if first player started the remove
             _validator = new FirstPlayerValidator(game, request.User);
             if (!_validator.Validate())
             {
@@ -397,6 +396,7 @@ namespace game.bll.Infrastructure
                 _unitOfWork.BoardRepository.Delete(player.BoardId);
             }
 
+            // Delete game and deck
             _unitOfWork.GameRepository.Delete(game);
             _unitOfWork.DeckRepository.Delete(game.DeckId);
             await _unitOfWork.Save();
@@ -404,14 +404,17 @@ namespace game.bll.Infrastructure
             // Send remove event to cache handler
             await _mediator.Publish(new RemoveGameEvent { GameId = game.Id }, cancellationToken);
 
-            // Send over event to user container
+            // Send game over event to user container
             var isOver = game.Phase == Phase.Result;
+
+            // Calculate distinct placements by points
             var placement = game.Players.Select(p => p.Points).Distinct().OrderDescending().ToList();
             foreach (var player in game.Players)
             {
                 await _endpoint.Publish(new GameEndDTO
                 {
                     Points = isOver ? player.Points : 0,
+                    // Calculate placement from player points if game is over
                     Placement = isOver ? placement.FindIndex(p => p == player.Points) + 1 : 0,
                     UserId = player.UserId,
                     GameName = game.Name,
@@ -440,7 +443,7 @@ namespace game.bll.Infrastructure
                     transform: x => x.AsNoTracking()
                 );
 
-            // Iterate over dessert cards to calculate
+            // Iterate over dessert cards to calculate (there should be only dessert cards)
             foreach (var card in cards.Where(c => c.CardType.SushiType() == SushiType.Dessert))
             {
                 // Calculate end game action through the command of the card type
@@ -450,103 +453,29 @@ namespace game.bll.Infrastructure
                     await command.OnEndGame(card);
                 }
             }
+
+            // Set game phase to result page
             game.Phase = Phase.Result;
             _unitOfWork.GameRepository.Update(game);
             await _unitOfWork.Save();
 
-            // Delete board cards
+            // Delete remaining board cards
             _unitOfWork.BoardCardRepository.Get(
                 transform: x => x.AsNoTracking(),
                 filter: x => x.GameId == game.Id
             ).ToList().ForEach(_unitOfWork.BoardCardRepository.Delete);
             await _unitOfWork.Save();
 
-            // Get game entity
+            // Get game entity for cache
             var gameForCache = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.User!.GetGameIdFromJwt(),
                     includeProperties: "Players.Board.Cards" // for cache
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
-            if (game == null) throw new EntityNotFoundException(nameof(Game));
 
             // Send refresh to users and cache
             var gameViewModel = _mapper.Map<GameViewModel>(gameForCache);
             await _mediator.Publish(new RefreshGameEvent { GameViewModel = gameViewModel }, cancellationToken);
-        }
-
-        public Task Handle(MenuCardSelectCommand request, CancellationToken cancellationToken)
-        {
-            if (request.User == null) throw new EntityNotFoundException(nameof(request.User));
-
-            // Get player entity
-            var player = _unitOfWork.PlayerRepository.Get(
-                    transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == request.User.GetPlayerIdFromJwt()
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Player));
-
-            // Get game entity
-            var game = _unitOfWork.GameRepository.Get(
-                    transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == player.GameId
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
-
-            var deck = _unitOfWork.DeckRepository.Get(
-                transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == game.DeckId
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Deck));
-
-            // Validate if actual player played and in the turn
-            _validator = new AndCondition(
-                new ActualPlayerValidator(game, request.User),
-                new PhaseValidator(game, Phase.MenuSelect)
-            );
-            if (!_validator.Validate())
-            {
-                throw new ValidationErrorException(nameof(PlayCardCommand));
-            }
-
-            var menuCard = _unitOfWork.HandCardRepository.Get(
-                                   filter: x => x.Id == request.HandCardId && x.HandId == player.HandId,
-                                                      transform: x => x.AsNoTracking()
-                                                                     ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(HandCard));
-            if (!menuCard.AdditionalInfo.ContainsKey(Additional.MenuCards))
-            {
-                throw new ValidationErrorException(nameof(PlayMenuCardCommand));
-            }
-            List<HandCard>? selectables = JsonConvert.DeserializeObject<List<HandCard>>(menuCard.AdditionalInfo[Additional.MenuCards]) ?? throw new ValidationErrorException(nameof(PlayMenuCardCommand));
-            if (!selectables.Any(x => x.Id == request.HandCardId))
-            {
-                throw new ValidationErrorException(nameof(PlayMenuCardCommand));
-            }
-            foreach (var selectable in selectables)
-            {
-                if (selectable.Id == request.HandCardId)
-                {
-                    // Create the card to add to the board
-                    var boardCard = new BoardCard
-                    {
-                        CardType = selectable.CardType,
-                        BoardId = player.BoardId,
-                        GameId = player.GameId,
-                        AdditionalInfo = selectable.AdditionalInfo,
-                    };
-                    _unitOfWork.BoardCardRepository.Insert(boardCard);
-                }
-                else
-                {
-                    deck.Cards.Add(selectable.CardType);
-                    if (selectable.AdditionalInfo.ContainsKey(Additional.Points))
-                    {
-                        deck.PushInfoItem(selectable.CardType, int.Parse(selectable.AdditionalInfo[Additional.Points]));
-                    }
-                }
-            }
-            game.Phase = Phase.Turn;
-            _unitOfWork.HandCardRepository.Delete(menuCard);
-            _unitOfWork.DeckRepository.Update(deck);
-            _unitOfWork.GameRepository.Update(game);
-            _unitOfWork.PlayerRepository.Update(player);
-            return _unitOfWork.Save();
         }
     }
 }

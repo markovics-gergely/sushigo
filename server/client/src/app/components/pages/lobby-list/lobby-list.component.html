@@ -5,7 +5,7 @@
       <h1>{{ "lobby-list.title" | translate }}</h1>
     </mat-card>
   </mat-grid-tile>
-  <mat-grid-tile [colspan]="12" [rowspan]="6">
+  <mat-grid-tile [colspan]="12" [rowspan]="4">
     <mat-card class="lobby-list-card">
       <button mat-flat-button class="lobby-item" *ngFor="let lobby of lobbies" (click)="join(lobby)">
         <div class="name">{{ lobby.name }}</div>

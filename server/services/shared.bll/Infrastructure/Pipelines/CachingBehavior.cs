@@ -1,55 +1,51 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using shared.bll.Exceptions;
+using Microsoft.AspNetCore.Http;
 using shared.bll.Infrastructure.Queries;
-using shared.bll.Settings;
-using System.Text;
+using shared.dal.Models.Cache;
+using shared.dal.Repository.Interfaces;
 
 namespace shared.bll.Infrastructure.Pipelines
 {
     public class CachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : ICacheableMediatrQuery, IRequest<TResponse>
     {
-        private readonly IDistributedCache _cache;
-        private readonly ILogger _logger;
-        private readonly CacheSettings _settings;
-        public CachingBehavior(IDistributedCache cache, ILogger<TResponse> logger, IOptions<CacheSettings> settings)
+        private readonly ICacheRepository _cacheRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public CachingBehavior(ICacheRepository cacheRepository, HttpContextAccessor httpContextAccessor)
         {
-            _cache = cache;
-            _logger = logger;
-            _settings = settings.Value;
+            _cacheRepository = cacheRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
+
+        private void OverrideCacheMode(TRequest request)
+        {
+            var cacheModeFromQuery = _httpContextAccessor.HttpContext?.Request.Query["cache"];
+            Enum.TryParse(typeof(CacheMode), cacheModeFromQuery, out var cacheMode);
+            if (cacheMode != null)
+            {
+                request.CacheMode = (CacheMode)cacheMode;
+            }
+        }
+
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            TResponse response;
-            async Task<TResponse> GetResponseAndAddToCache()
+            OverrideCacheMode(request);
+            if (request.CacheMode == CacheMode.Delete)
             {
-                response = await next();
-                var slidingExpiration = request.SlidingExpiration ?? TimeSpan.FromHours(_settings.SlidingExpiration);
-                var options = new DistributedCacheEntryOptions { SlidingExpiration = slidingExpiration };
-                var serializedData = Encoding.Default.GetBytes(JsonConvert.SerializeObject(response));
-                await _cache.SetAsync(request.CacheKey, serializedData, options, cancellationToken);
-                return response;
+                await _cacheRepository.Delete(request.CacheKey, cancellationToken);
+                return await next();
             }
-            if (request.BypassCache)
+            if (request.CacheMode.IsFetch())
             {
-                response = await GetResponseAndAddToCache();
-                _logger.LogInformation("Added to Cache: '{key}'.", request.CacheKey);
-                return response;
+                var cached = await _cacheRepository.Get<TResponse>(request.CacheKey, cancellationToken);
+                if (cached != null)
+                {
+                    return cached;
+                }
             }
-            var cachedResponse = await _cache.GetAsync(request.CacheKey, cancellationToken);
-            if (cachedResponse != null)
+            TResponse response = await next();
+            if (request.CacheMode.IsStore() && response != null)
             {
-                response = JsonConvert.DeserializeObject<TResponse>(Encoding.Default.GetString(cachedResponse))
-                    ?? throw new EntityNotFoundException("Cache response not convertible");
-                _logger.LogInformation("Fetched from Cache: '{key}'.", request.CacheKey);
-            }
-            else
-            {
-                response = await GetResponseAndAddToCache();
-                _logger.LogInformation("Added to Cache: '{key}'.", request.CacheKey);
+                await _cacheRepository.Put(request.CacheKey, response, request.SlidingExpiration, cancellationToken);
             }
             return response;
         }

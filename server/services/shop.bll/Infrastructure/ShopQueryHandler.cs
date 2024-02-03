@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using shared.bll.Exceptions;
 using shop.bll.Infrastructure.Queries;
 using shop.bll.Infrastructure.ViewModels;
-using shared.bll.Validators.Interfaces;
 using shop.dal.Domain;
 using shop.dal.UnitOfWork.Interfaces;
 
@@ -27,7 +26,7 @@ namespace shop.bll.Infrastructure
         {
             if (request.User == null)
             {
-                throw new EntityNotFoundException("Requested user not found");
+                throw new EntityNotFoundException(nameof(request.User));
             }
             var decks = _unitOfWork.DeckRepository.Get(
                     includeProperties: nameof(Deck.Cards),

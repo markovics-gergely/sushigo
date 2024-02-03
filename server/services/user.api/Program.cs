@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using shared.dal.Configurations.Interfaces;
-using shared.bll.Settings;
 using System.Text.Json.Serialization;
 using user.api.Extensions;
 using user.api.Hubs;
 using user.dal;
 using user.dal.Domain;
 using shared.Api.Extensions;
+using shared.dal.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;

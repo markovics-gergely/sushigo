@@ -1,8 +1,10 @@
-﻿namespace shared.bll.Infrastructure.Queries
+﻿using shared.dal.Models.Cache;
+
+namespace shared.bll.Infrastructure.Queries
 {
     public interface ICacheableMediatrQuery
     {
-        bool BypassCache { get; }
+        CacheMode CacheMode { get; set; }
         string CacheKey { get; }
         TimeSpan? SlidingExpiration { get; }
     }

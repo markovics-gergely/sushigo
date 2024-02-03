@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace lobby.api.Hubs
 {
     /// <summary>
-    /// 
+    /// Hub dispatcher for lobby related events
     /// </summary>
     public class LobbyEventsClientDispatcher :
         INotificationHandler<AddPlayerEvent>,
@@ -28,7 +28,7 @@ namespace lobby.api.Hubs
         }
 
         /// <summary>
-        /// 
+        /// Event handler for adding a player to a lobby
         /// </summary>
         /// <param name="notification"></param>
         /// <param name="cancellationToken"></param>
@@ -39,7 +39,7 @@ namespace lobby.api.Hubs
         }
 
         /// <summary>
-        /// 
+        /// Event handler for removing a player from a lobby
         /// </summary>
         /// <param name="notification"></param>
         /// <param name="cancellationToken"></param>
@@ -50,7 +50,7 @@ namespace lobby.api.Hubs
         }
 
         /// <summary>
-        /// 
+        /// Event handler for setting a player ready status in a lobby
         /// </summary>
         /// <param name="notification"></param>
         /// <param name="cancellationToken"></param>
@@ -61,19 +61,18 @@ namespace lobby.api.Hubs
         }
 
         /// <summary>
-        /// 
+        /// Event handler for removing a lobby
         /// </summary>
         /// <param name="notification"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         public async Task Handle(RemoveLobbyEvent notification, CancellationToken cancellationToken)
         {
             await _context.Clients.Group(notification.LobbyId.ToString()).Removelobby(cancellationToken);
         }
 
         /// <summary>
-        /// 
+        /// Event handler for adding a message to a lobby chat
         /// </summary>
         /// <param name="notification"></param>
         /// <param name="cancellationToken"></param>
@@ -84,7 +83,7 @@ namespace lobby.api.Hubs
         }
 
         /// <summary>
-        /// 
+        /// Event handler for updating the deck type in a lobby
         /// </summary>
         /// <param name="notification"></param>
         /// <param name="cancellationToken"></param>

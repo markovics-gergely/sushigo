@@ -1,13 +1,11 @@
 ﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.bll.Infrastructure.DataTransferObjects;
-using game.bll.Validators;
 using game.dal.Domain;
 using game.dal.Types;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using shared.bll.Exceptions;
-using shared.bll.Validators.Implementations;
 using shared.dal.Models;
 using System.Security.Claims;
 
@@ -113,12 +111,12 @@ namespace game.bll.Infrastructure.Commands.Card
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(HandCard));
             if (!menuCard.AdditionalInfo.ContainsKey(Additional.MenuCards))
             {
-                throw new ValidationErrorException(nameof(PlayMenuCardCommand));
+                throw new ValidationErrorException(nameof(MenuCommand));
             }
-            List<HandCard>? selectables = JsonConvert.DeserializeObject<List<HandCard>>(menuCard.AdditionalInfo[Additional.MenuCards]) ?? throw new ValidationErrorException(nameof(PlayMenuCardCommand));
+            List<HandCard>? selectables = JsonConvert.DeserializeObject<List<HandCard>>(menuCard.AdditionalInfo[Additional.MenuCards]) ?? throw new ValidationErrorException(nameof(MenuCommand));
             if (!selectables.Any(x => x.Id == selectedId))
             {
-                throw new ValidationErrorException(nameof(PlayMenuCardCommand));
+                throw new ValidationErrorException(nameof(MenuCommand));
             }
             foreach (var selectable in selectables)
             {

@@ -21,7 +21,7 @@ namespace user.bll.Infrastructure
     public class UserCommandHandler :
         IRequestHandler<CreateUserCommand, bool>,
         IRequestHandler<EditUserCommand, UserViewModel>,
-        IRequestHandler<RemoveUserCommand, UserViewModel?>,
+        IRequestHandler<RemoveUserCommand>,
         IRequestHandler<ClaimPartyCommand, UserViewModel>,
         IRequestHandler<ClaimDeckCommand, UserViewModel>,
         IRequestHandler<JoinLobbyCommand, UserViewModel>,
@@ -90,24 +90,20 @@ namespace user.bll.Infrastructure
 
         public async Task<UserViewModel> Handle(EditUserCommand request, CancellationToken cancellationToken)
         {
-            if (request.User == null)
-            {
-                throw new EntityNotFoundException("User not found");
-            }
+            if (request.User == null) throw new EntityNotFoundException("User not found");
+
+            // Get user entity with avatar
             var userEntity = _unitOfWork.UserRepository.Get(
                 filter: x => x.Id.ToString() == request.User.GetUserIdFromJwt(),
                 includeProperties: nameof(ApplicationUser.Avatar)
-                ).FirstOrDefault();
-            if (userEntity == null)
-            {
-                throw new EntityNotFoundException("User not found");
-            }
+                ).FirstOrDefault() ?? throw new EntityNotFoundException("User not found");
+
+            // Validate avatar if provided
             if (request.DTO.Avatar != null)
             {
                 _validator = new AndCondition(
                                 new FileSizeValidator(request.DTO.Avatar, _config.GetMaxUploadSize()),
-                                new FileHeaderValidator(request.DTO.Avatar)
-                                );
+                                new FileHeaderValidator(request.DTO.Avatar));
                 if (!_validator.Validate())
                 {
                     throw new ValidationErrorException("There was a problem with the provided avatar");
@@ -122,6 +118,7 @@ namespace user.bll.Infrastructure
             userEntity.FirstName = request.DTO.FirstName;
             userEntity.LastName = request.DTO.LastName;
 
+            // Save avatar file if provided
             var avatar = request.DTO.Avatar;
             if (avatar != null)
             {
@@ -144,18 +141,21 @@ namespace user.bll.Infrastructure
             {
                 throw new InvalidParameterException(string.Join('\n', identityResult.Errors.Select(e => e.Description).ToList()));
             }
-            return _mapper.Map<UserViewModel>(userEntity);
+
+            // Publish event to refresh user
+            var userViewModel = _mapper.Map<UserViewModel>(userEntity);
+            await _mediator.Publish(new RefreshUserEvent { User = userViewModel, UserId = userEntity.Id }, cancellationToken);
+            return userViewModel;
         }
 
         public async Task Handle(EditUserRoleCommand request, CancellationToken cancellationToken)
         {
+            // Get user entity
             var userEntity = _unitOfWork.UserRepository.Get(
                 filter: x => x.Id == request.DTO.Id
-                ).FirstOrDefault();
-            if (userEntity == null)
-            {
-                throw new EntityNotFoundException("User not found");
-            }
+                ).FirstOrDefault() ?? throw new EntityNotFoundException("User not found");
+
+            // Try to add role to user
             var added = await _userManager.AddToRoleAsync(userEntity, request.DTO.Role);
             if (added.Errors.Any())
             {
@@ -165,41 +165,46 @@ namespace user.bll.Infrastructure
 
         public async Task<UserViewModel> Handle(ClaimPartyCommand request, CancellationToken cancellationToken)
         {
+            // Get user entity with avatar
             var userEntity = _unitOfWork.UserRepository.Get(
                 filter: x => x.Id == request.PartyBoughtDTO.UserId,
                 includeProperties: nameof(ApplicationUser.Avatar)
-                ).FirstOrDefault();
-            if (userEntity == null)
-            {
-                throw new EntityNotFoundException("User not found");
-            }
+                ).FirstOrDefault() ?? throw new EntityNotFoundException("User not found");
+
+            // Validate user experience
             _validator = new ClaimValidator(RoleTypes.PartyExp, userEntity.Experience);
             if (!_validator.Validate())
             {
                 throw new ValidationErrorException("Not enough experience");
             }
+
+            // Try to add role to user
             var added = await _userManager.AddToRoleAsync(userEntity, RoleTypes.Party);
             if (added.Errors.Any())
             {
                 throw new InvalidParameterException(string.Join('\n', added.Errors.Select(e => e.Description).ToList()));
             }
+
+            // Update user experience if role was added
             userEntity.Experience -= RoleTypes.PartyExp;
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
-            await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
-            return _mapper.Map<UserViewModel>(userEntity);
+
+            // Publish event to refresh user
+            var userViewModel = _mapper.Map<UserViewModel>(userEntity);
+            await _mediator.Publish(new RefreshUserEvent { User = userViewModel, UserId = userEntity.Id }, cancellationToken);
+            return userViewModel;
         }
 
         public async Task<UserViewModel> Handle(ClaimDeckCommand request, CancellationToken cancellationToken)
         {
+            // Get user entity with avatar
             var userEntity = _unitOfWork.UserRepository.Get(
                 filter: x => x.Id == request.DeckBoughtDTO.UserId,
                 includeProperties: nameof(ApplicationUser.Avatar)
-                ).FirstOrDefault();
-            if (userEntity == null)
-            {
-                throw new EntityNotFoundException("User not found");
-            }
+                ).FirstOrDefault() ?? throw new EntityNotFoundException("User not found");
+
+            // Validate user experience and deck claims
             _validator = new ClaimValidator(RoleTypes.DeckExp, userEntity.Experience);
             if (!_validator.Validate())
             {
@@ -210,65 +215,75 @@ namespace user.bll.Infrastructure
             {
                 throw new ValidationErrorException("User already has the game");
             }
+
+            // Add deck to user
             userEntity.DeckClaims.Add(request.DeckBoughtDTO.DeckType);
             userEntity.Experience -= RoleTypes.DeckExp;
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
-            await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
-            return _mapper.Map<UserViewModel>(userEntity);
+
+            // Publish event to refresh user
+            var userViewModel = _mapper.Map<UserViewModel>(userEntity);
+            await _mediator.Publish(new RefreshUserEvent { User = userViewModel, UserId = userEntity.Id }, cancellationToken);
+            return userViewModel;
         }
 
         public async Task<UserViewModel> Handle(JoinLobbyCommand request, CancellationToken cancellationToken)
         {
+            // Get user entity with avatar
             var userEntity = _unitOfWork.UserRepository.Get(
                 filter: x => x.Id == request.LobbyJoinedDTO.UserId,
                 includeProperties: nameof(ApplicationUser.Avatar)
-                ).FirstOrDefault();
-            if (userEntity == null)
-            {
-                throw new EntityNotFoundException(nameof(ApplicationUser));
-            }
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(ApplicationUser));
+
+            // Update user active lobby
             userEntity.ActiveLobby = request.LobbyJoinedDTO.LobbyId;
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
-            await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
-            return _mapper.Map<UserViewModel>(userEntity);
+
+            // Publish event to refresh user
+            var userViewModel = _mapper.Map<UserViewModel>(userEntity);
+            await _mediator.Publish(new RefreshUserEvent { User = userViewModel, UserId = userEntity.Id }, cancellationToken);
+            return userViewModel;
         }
 
         public async Task<UserViewModel> Handle(JoinGameCommand request, CancellationToken cancellationToken)
         {
+            // Get user entity with avatar
             var userEntity = _unitOfWork.UserRepository.Get(
                 filter: x => x.Id == request.GameJoinedSingleDTO.UserId,
                 includeProperties: nameof(ApplicationUser.Avatar)
-                ).FirstOrDefault();
-            if (userEntity == null)
-            {
-                throw new EntityNotFoundException(nameof(ApplicationUser));
-            }
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(ApplicationUser));
+
+            // Update user active game and remove active lobby
             userEntity.ActiveLobby = null;
             userEntity.ActiveGame = request.GameJoinedSingleDTO.GameId;
             userEntity.ActiveGamePlayer = request.GameJoinedSingleDTO.PlayerId;
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
-            await _mediator.Publish(new RefreshUserEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
-            return _mapper.Map<UserViewModel>(userEntity);
+
+            // Publish event to refresh user
+            var userViewModel = _mapper.Map<UserViewModel>(userEntity);
+            await _mediator.Publish(new RefreshUserEvent { User = userViewModel, UserId = userEntity.Id }, cancellationToken);
+            return userViewModel;
         }
 
         public async Task<UserViewModel> Handle(EndGameCommand request, CancellationToken cancellationToken)
         {
+            // Get user entity with avatar
             var userEntity = _unitOfWork.UserRepository.Get(
                 filter: x => x.Id == request.GameEndDTO.UserId,
                 includeProperties: nameof(ApplicationUser.Avatar)
-                ).FirstOrDefault();
-            if (userEntity == null)
-            {
-                throw new EntityNotFoundException(nameof(ApplicationUser));
-            }
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(ApplicationUser));
+
+            // Update user active game and player and add experience
             userEntity.ActiveGame = null;
             userEntity.ActiveGamePlayer = null;
             userEntity.Experience += request.GameEndDTO.Points;
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.Save();
+
+            // Add history if user gained points
             if (request.GameEndDTO.Points > 0)
             {
                 var history = new History
@@ -283,30 +298,34 @@ namespace user.bll.Infrastructure
                 await _unitOfWork.Save();
                 await _mediator.Publish(new RefreshHistoryEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
             }
+
+            // Publish event to refresh game
             await _mediator.Publish(new RemoveGameEvent { UserId = userEntity.Id.ToString() }, cancellationToken);
-            return _mapper.Map<UserViewModel>(userEntity);
+
+            // Publish event to refresh user
+            var userViewModel = _mapper.Map<UserViewModel>(userEntity);
+            await _mediator.Publish(new RefreshUserEvent { User = userViewModel, UserId = userEntity.Id }, cancellationToken);
+            return userViewModel;
         }
 
-        public async Task<UserViewModel?> Handle(RemoveUserCommand request, CancellationToken cancellationToken)
+        public async Task Handle(RemoveUserCommand request, CancellationToken cancellationToken)
         {
-            if (request.User == null)
-            {
-                throw new EntityNotFoundException("User not found");
-            }
+            if (request.User == null) throw new EntityNotFoundException("User not found");
+            
+            // Get user entity with avatar
             var userEntity = _unitOfWork.UserRepository.Get(
                 filter: x => x.Id.ToString() == request.User.GetUserIdFromJwt(),
                 includeProperties: nameof(ApplicationUser.Avatar)
-                ).FirstOrDefault();
-            if (userEntity == null)
-            {
-                throw new EntityNotFoundException("User not found");
-            }
+                ).FirstOrDefault() ?? throw new EntityNotFoundException("User not found");
 
+            // Get friends to remove
             var friends = _unitOfWork.FriendRepository.Get(
                     filter: x => x.SenderId == userEntity.Id || x.ReceiverId == userEntity.Id,
                     transform: x => x.AsNoTracking()
                 ).ToList();
-            foreach ( var friend in friends )
+
+            // Remove user from friends
+            foreach (var friend in friends)
             {
                 _unitOfWork.FriendRepository.Delete(friend);
                 await _unitOfWork.Save();
@@ -316,19 +335,29 @@ namespace user.bll.Infrastructure
                     SenderId = userEntity.Id
                 }, cancellationToken);
             }
+
+            // Get history to remove
             var history = _unitOfWork.HistoryRepository.Get(
                     filter: x => x.UserId == userEntity.Id,
                     transform: x => x.AsNoTracking()
                 ).ToList();
-            foreach ( var h in history )
+
+            // Remove user history
+            foreach (var h in history)
             {
                 _unitOfWork.HistoryRepository.Delete(h);
                 await _unitOfWork.Save();
             }
+
+            // Remove roles of the user
             var roles = await _userManager.GetRolesAsync(userEntity);
             await _userManager.RemoveFromRolesAsync(userEntity, roles);
+
+            // Remove user
             await _userManager.DeleteAsync(userEntity);
-            return null;
+
+            // Publish event to remove user
+            await _mediator.Publish(new RemoveUserEvent { UserId = userEntity.Id }, cancellationToken);
         }
     }
 }

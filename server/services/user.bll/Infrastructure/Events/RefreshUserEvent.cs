@@ -1,9 +1,11 @@
 ﻿using MediatR;
+using user.bll.Infrastructure.ViewModels;
 
 namespace user.bll.Infrastructure.Events
 {
     public class RefreshUserEvent : INotification
     {
-        public required string UserId { get; set;}
+        public required Guid UserId { get; set; }
+        public required UserViewModel User { get; set; }
     }
 }

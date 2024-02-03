@@ -27,7 +27,7 @@ namespace user.api.Extensions
             services.AddHttpClient();
             services.AddTransient<IRequestHandler<CreateUserCommand, bool>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<EditUserCommand, UserViewModel>, UserCommandHandler>();
-            services.AddTransient<IRequestHandler<RemoveUserCommand, UserViewModel?>, UserCommandHandler>();
+            services.AddTransient<IRequestHandler<RemoveUserCommand>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<ClaimPartyCommand, UserViewModel>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<ClaimDeckCommand, UserViewModel>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<EditUserRoleCommand>, UserCommandHandler>();

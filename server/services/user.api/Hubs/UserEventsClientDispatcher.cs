@@ -31,7 +31,7 @@ namespace user.api.Hubs
         /// <returns></returns>
         public Task Handle(RefreshUserEvent notification, CancellationToken cancellationToken)
         {
-            return _context.Clients.Group(notification.UserId).RefreshUser();
+            return _context.Clients.Group(notification.UserId.ToString()).RefreshUser(notification.User);
         }
 
         /// <summary>

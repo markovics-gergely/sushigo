@@ -1,5 +1,8 @@
 ﻿namespace user.dal.Domain
 {
+    /// <summary>
+    /// History of games played by users
+    /// </summary>
     public class History
     {
         public Guid Id { get; set; }

@@ -11,7 +11,7 @@ namespace user.api.Hubs.Interfaces
         /// 
         /// </summary>
         /// <returns></returns>
-        Task RefreshUser();
+        Task RefreshUser(UserViewModel user);
         /// <summary>
         /// 
         /// </summary>

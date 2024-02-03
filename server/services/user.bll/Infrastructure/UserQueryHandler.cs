@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using shared.bll.Exceptions;
 using shared.bll.Extensions;
-using shared.bll.Validators.Interfaces;
 using user.bll.Infrastructure.Queries;
 using user.bll.Infrastructure.ViewModels;
 using user.dal.Domain;

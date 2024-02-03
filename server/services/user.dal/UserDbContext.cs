@@ -12,7 +12,7 @@ namespace user.dal
         public DbSet<ApplicationUser> ApplicationUsers => Set<ApplicationUser>();
         public DbSet<ApplicationRole> ApplicationRoles => Set<ApplicationRole>();
         public DbSet<Friend> Friends => Set<Friend>();
-        //public DbSet<History> Histories => Set<History>();
+        public DbSet<History> Histories => Set<History>();
         public UserDbContext(DbContextOptions<UserDbContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder builder)
         {

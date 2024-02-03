@@ -2,6 +2,9 @@
 
 namespace user.dal.Domain
 {
+    /// <summary>
+    /// Friend junction table between users
+    /// </summary>
     public class Friend
     {
         public Guid Id { get; set; }

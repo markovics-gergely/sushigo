@@ -219,7 +219,7 @@ namespace user.test
             var userManager = RepositoryMockData.MockUserManager;
             userManager.Setup(u => u.AddToRoleAsync(It.Is<ApplicationUser>(a => a.Id == user.Id), role)).Returns(Task.FromResult(IdentityResult.Success));
             var mediator = RepositoryMockData.MockMediator;
-            mediator.Setup(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id.ToString()), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            mediator.Setup(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             var mapper = RepositoryMockData.MockMapper;
             mapper.Setup(m => m.Map<UserViewModel>(user)).Returns(new UserViewModel
             {
@@ -254,7 +254,7 @@ namespace user.test
             userRepo.Verify(u => u.Update(It.Is<ApplicationUser>(au => au.UserName == user.UserName && au.Experience == 0)), Times.Once());
             unitOfWork.Verify(p => p.Save(), Times.Once());
             mapper.Verify(m => m.Map<UserViewModel>(user), Times.Once());
-            mediator.Verify(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id.ToString()), It.IsAny<CancellationToken>()), Times.Once());
+            mediator.Verify(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id), It.IsAny<CancellationToken>()), Times.Once());
         }
 
         [Fact]
@@ -275,7 +275,7 @@ namespace user.test
             var unitOfWork = RepositoryMockData.MockUnitOfWork;
             unitOfWork.Setup(u => u.UserRepository).Returns(userRepo.Object);
             var mediator = RepositoryMockData.MockMediator;
-            mediator.Setup(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id.ToString()), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            mediator.Setup(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             var mapper = RepositoryMockData.MockMapper;
             mapper.Setup(m => m.Map<UserViewModel>(user)).Returns(new UserViewModel
             {
@@ -310,7 +310,7 @@ namespace user.test
             userRepo.Verify(u => u.Update(It.Is<ApplicationUser>(au => au.UserName == user.UserName && au.Experience == 0 && au.DeckClaims.Count == 1 && au.DeckClaims.Contains(DeckType.SushiGo))), Times.Once());
             unitOfWork.Verify(p => p.Save(), Times.Once());
             mapper.Verify(m => m.Map<UserViewModel>(user), Times.Once());
-            mediator.Verify(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id.ToString()), It.IsAny<CancellationToken>()), Times.Once());
+            mediator.Verify(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id), It.IsAny<CancellationToken>()), Times.Once());
         }
 
         [Fact]
@@ -332,7 +332,7 @@ namespace user.test
             var unitOfWork = RepositoryMockData.MockUnitOfWork;
             unitOfWork.Setup(u => u.UserRepository).Returns(userRepo.Object);
             var mediator = RepositoryMockData.MockMediator;
-            mediator.Setup(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id.ToString()), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            mediator.Setup(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             var mapper = RepositoryMockData.MockMapper;
             mapper.Setup(m => m.Map<UserViewModel>(user)).Returns(new UserViewModel
             {
@@ -367,7 +367,7 @@ namespace user.test
             userRepo.Verify(u => u.Update(It.Is<ApplicationUser>(au => au.UserName == user.UserName && au.ActiveLobby == lobbyGuid)), Times.Once());
             unitOfWork.Verify(p => p.Save(), Times.Once());
             mapper.Verify(m => m.Map<UserViewModel>(user), Times.Once());
-            mediator.Verify(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id.ToString()), It.IsAny<CancellationToken>()), Times.Once());
+            mediator.Verify(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id), It.IsAny<CancellationToken>()), Times.Once());
         }
 
         [Fact]
@@ -390,7 +390,7 @@ namespace user.test
             var unitOfWork = RepositoryMockData.MockUnitOfWork;
             unitOfWork.Setup(u => u.UserRepository).Returns(userRepo.Object);
             var mediator = RepositoryMockData.MockMediator;
-            mediator.Setup(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id.ToString()), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            mediator.Setup(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             var mapper = RepositoryMockData.MockMapper;
             mapper.Setup(m => m.Map<UserViewModel>(user)).Returns(new UserViewModel
             {
@@ -426,7 +426,7 @@ namespace user.test
             userRepo.Verify(u => u.Update(It.Is<ApplicationUser>(au => au.UserName == user.UserName && au.ActiveLobby == null && au.ActiveGame == gameGuid && au.ActiveGamePlayer == playerGuid)), Times.Once());
             unitOfWork.Verify(p => p.Save(), Times.Once());
             mapper.Verify(m => m.Map<UserViewModel>(user), Times.Once());
-            mediator.Verify(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id.ToString()), It.IsAny<CancellationToken>()), Times.Once());
+            mediator.Verify(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id), It.IsAny<CancellationToken>()), Times.Once());
         }
 
         [Fact]
@@ -460,7 +460,7 @@ namespace user.test
             unitOfWork.Setup(u => u.UserRepository).Returns(userRepo.Object);
             unitOfWork.Setup(u => u.HistoryRepository).Returns(historyRepo.Object);
             var mediator = RepositoryMockData.MockMediator;
-            mediator.Setup(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id.ToString()), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            mediator.Setup(m => m.Publish(It.Is<RefreshUserEvent>(e => e.UserId == user.Id), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             var mapper = RepositoryMockData.MockMapper;
             mapper.Setup(m => m.Map<UserViewModel>(user)).Returns(new UserViewModel
             {
@@ -569,10 +569,9 @@ namespace user.test
             var command = new RemoveUserCommand(new ClaimsPrincipal(identity));
 
             // Act
-            var result = await userCommandHandler.Handle(command, new CancellationToken());
+            await userCommandHandler.Handle(command, new CancellationToken());
 
             // Assert
-            Assert.Null(result);
             friendsRepo.Verify(f => f.Delete(It.Is<Friend>(fr => fr.SenderId == guid && fr.ReceiverId == friendUserId)), Times.Once());
             historyRepo.Verify(h => h.Delete(history), Times.Once());
             unitOfWork.Verify(p => p.Save(), Times.Exactly(2));

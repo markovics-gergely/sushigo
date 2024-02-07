@@ -69,13 +69,9 @@ namespace game.dal
                 .HasConversion<CollectionJsonValueConverter<Guid>>()
                 .Metadata.SetValueComparer(new CollectionValueComparer<Guid>());
             builder.Entity<Deck>()
-                .Property(g => g.AdditionalInfo)
-                .HasConversion<DictionaryEnumValueConverter<CardType, string>>()
-                .Metadata.SetValueComparer(new DictionaryEnumValueComparer<CardType, string>());
-            builder.Entity<Deck>()
                 .Property(d => d.Cards)
-                .HasConversion<EnumCollectionJsonValueConverter<CardType>>()
-                .Metadata.SetValueComparer(new CollectionValueComparer<CardType>());
+                .HasConversion<QueueJsonValueConverter<CardTypePoint>>()
+                .Metadata.SetValueComparer(new QueueValueComparer<CardTypePoint>());
         }
     }
 }

@@ -111,5 +111,34 @@
                 _ => false,
             };
         }
+
+        public static int[]? GetPoints(this CardType cardType)
+        {
+            return cardType switch
+            {
+                CardType.MakiRoll => new int[] { 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3 },
+                CardType.Uramaki => new int[] { 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5 },
+                CardType.Onigiri => new int[] { 0, 0, 1, 1, 2, 2, 3, 3 },
+                CardType.Fruit => new int[] { 200, 200, 020, 020, 002, 002, 110, 110, 110, 011, 011, 011, 101, 101, 101 },
+                _ => null,
+            };
+        }
+
+        public static List<CardType> HasPointsList { get; } = new List<CardType>
+        {
+            CardType.MakiRoll,
+            CardType.Uramaki,
+            CardType.Onigiri,
+            CardType.Fruit
+        };
+
+        public static bool HasPoints(this CardType type) => HasPointsList.Contains(type);
+
+        public static Queue<int>? GetShuffledPoints(this CardType cardType)
+        {
+            var points = cardType.GetPoints();
+            if (points == null) return null;
+            return new Queue<int>(points.OrderBy(x => Guid.NewGuid()));
+        }
     }
 }

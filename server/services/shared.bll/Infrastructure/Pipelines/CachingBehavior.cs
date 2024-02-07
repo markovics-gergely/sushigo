@@ -10,7 +10,7 @@ namespace shared.bll.Infrastructure.Pipelines
     {
         private readonly ICacheRepository _cacheRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public CachingBehavior(ICacheRepository cacheRepository, HttpContextAccessor httpContextAccessor)
+        public CachingBehavior(ICacheRepository cacheRepository, IHttpContextAccessor httpContextAccessor)
         {
             _cacheRepository = cacheRepository;
             _httpContextAccessor = httpContextAccessor;

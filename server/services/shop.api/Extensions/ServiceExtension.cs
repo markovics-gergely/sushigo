@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using shared.bll.Infrastructure.Pipelines;
+using shared.api.Extensions;
 using shared.dal.Repository.Implementations;
 using shared.dal.Repository.Interfaces;
 using shop.bll.Infrastructure;
@@ -23,22 +23,20 @@ namespace shop.api.Extensions
         /// <param name="services"></param>
         public static void AddServiceExtensions(this IServiceCollection services)
         {
-            services.AddHttpClient();
+            // Shared Services
+            services.AddSharedServiceExtensions();
 
-            services.AddTransient<IRequestHandler<GetDecksQuery, IEnumerable<DeckViewModel>>, ShopQueryHandler>();
-            services.AddTransient<IRequestHandler<GetDeckQuery, DeckItemViewModel>, ShopQueryHandler>();
-
+            // Shop Commands
             services.AddTransient<IRequestHandler<BuyDeckCommand>, ShopCommandHandler>();
             services.AddTransient<IRequestHandler<BuyPartyCommand>, ShopCommandHandler>();
 
-            services.AddTransient(typeof(IDbContextProvider), typeof(DbContextProvider<ShopDbContext>));
-            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddTransient<IFileRepository, FileRepository>();
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
+            // Shop Queries
+            services.AddTransient<IRequestHandler<GetDecksQuery, IEnumerable<DeckViewModel>>, ShopQueryHandler>();
+            services.AddTransient<IRequestHandler<GetDeckQuery, DeckItemViewModel>, ShopQueryHandler>();
 
-            services.AddDistributedMemoryCache();
+            // Providers
+            services.AddTransient(typeof(IDbContextProvider), typeof(DbContextProvider<ShopDbContext>));
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
     }
 }

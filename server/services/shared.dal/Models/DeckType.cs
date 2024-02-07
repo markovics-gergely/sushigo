@@ -68,14 +68,30 @@
             };
         }
 
-        public static Queue<CardType> GetShuffledCards(this DeckType deckType, int round = 0, int count = 2)
+        public static Dictionary<CardType, Queue<int>> GetShuffledPoints(this DeckType deck)
         {
-            var cardList = new List<CardType>();
-            deckType.GetCardTypes().ToList().ForEach(cardType =>
+            return deck.GetCardTypes().Where(x => x.HasPoints()).ToDictionary(x => x, x => x.GetShuffledPoints()!);
+        }
+
+        public static Queue<CardTypePoint> GetShuffledCards(this DeckType deckType, int round = 0, int count = 2)
+        {
+            var shuffledPoints = deckType.GetShuffledPoints();
+            var cardList = new List<CardTypePoint>();
+            foreach(var card in deckType.GetCardTypes())
             {
-                cardList.AddRange(Enumerable.Repeat(cardType, cardType.SushiType().GetCount(round, count)));
-            });
-            return new Queue<CardType>(cardList.OrderBy(x => Guid.NewGuid()));
+                for (int i = 0; i < card.SushiType().GetCount(round, count); i++)
+                {
+                    if (!shuffledPoints.ContainsKey(card) || shuffledPoints[card].Count == 0)
+                    {
+                        cardList.Add(new CardTypePoint { CardType = card });
+                    }
+                    else
+                    {
+                        cardList.Add(new CardTypePoint { CardType = card, Point = shuffledPoints[card].Dequeue() });
+                    }
+                }
+            }
+            return new Queue<CardTypePoint>(cardList.OrderBy(x => Guid.NewGuid()));
         }
     }
 }

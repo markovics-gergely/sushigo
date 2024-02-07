@@ -76,6 +76,7 @@ namespace user.dal.Migrations
                     AvatarId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ActiveLobby = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ActiveGame = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ActiveGamePlayer = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     DeckClaims = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -207,6 +208,27 @@ namespace user.dal.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Histories",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Placement = table.Column<int>(type: "int", nullable: false),
+                    Point = table.Column<int>(type: "int", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Histories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Histories_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
@@ -271,6 +293,11 @@ namespace user.dal.Migrations
                 name: "IX_Friends_SenderId",
                 table: "Friends",
                 column: "SenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Histories_UserId",
+                table: "Histories",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -293,6 +320,9 @@ namespace user.dal.Migrations
 
             migrationBuilder.DropTable(
                 name: "Friends");
+
+            migrationBuilder.DropTable(
+                name: "Histories");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

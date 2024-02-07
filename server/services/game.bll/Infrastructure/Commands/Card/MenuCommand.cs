@@ -70,15 +70,14 @@ namespace game.bll.Infrastructure.Commands.Card
             var poppedCards = deck.Cards.Take(4);
             foreach (var card in poppedCards)
             {
-                var info = deck.PopInfoItem(card);
                 var poppedCard = new HandCard
                 {
-                    CardType = card,
+                    CardType = card.CardType,
                     Id = Guid.NewGuid(),
                 };
-                if (info != null)
+                if (card.Point.HasValue)
                 {
-                    poppedCard.AdditionalInfo[Additional.Points] = info?.ToString() ?? "";
+                    poppedCard.AdditionalInfo[Additional.Points] = card.Point?.ToString() ?? "";
                 }
                 cardList.Add(poppedCard);
             }
@@ -134,10 +133,13 @@ namespace game.bll.Infrastructure.Commands.Card
                 }
                 else
                 {
-                    deck.Cards.Add(selectable.CardType);
-                    if (selectable.AdditionalInfo.ContainsKey(Additional.Points))
+                    if (int.TryParse(selectable.AdditionalInfo[Additional.Points], out int point))
                     {
-                        deck.PushInfoItem(selectable.CardType, int.Parse(selectable.AdditionalInfo[Additional.Points]));
+                        deck.Cards.Enqueue(new CardTypePoint { CardType = selectable.CardType, Point = point });
+                    }
+                    else
+                    {
+                        deck.Cards.Enqueue(new CardTypePoint { CardType = selectable.CardType });
                     }
                 }
             }

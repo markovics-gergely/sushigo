@@ -12,7 +12,6 @@ using Hangfire;
 using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using shared.bll.Exceptions;
 using shared.bll.Extensions;
 using shared.bll.Validators.Implementations;
@@ -63,11 +62,10 @@ namespace game.bll.Infrastructure
             // Set remaining cards to a deck
             var deck = new Deck
             {
-                DeckType = request.CreateGameDTO.DeckType
+                DeckType = request.CreateGameDTO.DeckType,
+                Cards = cardList,
             };
-
-            // Generate additional card informations based on deck type
-            deck.AddDeckInfo();
+            _unitOfWork.DeckRepository.Insert(deck);
 
             // Shuffle players
             var players = _mapper.Map<List<Player>>(request.CreateGameDTO.Players).OrderBy(x => Guid.NewGuid()).ToList();
@@ -86,11 +84,10 @@ namespace game.bll.Infrastructure
                 for (int i = 0; i < handSize; i++)
                 {
                     var card = cardList.Dequeue();
-                    var handCard = new HandCard { CardType = card, Hand = hand, GameId = game.Id };
-                    var info = deck.PopInfoItem(card);
-                    if (info != null)
+                    var handCard = new HandCard { CardType = card.CardType, Hand = hand, GameId = game.Id };
+                    if (card.Point.HasValue)
                     {
-                        handCard.AdditionalInfo[Additional.Points] = info?.ToString() ?? "";
+                        handCard.AdditionalInfo[Additional.Points] = card.Point?.ToString() ?? "";
                     }
                     _unitOfWork.HandCardRepository.Insert(handCard);
                 }
@@ -111,9 +108,6 @@ namespace game.bll.Infrastructure
             }
             // Attach last node to first
             players.First().NextPlayerId = players.Last().Id;
-
-            deck.Cards = cardList.ToList();
-            _unitOfWork.DeckRepository.Insert(deck);
 
             game.PlayerIds = players.Select(x => x.Id).ToList();
             game.Deck = deck;
@@ -328,21 +322,18 @@ namespace game.bll.Infrastructure
                     {
                         // Add a card to the player from the top of the deck
                         var card = cardList.Dequeue();
-                        var handCard = new HandCard { CardType = card, HandId = player.HandId, GameId = game.Id };
-                        var info = deck.PopInfoItem(card);
-                        if (info != null)
+                        var handCard = new HandCard { CardType = card.CardType, HandId = player.HandId, GameId = game.Id };
+                        if (card.Point.HasValue)
                         {
-                            handCard.AdditionalInfo[Additional.Points] = info?.ToString() ?? "";
+                            handCard.AdditionalInfo[Additional.Points] = card.Point?.ToString() ?? "";
                         }
                         _unitOfWork.HandCardRepository.Insert(handCard);
                     }
                 }
 
                 // Set remaining cards to deck
-                deck.Cards = cardList.ToList();
+                deck.Cards = cardList;
 
-                // Generate additional card informations
-                deck.AddDeckInfo();
                 _unitOfWork.DeckRepository.Update(deck);
             }
             _unitOfWork.GameRepository.Update(game);

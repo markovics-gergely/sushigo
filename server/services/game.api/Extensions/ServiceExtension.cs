@@ -10,7 +10,7 @@ using game.dal;
 using game.dal.UnitOfWork.Implementations;
 using game.dal.UnitOfWork.Interfaces;
 using MediatR;
-using shared.bll.Infrastructure.Pipelines;
+using shared.api.Extensions;
 using shared.dal.Models;
 using shared.dal.Repository.Implementations;
 using shared.dal.Repository.Interfaces;
@@ -28,9 +28,10 @@ namespace game.api.Extensions
         /// <param name="services"></param>
         public static void AddServiceExtensions(this IServiceCollection services)
         {
-            services.AddHttpClient();
-            services.AddHttpContextAccessor();
+            // Shared Services
+            services.AddSharedServiceExtensions();
 
+            // Card implementations
             services.AddTransient(typeof(ICardCommand<EggNigiri>), typeof(EggNigiriCommand));
             services.AddTransient(typeof(ICardCommand<SalmonNigiri>), typeof(SalmonNigiriCommand));
             services.AddTransient(typeof(ICardCommand<SquidNigiri>), typeof(SquidNigiriCommand));
@@ -57,36 +58,37 @@ namespace game.api.Extensions
             services.AddTransient(typeof(ICardCommand<Fruit>), typeof(FruitCommand));
             services.AddTransient(typeof(ICardCommand<Pudding>), typeof(PuddingCommand));
 
+            // Card implementation Utils
+            services.AddTransient(typeof(ISimpleAddPoint), typeof(SimpleAddPoint));
+            services.AddTransient(typeof(ISimpleAddToBoard), typeof(SimpleAddToBoard));
+            services.AddTransient(typeof(IAddPointByDelegate), typeof(AddPointByDelegate));
+
+            // Card Commands
             services.AddTransient<IRequestHandler<PlayCardCommand>, CardCommandHandler>();
             services.AddTransient<IRequestHandler<SkipAfterTurnCommand>, CardCommandHandler>();
             services.AddTransient<IRequestHandler<PlayAfterTurnCommand>, CardCommandHandler>();
+
+            // Game Commands
             services.AddTransient<IRequestHandler<CreateGameCommand, GameViewModel>, GameCommandHandler>();
             services.AddTransient<IRequestHandler<ProceedEndTurnCommand>, GameCommandHandler>();
             services.AddTransient<IRequestHandler<ProceedEndRoundCommand>, GameCommandHandler>();
             services.AddTransient<IRequestHandler<ProceedEndGameCommand>, GameCommandHandler>();
             services.AddTransient<IRequestHandler<RemoveGameCommand>, GameCommandHandler>();
 
+            // Game Queries
             services.AddTransient<IRequestHandler<GetGameQuery, GameViewModel>, GameQueryHandler>();
             services.AddTransient<IRequestHandler<GetHandQuery, HandViewModel>, GameQueryHandler>();
             services.AddTransient<IRequestHandler<GetOwnHandQuery, HandViewModel>, GameQueryHandler>();
 
+            // Game Events
             services.AddTransient<INotificationHandler<RefreshGameEvent>, GameNotificationHandler>();
-            services.AddTransient<INotificationHandler<EndTurnEvent>, GameNotificationHandler>();
-            services.AddTransient<INotificationHandler<EndRoundEvent>, GameNotificationHandler>();
             services.AddTransient<INotificationHandler<RemoveGameEvent>, GameNotificationHandler>();
+            services.AddTransient<INotificationHandler<EndRoundEvent>, GameNotificationHandler>();
+            services.AddTransient<INotificationHandler<EndTurnEvent>, GameNotificationHandler>();
 
+            // Providers
             services.AddTransient(typeof(IDbContextProvider), typeof(DbContextProvider<GameDbContext>));
-            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddTransient<IFileRepository, FileRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
-
-            services.AddTransient(typeof(ISimpleAddPoint), typeof(SimpleAddPoint));
-            services.AddTransient(typeof(ISimpleAddToBoard), typeof(SimpleAddToBoard));
-            services.AddTransient(typeof(IAddPointByDelegate), typeof(AddPointByDelegate));
-
-            services.AddDistributedMemoryCache();
         }
     }
 }

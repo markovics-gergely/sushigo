@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using shared.bll.Infrastructure.Pipelines;
+using shared.api.Extensions;
 using shared.dal.Repository.Implementations;
 using shared.dal.Repository.Interfaces;
 using user.bll.Infrastructure;
@@ -24,38 +24,44 @@ namespace user.api.Extensions
         /// <param name="services"></param>
         public static void AddServiceExtensions(this IServiceCollection services)
         {
-            services.AddHttpClient();
+            // Shared Services
+            services.AddSharedServiceExtensions();
+
+            // User Commands
             services.AddTransient<IRequestHandler<CreateUserCommand, bool>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<EditUserCommand, UserViewModel>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<RemoveUserCommand>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<ClaimPartyCommand, UserViewModel>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<ClaimDeckCommand, UserViewModel>, UserCommandHandler>();
-            services.AddTransient<IRequestHandler<EditUserRoleCommand>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<JoinLobbyCommand, UserViewModel>, UserCommandHandler>();
+            services.AddTransient<IRequestHandler<EditUserRoleCommand>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<JoinGameCommand, UserViewModel>, UserCommandHandler>();
             services.AddTransient<IRequestHandler<EndGameCommand, UserViewModel>, UserCommandHandler>();
 
+            // Friend Commands
             services.AddTransient<IRequestHandler<AddFriendCommand, UserNameViewModel>, FriendCommandHandler>();
             services.AddTransient<IRequestHandler<RemoveFriendCommand>, FriendCommandHandler>();
             services.AddTransient<IRequestHandler<UpdateFriendOfflineCommand>, FriendCommandHandler>();
 
+            // Friend Queries
             services.AddTransient<IRequestHandler<GetFriendsQuery, FriendListViewModel>, FriendQueryHandler>();
 
+            // User Queries
             services.AddTransient<IRequestHandler<GetUserQuery, UserViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetUserByIdQuery, UserViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetHistoryQuery, IEnumerable<HistoryViewModel>>, UserQueryHandler>();
 
+            // History Events
             services.AddTransient<INotificationHandler<RefreshHistoryEvent>, HistoryNotificationHandler>();
 
-            services.AddTransient(typeof(IDbContextProvider), typeof(DbContextProvider<UserDbContext>));
-            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddTransient<IFileRepository, FileRepository>();
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
+            // User Events
+            services.AddTransient<INotificationHandler<RefreshUserEvent>, UserNotificationHandler>();
+            services.AddTransient<INotificationHandler<RemoveUserEvent>, UserNotificationHandler>();
 
-            services.AddDistributedMemoryCache();
+            // Providers
+            services.AddTransient(typeof(IDbContextProvider), typeof(DbContextProvider<UserDbContext>));
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
     }
 }

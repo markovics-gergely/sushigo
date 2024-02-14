@@ -1,4 +1,5 @@
 ﻿using game.dal.Domain;
+using shared.dal.Models.Types;
 
 namespace game.test.MockData
 {
@@ -17,7 +18,7 @@ namespace game.test.MockData
             Id = GameId,
             DeckId = DeckId,
             Name = "TestName",
-            DeckType = shared.dal.Models.DeckType.MyFirstMeal,
+            DeckType = DeckType.MyFirstMeal,
         };
         public static Player Player { get; } = new Player
         {
@@ -37,14 +38,20 @@ namespace game.test.MockData
             Id = BoardCardId,
             GameId = GameId,
             BoardId = BoardId,
-            CardType = shared.dal.Models.CardType.Wasabi
+            CardInfo = new CardInfo
+            {
+                CardType = CardType.Wasabi
+            }
         };
         public static List<BoardCard> BoardCards { get; } = new List<BoardCard> { BoardCard };
         public static List<BoardCard> UramakiBoardCards {
             get {
                 BoardCard uramakiCard = BoardCard;
-                uramakiCard.CardType = shared.dal.Models.CardType.Uramaki;
-                uramakiCard.AdditionalInfo[dal.Types.Additional.Points] = "10";
+                uramakiCard.CardInfo = new CardInfo()
+                {
+                    CardType = CardType.Uramaki,
+                    Point = 10
+                };
                 return new List<BoardCard> {  uramakiCard, uramakiCard };
             }
         }
@@ -53,7 +60,7 @@ namespace game.test.MockData
             Id = HandCardId,
             GameId = GameId,
             HandId = HandId,
-            CardType = shared.dal.Models.CardType.Wasabi
+            CardInfo = new CardInfo { CardType = CardType.Wasabi }
         };
         public static List<HandCard> HandCards { get; } = new List<HandCard> { HandCard };
     }

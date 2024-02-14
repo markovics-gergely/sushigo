@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { AppRole, IUser, IUserTokenViewModel } from 'src/shared/user.models';
+import { AppRole, IUser, IUserTokenViewModel } from 'src/shared/models/user.models';
 import jwt_decode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DeckType } from 'src/shared/deck.models';
+import { Router } from '@angular/router';
+import { DeckType } from 'src/shared/models/deck.models';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -22,8 +22,7 @@ export class TokenService {
   constructor(
     private cookieService: CookieService,
     private router: Router,
-    private route: ActivatedRoute
-    ) { }
+  ) { }
 
   public set userToken(user: IUser) {
     this.token = user.access_token;
@@ -128,12 +127,12 @@ export class TokenService {
     return this.user?.lobby;
   }
 
-  public isOwnLobby(lobbyId?: string): boolean {
+  public ownLobby(lobbyId?: string): boolean {
     if (!lobbyId || !this.user?.lobby) return false;
     return this.user.lobby === lobbyId;
   }
 
-  public isOwnPlayer(playerId?: string): boolean {
+  public ownPlayer(playerId?: string): boolean {
     return this.user?.player == playerId;
   }
 

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using shared.dal.Comparers;
 using shared.dal.Converters;
-using shared.dal.Models;
+using shared.dal.Models.Types;
 using user.dal.Domain;
 
 namespace user.dal

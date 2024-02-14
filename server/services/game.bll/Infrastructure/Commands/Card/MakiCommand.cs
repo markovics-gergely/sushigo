@@ -1,10 +1,9 @@
 ﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.dal.Domain;
-using game.dal.Types;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using shared.dal.Models;
-using System.Security.Claims;
+using shared.dal.Models.Types;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
@@ -12,7 +11,6 @@ namespace game.bll.Infrastructure.Commands.Card
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISimpleAddToBoard _simpleAddToBoard;
-        public ClaimsPrincipal? User { get; set; }
 
         public MakiCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard)
         {
@@ -46,14 +44,15 @@ namespace game.bll.Infrastructure.Commands.Card
             };
         }
 
-        public async Task OnEndRound(BoardCard boardCard)
+        public async Task<List<Guid>> OnEndRound(BoardCard boardCard)
         {
             // Get maki card entities in the game
             var cards = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.GameId == boardCard.GameId && x.CardType == CardType.MakiRoll && !x.IsCalculated,
-                    transform: x => x.AsNoTracking()
+                    filter: x => x.GameId == boardCard.GameId && x.CardInfo.CardType == CardType.MakiRoll,
+                    transform: x => x.AsNoTracking(),
+                    includeProperties: nameof(BoardCard.CardInfo)
                 );
-            if (!cards.Any()) return;
+            if (!cards.Any()) return new() { boardCard.Id };
 
             // Get count of players
             var playerCount = _unitOfWork.GameRepository.Get(
@@ -64,17 +63,17 @@ namespace game.bll.Infrastructure.Commands.Card
             // Group maki cards by board and points
             var boards = cards
                 .GroupBy(c => c.BoardId)
-                .Select(x => new { x.Key, Value = x.Select(xx => int.Parse(xx.AdditionalInfo[Additional.Points])).Sum() })
-                .Where(x => x.Value > 0);
+                .Select(x => new { BoardId = x.Key, Count = x.Select(xx => xx.CardInfo.Point).Sum() ?? 0 })
+                .Where(x => x.Count > 0);
 
             // Get the top winner points
-            var topPoints = boards.Select(x => x.Value).Distinct().OrderByDescending(x => x).Take(playerCount >= 6 ? 3 : 2);
+            var topPoints = boards.Select(x => x.Count).Distinct().OrderByDescending(x => x).Take(playerCount >= 6 ? 3 : 2);
 
             // Group winning boards by their points by inversing the groupping
             var topBoards = boards
-                .Where(x => topPoints.Contains(x.Value))
-                .GroupBy(x => x.Value)
-                .ToDictionary(x => x.Key, x => x.Select(xx => xx.Key).ToList());
+                .Where(x => topPoints.Contains(x.Count))
+                .GroupBy(x => x.Count)
+                .ToDictionary(x => x.Key, x => x.Select(xx => xx.BoardId).ToList());
 
             // Iterate over each placement
             int placement = 0;
@@ -99,14 +98,8 @@ namespace game.bll.Infrastructure.Commands.Card
                     _unitOfWork.PlayerRepository.Update(player);
                 }
             }
-
-            // Set calculated flag for every maki card
-            foreach (var card in cards)
-            {
-                card.IsCalculated = true;
-                _unitOfWork.BoardCardRepository.Update(card);
-            }
             await _unitOfWork.Save();
+            return cards.Select(x => x.Id).ToList();
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)

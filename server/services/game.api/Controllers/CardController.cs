@@ -8,7 +8,7 @@ using IdentityServer4.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using shared.dal.Models;
+using shared.dal.Models.Types;
 
 namespace game.api.Controllers
 {

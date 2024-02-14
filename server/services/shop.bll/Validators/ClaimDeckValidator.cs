@@ -1,5 +1,5 @@
 ﻿using shared.bll.Validators.Interfaces;
-using shared.dal.Models;
+using shared.dal.Models.Types;
 
 namespace shop.bll.Validators
 {

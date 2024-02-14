@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
 using shared.dal.Models;
+using shared.dal.Models.Types;
 using shared.dal.Repository.Interfaces;
 using StackExchange.Redis;
 using System.Linq.Expressions;

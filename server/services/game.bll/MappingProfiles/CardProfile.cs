@@ -7,6 +7,8 @@ namespace game.bll.MappingProfiles
     public class CardProfile : Profile
     {
         public CardProfile() {
+            CreateMap<CardInfo, CardInfoViewModel>();
+
             CreateMap<HandCard, HandCardViewModel>();
             CreateMap<Hand, HandViewModel>();
 

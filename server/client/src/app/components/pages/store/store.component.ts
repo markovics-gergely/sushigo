@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { AclService } from 'src/app/services/acl.service';
-import { LoadingService } from 'src/app/services/loading.service';
+import { AclService } from 'src/shared/services/acl.service';
+import { LoadingService } from 'src/shared/services/loading.service';
 import { ShopService } from 'src/app/services/shop.service';
 import { TokenService } from 'src/app/services/token.service';
-import { IDeckViewModel } from 'src/shared/deck.models';
+import { IDeckViewModel } from 'src/shared/models/deck.models';
 
 @Component({
   selector: 'app-store',

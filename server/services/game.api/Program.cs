@@ -36,10 +36,7 @@ builder.Services.Configure<CacheSettings>(configuration.GetSection("CacheSetting
 builder.Services.AddSwaggerExtension(configuration);
 
 builder.Services.AddSignalR();
-builder.Services.AddControllers().AddJsonOptions(opt =>
-{
-    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
+builder.Services.AddControllers();
 
 builder.Services.AddMemoryCache();
 builder.Services.AddStackExchangeRedisCache(options => {
@@ -111,5 +108,6 @@ app.MapControllers();
 app.MapHangfireDashboard();
 
 app.MapHub<GameEventsHub>("/game-hub").RequireCors("CorsPolicy");
+app.MapHub<HandEventsHub>("/hand-hub").RequireCors("CorsPolicy");
 
 app.Run();

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { LanguagesService } from './services/languages.service';
-import { ThemeService } from './services/theme.service';
+import { LanguagesService } from './overlay/services/languages.service';
+import { ThemeService } from './overlay/services/theme.service';
 import { TokenService } from './services/token.service';
 
 @Component({

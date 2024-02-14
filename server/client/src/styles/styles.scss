@@ -1,0 +1,129 @@
+@use "sass:map";
+@use "sushi-theme";
+@use 'mixins' as mixins;
+@import url("https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+$colors: (
+  text: #707070,
+  text-light: #ffffff,
+  link-text: #ffdd19,
+  ok: #1ac41a,
+  warning: #970e10,
+  file: #008080,
+);
+
+:root {
+  @each $color, $value in $colors {
+    --color-#{$color}: #{$value};
+    --color-#{$color}-rgb: #{red($value)}, #{green($value)}, #{blue($value)};
+  }
+}
+
+div[ng-view] {
+  height: 100vh;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  min-height: 100vh;
+  background-color: var(--color-body);
+  transition: all 0.3s ease;
+  &.light-theme {
+    color: var(--color-text);
+    .mat-mdc-card-subtitle {
+      color: var(--color-text) !important;
+    }
+  }
+  &.dark-theme {
+    color: var(--color-text-light);
+    .mat-mdc-card-subtitle {
+      color: var(--color-text-light) !important;
+    }
+  }
+}
+
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+}
+
+::-webkit-input-placeholder,
+::-moz-placeholder,
+::-ms-input-placeholder,
+::placeholder {
+  color: var(--color-text);
+  font-style: italic;
+  margin-left: 20px;
+}
+
+input[type="number"] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+}
+
+.snack-class {
+  --mat-mdc-snack-bar-button-color: var(--color-text-light);
+  --mdc-snackbar-container-color: var(--color-primary);
+}
+
+.nav-button {
+  margin: 10px !important;
+  width: 100% !important;
+  height: 100% !important;
+  color: var(--color-text) !important;
+  font-size: large;
+  &.left {
+    background-image: linear-gradient(
+      to right,
+      rgba($color: #000000, $alpha: 0.2),
+      transparent
+    ) !important;
+  }
+  &.right {
+    background-image: linear-gradient(
+      to left,
+      rgba($color: #000000, $alpha: 0.2),
+      transparent
+    ) !important;
+  }
+}
+
+.dark-theme {
+  .nav-button {
+    color: var(--color-text-light) !important;
+  }
+}
+
+mat-dialog-content,
+mat-dialog-actions {
+  padding: 10px 20px !important;
+}
+
+.mat-mdc-dialog-title {
+  background-color: var(--color-primary);
+  color: var(--color-text-light) !important;
+  margin-bottom: 10px !important;
+}
+
+.mat-primary:not(:disabled) {
+  color: var(--color-text-light) !important;
+}

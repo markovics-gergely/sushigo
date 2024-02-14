@@ -10,15 +10,15 @@ import {
   IPlayerReadyDTO,
   IPlayerViewModel,
   IRemovePlayerDTO,
-} from 'src/shared/lobby.models';
+} from 'src/shared/models/lobby.models';
 import { CreateLobbyComponent } from '../components/dialog/create-lobby/create-lobby.component';
 import { JoinLobbyComponent } from '../components/dialog/join-lobby/join-lobby.component';
-import { LoadingService } from './loading.service';
-import { ConfirmService } from 'src/app/services/confirm.service';
+import { LoadingService } from '../../shared/services/loading.service';
+import { ConfirmService } from 'src/shared/services/confirm.service';
 import { Router } from '@angular/router';
-import { DeckType } from 'src/shared/deck.models';
+import { DeckType } from 'src/shared/models/deck.models';
 import { EditLobbyComponent } from '../components/dialog/edit-lobby/edit-lobby.component';
-import { BaseServiceService } from './abstract/base-service.service';
+import { BaseServiceService } from '../../shared/services/abstract/base-service.service';
 
 @Injectable({
   providedIn: 'root',

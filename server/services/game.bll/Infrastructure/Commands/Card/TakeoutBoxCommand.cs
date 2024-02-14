@@ -1,18 +1,18 @@
 ﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.dal.Domain;
-using game.dal.Types;
 using game.dal.UnitOfWork.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using shared.bll.Exceptions;
 using shared.dal.Models;
-using System.Security.Claims;
+using shared.dal.Models.Types;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
     public class TakeoutBoxCommand : ICardCommand<TakeoutBox>
     {
+        private static readonly int POINT = 2;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISimpleAddPoint _simpleAddPoint;
-
-        public ClaimsPrincipal? User { get; set; }
 
         public TakeoutBoxCommand(IUnitOfWork unitOfWork, ISimpleAddPoint simpleAddPoint)
         {
@@ -20,29 +20,35 @@ namespace game.bll.Infrastructure.Commands.Card
             _simpleAddPoint = simpleAddPoint;
         }
 
-        public async Task OnEndRound(BoardCard boardCard)
+        public async Task<List<Guid>> OnEndRound(BoardCard boardCard)
         {
-            await _simpleAddPoint.CalculateEndRound(boardCard, 2);
+            await _simpleAddPoint.CalculateEndRound(boardCard, POINT);
+            return new() { boardCard.Id };
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)
         {
             // Get card identities to turn into bento boxes
-            var cardIds = handCard.AdditionalInfo[Additional.CardIds].Split(',').Select(Guid.Parse);
+            var cardIds = handCard.CardInfo.CardIds
+                ?? throw new ArgumentNullException(nameof(handCard));
 
             // Remove those cards from the board and create bentos
             foreach (var cardId in cardIds)
             {
-                _unitOfWork.BoardCardRepository.Delete(cardId);
+                // Get the card to convert
+                var boardCard = _unitOfWork.BoardCardRepository.Get(
+                        filter: x => x.Id == cardId,
+                        transform: x => x.AsNoTracking(),
+                        includeProperties: nameof(BoardCard.CardInfo))
+                    .FirstOrDefault() ?? throw new EntityNotFoundException(nameof(BoardCard));
 
-                var boardCard = new BoardCard
-                {
-                    CardType = CardType.TakeoutBox,
-                    BoardId = player.BoardId,
-                    GameId = player.GameId,
-                };
-                boardCard.AdditionalInfo[Additional.Tagged] = "converted";
-                _unitOfWork.BoardCardRepository.Insert(boardCard);
+                // Convert the card to a bento box
+                var cardInfo = boardCard.CardInfo;
+                cardInfo.Reset();
+                cardInfo.CardType = CardType.TakeoutBox;
+                cardInfo.CustomTag = CardTagType.CONVERTED;
+
+                _unitOfWork.CardInfoRepository.Update(cardInfo);
             }
 
             // Discard the bento card used

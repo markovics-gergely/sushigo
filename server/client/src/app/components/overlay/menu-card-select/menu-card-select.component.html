@@ -14,14 +14,14 @@
         visibility="hover"
       >
         <div class="card-container" scrollViewport>
-          <app-card-wrapper
+          <app-game-card
             class="card-wrapper"
             *ngFor="let card of selectables; index as i"
-            [hand]="true"
+            [inHand]="true"
             [card]="card"
             [@slideInOut]="{ value: ':enter', params: { delay: i * 100 } }"
             (click)="selectCard(card)"
-          ></app-card-wrapper>
+          ></app-game-card>
         </div>
       </ng-scrollbar>
     </mat-card-content>

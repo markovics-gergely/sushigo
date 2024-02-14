@@ -3,8 +3,8 @@ import { TokenService } from './token.service';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpBackend, HttpClient, HttpHeaders } from '@angular/common/http';
-import { IRefreshViewModel } from 'src/shared/user.models';
-import { LoadingService } from './loading.service';
+import { IRefreshViewModel } from 'src/shared/models/user.models';
+import { LoadingService } from '../../shared/services/loading.service';
 
 @Injectable({
   providedIn: 'root',

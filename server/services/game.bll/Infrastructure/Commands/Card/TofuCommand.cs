@@ -1,7 +1,6 @@
 ﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.dal.Domain;
 using shared.dal.Models;
-using System.Security.Claims;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
@@ -9,8 +8,6 @@ namespace game.bll.Infrastructure.Commands.Card
     {
         private readonly ISimpleAddToBoard _simpleAddToBoard;
         private readonly IAddPointByDelegate _addPointByDelegate;
-
-        public ClaimsPrincipal? User { get; set; }
 
         public TofuCommand(ISimpleAddToBoard simpleAddToBoard, IAddPointByDelegate addPointByDelegate)
         {
@@ -30,9 +27,9 @@ namespace game.bll.Infrastructure.Commands.Card
                 _ => 0
             };
 
-        public async Task OnEndRound(BoardCard boardCard)
+        public async Task<List<Guid>> OnEndRound(BoardCard boardCard)
         {
-            await _addPointByDelegate.CalculateEndRound(boardCard, CalculateAddPoint);
+            return await _addPointByDelegate.CalculateEndRound(boardCard, CalculateAddPoint);
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)

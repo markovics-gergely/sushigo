@@ -4,7 +4,7 @@ using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using shared.bll.Exceptions;
 using shared.dal.Models;
-using System.Security.Claims;
+using shared.dal.Models.Types;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
@@ -12,7 +12,6 @@ namespace game.bll.Infrastructure.Commands.Card
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISimpleAddToBoard _simpleAddToBoard;
-        public ClaimsPrincipal? User { get; set; }
 
         public SoySauceCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard)
         {
@@ -20,25 +19,27 @@ namespace game.bll.Infrastructure.Commands.Card
             _simpleAddToBoard = simpleAddToBoard;
         }
 
-        public async Task OnEndRound(BoardCard boardCard)
+        public async Task<List<Guid>> OnEndRound(BoardCard boardCard)
         {
             // Get card entities of the game
             var cards = _unitOfWork.BoardCardRepository.Get(
                     filter: x => x.GameId == boardCard.GameId,
-                    transform: x => x.AsNoTracking()
+                    transform: x => x.AsNoTracking(),
+                    includeProperties: nameof(BoardCard.CardInfo)
                 );
-            if (!cards.Any()) return;
+            if (!cards.Any()) return new() { boardCard.Id };
 
             // Get board with the most kind of cards
+            // Nigiri cards are counted as 1
             var groupped = cards
                 .GroupBy(c => c.BoardId)
                 .MaxBy(c => c
-                    .Select(cc => cc.CardType).Distinct().Count() 
-                    - Math.Max(0, c.Where(cc => cc.CardType.SushiType() == SushiType.Nigiri).Count() - 1)
+                    .Select(cc => cc.CardInfo.CardType).Distinct().Count()
+                    - Math.Max(0, c.Where(cc => cc.CardInfo.CardType.SushiType() == SushiType.Nigiri).Count() - 1)
                 );
 
             // Get the soy sauce cards of that board
-            var soyCards = groupped!.Where(c => c.CardType == CardType.SoySauce && !c.IsCalculated);
+            var soyCards = groupped!.Where(c => c.CardInfo.CardType == CardType.SoySauce);
 
             // If there is any soy sauce in that board
             if (soyCards.Any())
@@ -48,20 +49,15 @@ namespace game.bll.Infrastructure.Commands.Card
                             filter: x => x.BoardId == groupped!.Key,
                             transform: x => x.AsNoTracking()
                             ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(TeaCommand));
-                if (player == null) throw new EntityNotFoundException(nameof(player));
 
                 // Add points for each soy card
                 player.Points += 4 * soyCards.Count();
                 _unitOfWork.PlayerRepository.Update(player);
             }
-
-            // Set calculated flag for every soy card in the game
-            foreach (var card in cards.Where(c => c.CardType == CardType.SoySauce))
-            {
-                card.IsCalculated = true;
-                _unitOfWork.BoardCardRepository.Update(card);
-            }
             await _unitOfWork.Save();
+
+            // Exclude all soy cards from the next calculation
+            return cards.Where(x => x.CardInfo.CardType == CardType.SoySauce).Select(x => x.Id).ToList();
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)

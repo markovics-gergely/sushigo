@@ -1,13 +1,13 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingService } from 'src/app/services/loading.service';
+import { LoadingService } from 'src/shared/services/loading.service';
 import { LobbyService } from 'src/app/services/lobby.service';
-import { ILobbyViewModel, IPlayerViewModel } from 'src/shared/lobby.models';
-import { IDeckItemViewModel } from 'src/shared/deck.models';
+import { ILobbyViewModel, IPlayerViewModel } from 'src/shared/models/lobby.models';
+import { IDeckItemViewModel } from 'src/shared/models/deck.models';
 import { ShopService } from 'src/app/services/shop.service';
 import { TokenService } from 'src/app/services/token.service';
-import { GameService } from 'src/app/services/game.service';
 import { isEqual } from 'lodash';
+import { GameService } from 'src/app/game/services/game.service';
 
 @Component({
   selector: 'app-lobby',

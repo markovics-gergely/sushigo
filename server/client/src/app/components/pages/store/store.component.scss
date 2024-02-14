@@ -1,4 +1,4 @@
-@import "src/mixins";
+@use "src/styles/mixins.scss" as mixins;
 
 @keyframes shop-banner-pulsate {
   0% {
@@ -39,7 +39,7 @@
     object-fit: contain;
     border-radius: 10px;
     margin: 10px 20px;
-    @include media-style-below(xs) {
+    @include mixins.media('lt-xs') {
       margin: 10px 5px;
     }
   }
@@ -51,7 +51,7 @@
     overflow-x: hidden;
     text-overflow: clip;
     text-align: start;
-    @include media-style-below(xs) {
+    @include mixins.media('lt-xs') {
       padding-left: 0;
       font-size: 40px;
     }
@@ -63,7 +63,7 @@
   height: 100%;
   margin-top: 10px !important;
   margin-bottom: 10px !important;
-  @include media-style-above(md) {
+  @include mixins.media('gt-md') {
     margin: 0 10%;
     width: 80%;
   }
@@ -117,7 +117,7 @@
       white-space: nowrap;
       overflow-x: hidden;
       text-overflow: clip;
-      @include media-style-below(xs) {
+      @include mixins.media('lt-xs') {
         display: none;
       }
     }
@@ -154,7 +154,7 @@
         overflow-x: hidden;
         text-overflow: clip;
         text-align: start;
-        @include media-style-below(xs) {
+        @include mixins.media('lt-xs') {
           font-size: 20px;
         }
       }

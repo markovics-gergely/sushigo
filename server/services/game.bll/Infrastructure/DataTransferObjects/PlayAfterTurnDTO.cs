@@ -1,11 +1,12 @@
-﻿using game.dal.Types;
+﻿using shared.dal.Models.Types;
 
 namespace game.bll.Infrastructure.DataTransferObjects
 {
     public class PlayAfterTurnDTO
     {
-        public Guid? BoardCardId { get; set; }
-        public Guid? HandCardId { get; set; }
-        public Dictionary<Additional, string> AdditionalInfo { get; set; } = new Dictionary<Additional, string>();
+        public bool IsHandCard { get; set; }
+        public Guid HandOrBoardCardId { get; set; }
+        public CardType? CardType { get; set; }
+        public Guid? TargetCardId { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using IdentityModel;
-using shared.dal.Models;
+using shared.dal.Models.Types;
 using System.Security.Claims;
 
 namespace shared.bll.Extensions

@@ -1,18 +1,17 @@
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Component } from '@angular/core';
-import { CardService } from 'src/app/services/card.service';
-import { GameService } from 'src/app/services/game.service';
-import { LoadingService } from 'src/app/services/loading.service';
-import { CardType, CardTypeUtil } from 'src/shared/deck.models';
+import { IHandCardViewModel, IHandViewModel, Phase } from 'src/app/game/models/game.models';
+import { GamePermissionService } from 'src/app/game/services/game-permission.service';
+import { GameService } from 'src/app/game/services/game.service';
+import { HandService } from 'src/app/game/services/hand.service';
+import { PlayStrategyService } from 'src/app/game/services/play-strategy.service';
+import { LoadingService } from 'src/shared/services/loading.service';
+import { CardType, CardTypeUtil } from 'src/shared/models/deck.models';
 import {
   IGameViewModel,
-  IPlayerViewModel,
-  IHandViewModel,
-  IHandCardViewModel,
-  Additional,
   AdditionalUtil,
   ICardViewModel,
-} from 'src/shared/game.models';
+} from 'src/shared/models/game.models';
 
 @Component({
   selector: 'app-menu-card-select',
@@ -39,18 +38,20 @@ export class MenuCardSelectComponent {
   protected hand: IHandViewModel | undefined;
   protected selectables: IHandCardViewModel[] = [];
   constructor(
+    private gamePermissionService: GamePermissionService,
     private gameService: GameService,
-    private cardService: CardService,
-    private loadingService: LoadingService
+    private handService: HandService,
+    private loadingService: LoadingService,
+    private playStrategyService: PlayStrategyService
   ) {
     gameService.gameEventEmitter.subscribe(
       (game: IGameViewModel | undefined) => {
         this._game = game;
         if (!game || !this.show) return;
-        cardService.refreshHand();
+        handService.loadHand();
       }
     );
-    cardService.handEventEmitter.subscribe(
+    handService.handEventEmitter.subscribe(
       (hand: IHandViewModel | undefined) => {
         this.hand = hand;
         if (!this.selectedMenuCard) return;
@@ -60,28 +61,13 @@ export class MenuCardSelectComponent {
   }
 
   private initSelectables(menuCard: IHandCardViewModel) {
-    const cards = JSON.parse(
-      AdditionalUtil.getFromRecord(
-        menuCard.additionalInfo,
-        Additional.MenuCards
-      ) ?? '[]',
-      function (key, value) {
-        const lowerKey = key.charAt(0).toLowerCase() + key.slice(1);
-        if (key === 'CardType') {
-          this[lowerKey] = CardTypeUtil.getString(value);
-        } else if (key === 'AdditionalInfo') {
-          this[lowerKey] = JSON.parse(JSON.stringify(value)) as Record<Additional, string>;
-        } else this[lowerKey] = value;
-        return value;
-      }
-    ) as IHandCardViewModel[];
-    this.selectables = cards;
+    this.selectables = JSON.parse(menuCard.cardInfo.customTagString ?? '[]') as IHandCardViewModel[];
   }
 
   get show() {
     const cardType = this.gameService.ownPlayer?.selectedCardType;
     return (
-      this.gameService.canPlayAfterCard &&
+      this.gamePermissionService.inPhaseAndActualPlayer(Phase.AfterTurn) &&
       cardType &&
       CardTypeUtil.equals(cardType, CardType.Menu)
     );
@@ -94,27 +80,12 @@ export class MenuCardSelectComponent {
   }
 
   protected getImageUrl(card: ICardViewModel): string {
-    let points = AdditionalUtil.getFromRecord(
-      card.additionalInfo,
-      Additional.Points
-    );
-    if (CardTypeUtil.equals(card.cardType, CardType.Fruit)) {
-      points = points?.padStart(3, '0');
-    }
-    const imageName =
-      CardTypeUtil.getString(card.cardType) + (points ?? '') + '.png';
-    return `/gamefiles/files/images/${imageName}`;
+    if (card.cardInfo.cardType === null) return '';
+    const point = card?.cardInfo.point;
+    return `/gamefiles/files/images/${CardType[card.cardInfo.cardType]}${point === null ? '' : point}.png`;
   }
 
   protected selectCard(card: IHandCardViewModel) {
-    this.loadingService.start();
-    card.additionalInfo[Additional.CardIds] = card.id;
-    this.cardService.playAfterTurn({
-      handCardId: this.selectedMenuCard?.id ?? '',
-      additionalInfo: card.additionalInfo,
-    }).subscribe({}).add(() => {
-      this.loadingService.stop();
-      this.selectables = [];
-    });
+    this.playStrategyService.onSelectFromHand(card);
   }
 }

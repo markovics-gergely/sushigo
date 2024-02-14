@@ -1,31 +1,29 @@
 ﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.bll.Infrastructure.DataTransferObjects;
 using game.dal.Domain;
-using game.dal.Types;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using shared.bll.Exceptions;
 using shared.dal.Models;
-using System.Security.Claims;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
     public class SpoonCommand : ICardCommand<Spoon>
     {
-        public ClaimsPrincipal? User { get; set; }
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISimpleAddToBoard _simpleAddToBoard;
+        private readonly INoModification _noModification;
 
-        public SpoonCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard)
+        public SpoonCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard, INoModification noModification)
         {
             _unitOfWork = unitOfWork;
             _simpleAddToBoard = simpleAddToBoard;
+            _noModification = noModification;
         }
 
-        public async Task OnEndRound(BoardCard boardCard)
+        public Task<List<Guid>> OnEndRound(BoardCard boardCard)
         {
-            boardCard.IsCalculated = true;
-            _unitOfWork.BoardCardRepository.Update(boardCard);
-            await _unitOfWork.Save();
+            return Task.FromResult(_noModification.OnEndRound(boardCard));
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)
@@ -36,61 +34,70 @@ namespace game.bll.Infrastructure.Commands.Card
         public async Task OnAfterTurn(Player player, PlayAfterTurnDTO playAfterTurnDTO)
         {
             // Get type of the searched card
-            var searchType = Enum.Parse<CardType>(playAfterTurnDTO.AdditionalInfo[Additional.Tagged]);
+            var searchType = playAfterTurnDTO.CardType
+                ?? throw new ArgumentNullException(nameof(playAfterTurnDTO));
 
             // Get hand card entities
             var hands = _unitOfWork.HandCardRepository.Get(
                     filter: x => x.GameId == player.GameId,
-                    transform: x => x.AsNoTracking()
-                    );
+                    transform: x => x.AsNoTracking(),
+                    includeProperties: nameof(HandCard.CardInfo))
+                .GroupBy(h => h.HandId).ToDictionary(h => h.Key, h => h.ToList());
 
-            // Group cards by the hands and place it to a linked list for iteration
-            var groupped = new LinkedList<IGrouping<Guid, HandCard>>(hands.GroupBy(h => h.HandId));
+            // Get player ids of the game in order
+            var playerIds = _unitOfWork.GameRepository.Get(
+                filter: x => x.Id == player.GameId,
+                transform: x => x.AsNoTracking()
+            ).First().PlayerIds.ToList();
 
-            // Find the node of the player
-            var ownNode = groupped.Find(groupped.First(g => g.Key == player.HandId))!;
+            var playerIndex = playerIds.IndexOf(player.Id);
+            var nextPlayerId = playerIds[(playerIndex + 1) % playerIds.Count];
 
-            // Get the starting node
-            var actualNode = ownNode.Previous ?? groupped.Last!;
-
-            // Iterate till it comes full circle
-            while (actualNode != ownNode)
+            // Iterate through the players to find a card with the searched type
+            while (nextPlayerId != player.Id)
             {
-                // If the card type is found in this hand, stop searching
-                if (actualNode.Value.Any(a => a.CardType == searchType)) break;
+                // Get the next player entity
+                var nextPlayer = _unitOfWork.PlayerRepository.Get(
+                    filter: x => x.Id == nextPlayerId,
+                    transform: x => x.AsNoTracking())
+                    .FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Player));
 
-                // Continue iteration
-                actualNode = actualNode.Previous ?? groupped.Last!;
-            }
-            // If there was a card found
-            if (actualNode != ownNode)
-            {
-                // Get a card with that type from their hand
-                var card = actualNode.Value.First(c => c.CardType == searchType);
-
-                // Place that card to the board of the player with the spoon
-                var boardCard = new BoardCard
+                if (hands.ContainsKey(nextPlayer.HandId) && hands[nextPlayer.HandId].Any(c => c.CardInfo.CardType == searchType))
                 {
-                    CardType = card.CardType,
-                    GameId = card.GameId,
-                    BoardId = player.BoardId,
-                    AdditionalInfo = card.AdditionalInfo,
-                };
-                _unitOfWork.BoardCardRepository.Insert(boardCard);
-                // Also remove from their hand
-                _unitOfWork.HandCardRepository.Delete(card);
+                    // Get the card from the other player and place it to own board
+                    var card = hands[nextPlayer.HandId].First(c => c.CardInfo.CardType == searchType);
+                    var boardCard = new BoardCard
+                    {
+                        GameId = card.GameId,
+                        BoardId = player.BoardId,
+                        CardInfo = card.CardInfo,
+                    };
+                    _unitOfWork.BoardCardRepository.Insert(boardCard);
+                    _unitOfWork.HandCardRepository.Delete(card);
 
-                // Add the spoon to their hand
-                _unitOfWork.HandCardRepository.Insert(new HandCard
-                {
-                    CardType = CardType.Spoon,
-                    GameId = player.GameId,
-                    HandId = card.HandId
-                });
+                    // Get the spoon entity
+                    var spoon = _unitOfWork.BoardCardRepository.Get(
+                        filter: x => x.Id == playAfterTurnDTO.HandOrBoardCardId,
+                        transform: x => x.AsNoTracking(),
+                        includeProperties: nameof(BoardCard.CardInfo)
+                    ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Spoon));
+
+                    // Add the spoon to the other player's hand
+                    _unitOfWork.HandCardRepository.Insert(new HandCard
+                    {
+                        GameId = player.GameId,
+                        HandId = card.HandId,
+                        CardInfo = spoon.CardInfo
+                    });
+
+                    // Remove the spoon from the board
+                    _unitOfWork.BoardCardRepository.Delete(spoon);
+
+                    await _unitOfWork.Save();
+                    break;
+                }
+                nextPlayerId = playerIds[(playerIndex + 1) % playerIds.Count];
             }
-            // Remove the spoon played
-            _unitOfWork.BoardCardRepository.Delete(playAfterTurnDTO.BoardCardId);
-            await _unitOfWork.Save();
         }
     }
 }

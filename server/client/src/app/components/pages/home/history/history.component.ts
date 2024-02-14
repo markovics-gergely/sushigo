@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HistoryService } from 'src/app/services/history.service';
-import { IHistoryViewModel } from 'src/shared/history.models';
+import { IHistoryViewModel } from 'src/shared/models/history.models';
 
 @Component({
   selector: 'app-history',

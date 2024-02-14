@@ -1,17 +1,25 @@
 ﻿using game.bll.Infrastructure.DataTransferObjects;
 using game.dal.Domain;
 using shared.dal.Models;
-using System.Security.Claims;
 
 namespace game.bll.Infrastructure.Commands.Card.Utils
 {
     public interface ICardCommand<out TCard> where TCard : CardTypeWrapper
     {
-        public ClaimsPrincipal? User { get; set; }
-        public Task OnEndRound(BoardCard boardCard);
+        /// <summary>
+        /// Calculate end of turn action of board card
+        /// </summary>
+        /// <param name="boardCard"></param>
+        /// <returns>List of calculated board card ids</returns>
+        public Task<List<Guid>> OnEndRound(BoardCard boardCard);
         public Task OnEndTurn(Player player, HandCard handCard);
         public Task OnAfterTurn(Player player, PlayAfterTurnDTO playAfterTurnDTO) { return Task.CompletedTask; }
-        public Task OnEndGame(BoardCard boardCard) { return Task.CompletedTask; }
+        /// <summary>
+        /// Calculate end of game action of board card
+        /// </summary>
+        /// <param name="boardCard"></param>
+        /// <returns>List of calculated board card ids</returns>
+        public Task<List<Guid>> OnEndGame(BoardCard boardCard) { return Task.FromResult(new List<Guid>()); }
         public Task OnPlayCard(HandCard handCard) { return Task.CompletedTask; }
     }
 

@@ -1,7 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DeckType, IBuyDeckDTO, IDeckItemViewModel, IDeckViewModel } from 'src/shared/deck.models';
-import { BaseServiceService } from './abstract/base-service.service';
+import { DeckType, IBuyDeckDTO, IDeckItemViewModel, IDeckViewModel } from 'src/shared/models/deck.models';
+import { BaseServiceService } from '../../shared/services/abstract/base-service.service';
 
 @Injectable({
   providedIn: 'root'

@@ -34,7 +34,7 @@ namespace game.bll.Infrastructure
             var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == request.User!.GetGameIdFromJwt(),
-                    includeProperties: "Players.Board.Cards"
+                    includeProperties: "Players.Board.Cards,Players.SelectedCardInfo"
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
 
             return Task.FromResult(_mapper.Map<GameViewModel>(game));
@@ -45,7 +45,8 @@ namespace game.bll.Infrastructure
             // Get card entities
             var cards = _unitOfWork.HandCardRepository.Get(
                     transform: x => x.AsNoTracking(),
-                    filter: x => x.HandId == request.HandId
+                    filter: x => x.HandId == request.HandId,
+                    includeProperties: nameof(HandCard.CardInfo)
                 ).ToList();
 
             return Task.FromResult(new HandViewModel
@@ -67,7 +68,8 @@ namespace game.bll.Infrastructure
             // Get card entities
             var cards = _unitOfWork.HandCardRepository.Get(
                     transform: x => x.AsNoTracking(),
-                    filter: x => player.HandId == x.HandId
+                    filter: x => player.HandId == x.HandId,
+                    includeProperties: nameof(HandCard.CardInfo)
                 ).ToList();
 
             return Task.FromResult(new HandViewModel

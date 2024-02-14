@@ -16,21 +16,21 @@ namespace game.bll.Infrastructure.Commands.Card.Utils.Implementations
             _unitOfWork = unitOfWork;
         }
 
-        public async Task CalculateEndRound(BoardCard boardCard, CalculatePoint calculatePoint)
+        public async Task<List<Guid>> CalculateEndRound(BoardCard boardCard, CalculatePoint calculatePoint)
         {
             // Get card entities of the player with the same type
             var cards = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.BoardId == boardCard.BoardId && x.CardType == boardCard.CardType && !x.IsCalculated,
-                    transform: x => x.AsNoTracking()
+                    filter: x => x.BoardId == boardCard.BoardId && x.CardInfo.CardType == boardCard.CardInfo.CardType,
+                    transform: x => x.AsNoTracking(),
+                    includeProperties: nameof(BoardCard.CardInfo)
                 );
-            if (!cards.Any()) return;
+            if (!cards.Any()) return new() { boardCard.Id };
 
             // Get player entity of the board
             var player = _unitOfWork.PlayerRepository.Get(
                         filter: x => x.BoardId == boardCard.BoardId,
                         transform: x => x.AsNoTracking()
-                        ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(AddPointByDelegate));
-            if (player == null) throw new EntityNotFoundException(nameof(player));
+                        ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Player));
 
             // Calculate the points to add
             var points = calculatePoint(cards);
@@ -39,13 +39,8 @@ namespace game.bll.Infrastructure.Commands.Card.Utils.Implementations
             player.Points += points;
             _unitOfWork.PlayerRepository.Update(player);
 
-            // Set calculated flag for every card
-            foreach (var card in cards)
-            {
-                card.IsCalculated = true;
-                _unitOfWork.BoardCardRepository.Update(card);
-            }
             await _unitOfWork.Save();
+            return cards.Select(c => c.Id).ToList();
         }
     }
 }

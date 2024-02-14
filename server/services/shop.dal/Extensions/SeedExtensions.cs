@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using shared.dal.Models;
+using shared.dal.Models.Types;
 using shop.dal.Domain;
 
 namespace shop.dal.Extensions

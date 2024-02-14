@@ -37,10 +37,7 @@ builder.Services.Configure<CacheSettings>(configuration.GetSection("CacheSetting
 builder.Services.AddSwaggerExtension(configuration);
 
 builder.Services.AddSignalR();
-builder.Services.AddControllers().AddJsonOptions(opt =>
-{
-    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
+builder.Services.AddControllers();
 
 builder.Services.AddMemoryCache();
 builder.Services.AddStackExchangeRedisCache(options => {

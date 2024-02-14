@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { GameService } from 'src/app/services/game.service';
+import { GameService } from 'src/app/game/services/game.service';
 import { ShopService } from 'src/app/services/shop.service';
-import { CardType, DeckType, DeckTypeUtil, IDeckItemViewModel } from 'src/shared/deck.models';
+import { CardType, IDeckItemViewModel } from 'src/shared/models/deck.models';
 
 @Component({
   selector: 'app-card-type-select',

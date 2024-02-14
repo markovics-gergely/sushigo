@@ -1,0 +1,17 @@
+<div class="card-wrapper" *ngIf="card">
+  <mat-card class="hand-card" (click)="onSelect()">
+    <img
+      *ngIf="!cardLoaded"
+      src="https://placehold.co/120x180?text=Sushi"
+      alt="hand-card"
+    />
+    <img
+      *ngIf="imagePath"
+      [src]="imagePath | imgPath"
+      alt="hand-card"
+      (load)="cardLoaded = true"
+      [ngStyle]="cardLoaded ? {} : { display: 'none' }"
+      [ngClass]="{ 'can-play': canPlay, 'selected': selectedInTurn }"
+    />
+  </mat-card>
+</div>

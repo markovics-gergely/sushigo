@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using shared.dal.Models.Types;
 
 namespace shared.dal.Models
 {

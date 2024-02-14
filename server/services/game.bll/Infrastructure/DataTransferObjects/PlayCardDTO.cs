@@ -1,10 +1,10 @@
-﻿using game.dal.Types;
+﻿using game.bll.Infrastructure.ViewModels;
 
 namespace game.bll.Infrastructure.DataTransferObjects
 {
     public class PlayCardDTO
     {
         public Guid HandCardId { get; set; }
-        public Dictionary<Additional, string> AdditionalInfo { get; set; } = new Dictionary<Additional, string>();
+        public CardInfoViewModel CardInfo { get; set; } = new CardInfoViewModel();
     }
 }

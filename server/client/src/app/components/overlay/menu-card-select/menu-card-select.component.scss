@@ -1,4 +1,4 @@
-@import "src/mixins";
+@use "src/styles/mixins.scss" as mixins;
 .foil {
   position: fixed;
   top: 0;

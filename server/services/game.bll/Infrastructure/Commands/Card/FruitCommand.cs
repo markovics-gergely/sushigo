@@ -2,9 +2,7 @@
 using game.dal.Domain;
 using game.dal.Types;
 using game.dal.UnitOfWork.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using shared.dal.Models;
-using System.Security.Claims;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
@@ -13,32 +11,20 @@ namespace game.bll.Infrastructure.Commands.Card
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISimpleAddToBoard _simpleAddToBoard;
         private readonly IAddPointByDelegate _addPointByDelegate;
+        private readonly INoModification _noModification;
 
-        public ClaimsPrincipal? User { get; set; }
 
-        public FruitCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard, IAddPointByDelegate addPointByDelegate)
+        public FruitCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard, IAddPointByDelegate addPointByDelegate, INoModification noModification)
         {
             _unitOfWork = unitOfWork;
             _simpleAddToBoard = simpleAddToBoard;
             _addPointByDelegate = addPointByDelegate;
+            _noModification = noModification;
         }
 
-        public async Task OnEndRound(BoardCard boardCard)
+        public Task<List<Guid>> OnEndRound(BoardCard boardCard)
         {
-            // Get fruit card entities in the game
-            var cards = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.GameId == boardCard.GameId && x.CardType == CardType.Fruit && !x.IsCalculated,
-                    transform: x => x.AsNoTracking()
-                );
-            if (!cards.Any()) return;
-
-            // Set calculated flag for every fruit card
-            foreach (var card in cards)
-            {
-                card.IsCalculated = true;
-                _unitOfWork.BoardCardRepository.Update(card);
-            }
-            await _unitOfWork.Save();
+            return Task.FromResult(_noModification.OnEndRound(boardCard));
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)
@@ -53,9 +39,9 @@ namespace game.bll.Infrastructure.Commands.Card
         /// <returns></returns>
         private static int CalculateAddPoint(IEnumerable<BoardCard> cards) => new[]
             {
-                cards.Select(c => int.Parse(c.AdditionalInfo[Additional.Points]) / 100).Count(),
-                cards.Select(c => int.Parse(c.AdditionalInfo[Additional.Points]) % 100 / 10).Count(),
-                cards.Select(c => int.Parse(c.AdditionalInfo[Additional.Points]) % 10).Count(),
+                cards.Select(c => c.CardInfo.Point / 100).Count(),
+                cards.Select(c => c.CardInfo.Point % 100 / 10).Count(),
+                cards.Select(c => c.CardInfo.Point % 10).Count(),
             }.Select(c => c switch
             {
                 0 => -2,
@@ -66,9 +52,9 @@ namespace game.bll.Infrastructure.Commands.Card
                 _ => 10
             }).Sum();
 
-        public async Task OnEndGame(BoardCard boardCard)
+        public async Task<List<Guid>> OnEndGame(BoardCard boardCard)
         {
-            await _addPointByDelegate.CalculateEndRound(boardCard, CalculateAddPoint);
+            return await _addPointByDelegate.CalculateEndRound(boardCard, CalculateAddPoint);
         }
     }
 }

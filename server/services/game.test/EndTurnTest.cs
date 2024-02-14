@@ -4,7 +4,7 @@ using game.dal.Domain;
 using game.dal.UnitOfWork.Interfaces;
 using game.test.MockData;
 using Moq;
-using shared.dal.Models;
+using shared.dal.Models.Types;
 using System.Linq.Expressions;
 
 namespace game.test
@@ -31,7 +31,7 @@ namespace game.test
             mockHandCardRepository.Verify(p => p.Delete(mockHandCard), Times.Once());
             mockBoardCardRepository.Verify(p => p.Insert(It.Is<BoardCard>(b =>
                 b.BoardId == mockPlayer.BoardId &&
-                b.CardType == mockHandCard.CardType &&
+                b.CardInfo.CardType == mockHandCard.CardInfo.CardType &&
                 b.GameId == mockHandCard.GameId
             )), Times.Once());
             mockUnitOfWork.Verify(p => p.Save(), Times.Once());
@@ -68,8 +68,8 @@ namespace game.test
             // Arrange
             var mockPlayer = DomainMockData.Player;
             var mockHandCard = DomainMockData.HandCard;
-            mockHandCard.CardType = CardType.Uramaki;
-            mockHandCard.AdditionalInfo[dal.Types.Additional.Points] = "10";
+            mockHandCard.CardInfo.CardType = CardType.Uramaki;
+            mockHandCard.CardInfo.Point = 10;
             var mockUramakiBoardCards = DomainMockData.UramakiBoardCards;
             var mockUnitOfWork = new Mock<IUnitOfWork>();
             var mockBoardCardRepository = RepositoryMockData.GetMockRepositoryWithGet(mockUramakiBoardCards);
@@ -113,7 +113,7 @@ namespace game.test
             // Arrange
             var mockPlayer = DomainMockData.Player;
             var mockHandCard = DomainMockData.HandCard;
-            mockHandCard.AdditionalInfo[dal.Types.Additional.CardIds] = DomainMockData.BoardCardId.ToString();
+            mockHandCard.CardInfo.CardIds?.Contains(DomainMockData.BoardCardId);
             var mockUnitOfWork = new Mock<IUnitOfWork>();
             var mockBoardCardRepository = RepositoryMockData.GetMockRepositoryWithGet<BoardCard>();
             var mockHandCardRepository = RepositoryMockData.GetMockRepositoryWithGet<HandCard>();
@@ -129,9 +129,9 @@ namespace game.test
             mockBoardCardRepository.Verify(p => p.Delete(DomainMockData.BoardCardId), Times.Once());
             mockBoardCardRepository.Verify(p => p.Insert(It.Is<BoardCard>(b =>
                 b.BoardId == mockPlayer.BoardId &&
-                b.CardType == CardType.TakeoutBox &&
+                b.CardInfo.CardType == CardType.TakeoutBox &&
                 b.GameId == mockPlayer.GameId &&
-                b.AdditionalInfo[dal.Types.Additional.Tagged] == "converted"
+                b.CardInfo.CustomTag == CardTagType.CONVERTED
             )), Times.Once());
             mockHandCardRepository.Verify(p => p.Delete(mockHandCard), Times.Once());
             mockUnitOfWork.Verify(p => p.Save(), Times.Once());
@@ -144,14 +144,15 @@ namespace game.test
             var mockPlayer = DomainMockData.Player;
             var mockHandCard = DomainMockData.HandCard;
             var mockBoardCard = DomainMockData.BoardCard;
-            mockHandCard.AdditionalInfo[dal.Types.Additional.CardIds] = DomainMockData.BoardCardId.ToString();
+            mockHandCard.CardInfo.CardIds?.Contains(DomainMockData.BoardCardId);
             var mockUnitOfWork = new Mock<IUnitOfWork>();
             var mockBoardCardRepository = RepositoryMockData.GetMockRepositoryWithGet(new List<BoardCard> { mockBoardCard });
             var mockHandCardRepository = RepositoryMockData.GetMockRepositoryWithGet<HandCard>();
             mockUnitOfWork.Setup(u => u.BoardCardRepository).Returns(mockBoardCardRepository.Object);
             mockUnitOfWork.Setup(u => u.HandCardRepository).Returns(mockHandCardRepository.Object);
             var simpleAddPoint = new SimpleAddPoint(mockUnitOfWork.Object);
-            var specialOrderCommand = new SpecialOrderCommand(mockUnitOfWork.Object, simpleAddPoint);
+            var noModification = new NoModification(mockUnitOfWork.Object);
+            var specialOrderCommand = new SpecialOrderCommand(mockUnitOfWork.Object, simpleAddPoint, noModification);
 
             // Act
             await specialOrderCommand.OnEndTurn(mockPlayer, mockHandCard);
@@ -159,9 +160,8 @@ namespace game.test
             // Assert
             mockBoardCardRepository.Verify(p => p.Insert(It.Is<BoardCard>(b =>
                 b.BoardId == mockBoardCard.BoardId &&
-                b.CardType == mockBoardCard.CardType &&
-                b.GameId == mockBoardCard.GameId &&
-                b.AdditionalInfo == mockBoardCard.AdditionalInfo
+                b.CardInfo.CardType == mockBoardCard.CardInfo.CardType &&
+                b.GameId == mockBoardCard.GameId
             )), Times.Once());
             mockHandCardRepository.Verify(p => p.Delete(mockHandCard), Times.Once());
             mockUnitOfWork.Verify(p => p.Save(), Times.Once());

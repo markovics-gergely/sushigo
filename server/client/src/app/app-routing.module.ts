@@ -1,30 +1,30 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/pages/home/home.component';
-import { LoginComponent } from './components/pages/login/login.component';
-import { RegisterComponent } from './components/pages/register/register.component';
-import { AclGuard } from './guards/acl.guard';
+import { AclGuard } from '../shared/guards/acl.guard';
 import { StoreComponent } from './components/pages/store/store.component';
 import { LobbyComponent } from './components/pages/lobby/lobby.component';
 import { LobbyListComponent } from './components/pages/lobby-list/lobby-list.component';
-import { HubGuard } from './guards/hub.guard';
-import { LoginGuard } from './guards/login.guard';
-import { LobbyGuard } from './guards/lobby.guard';
-import { GameComponent } from './components/pages/game/game.component';
-import { gameGuard } from './guards/game.guard';
+import { HubGuard } from '../shared/guards/hub.guard';
+import { loginGuard } from './login/guards/login.guard';
+import { LobbyGuard } from './lobby/guards/lobby.guard';
+import { gameGuard } from './game/guards/game.guard';
+import { LoginPageComponent } from './login/login-page/login-page.component';
+import { RegisterPageComponent } from './register/register-page/register-page.component';
+import { GamePageComponent } from './game/game-page/game-page.component';
 
 const routes: Routes = [
   {
     path: 'login',
-    component: LoginComponent,
+    component: LoginPageComponent,
     data: { name: 'login', hub: [] },
-    canActivate: [LoginGuard, HubGuard]
+    canActivate: [loginGuard, HubGuard]
   },
   {
     path: 'register',
-    component: RegisterComponent,
+    component: RegisterPageComponent,
     data: { name: 'register', hub: [] },
-    canActivate: [LoginGuard, HubGuard]
+    canActivate: [loginGuard, HubGuard]
   },
   {
     path: 'home',
@@ -52,8 +52,8 @@ const routes: Routes = [
   },
   {
     path: 'game',
-    component: GameComponent,
-    data: { name: 'game', hub: ['friend', 'game'] },
+    component: GamePageComponent,
+    data: { name: 'game', hub: ['friend', 'game', 'hand'] },
     canActivate: [AclGuard, gameGuard, HubGuard]
   },
   {

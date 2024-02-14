@@ -13,7 +13,7 @@ using shared.bll.Exceptions;
 using shared.bll.Extensions;
 using shared.bll.Validators.Implementations;
 using shared.bll.Validators.Interfaces;
-using shared.dal.Models;
+using shared.dal.Models.Types;
 using System.Security.Claims;
 
 namespace game.bll.Infrastructure
@@ -51,13 +51,14 @@ namespace game.bll.Infrastructure
             var afterBoards = _unitOfWork.BoardCardRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.GameId == game.Id
-                ).Where(a => a.CardType.HasAfterTurn()).Select(a => a.BoardId).ToList();
+                ).Where(a => a.CardInfo.CardType.HasAfterTurn()).Select(a => a.BoardId).ToList();
 
             // Get player ids who can play after the turn from board or hand
             var afterPlayers = _unitOfWork.PlayerRepository.Get(
                 transform: x => x.AsNoTracking(),
-                filter: x => x.GameId == game.Id
-            ).Where(x => afterBoards.Contains(x.BoardId) || x.SelectedCardType.HasAfterTurnInHand() == true).Select(a => a.Id).ToList();
+                filter: x => x.GameId == game.Id,
+                includeProperties: nameof(Player.SelectedCardInfo)
+            ).Where(x => afterBoards.Contains(x.BoardId) || x.SelectedCardInfo?.CardType.HasAfterTurnInHand() == true).Select(a => a.Id).ToList();
             
             // Get list of players in the sequence of the game
             var playerList = game.PlayerIds.ToList();
@@ -106,30 +107,27 @@ namespace game.bll.Infrastructure
                 throw new ValidationErrorException(nameof(PlayCardCommand));
             }
 
-            // Get card to play entity
+            // Get hand card to play entity
             var handCard = _unitOfWork.HandCardRepository.Get(
                     transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == request.PlayCardDTO.HandCardId
+                    filter: x => x.Id == request.PlayCardDTO.HandCardId,
+                    includeProperties: nameof(HandCard.CardInfo)
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(HandCard));
 
             // Set selected card
-            player.SelectedCardId = handCard.Id;
-            player.SelectedCardType = handCard.CardType;
             handCard.IsSelected = true;
 
-            // Copy info from request to card info
-            foreach (var pair in request.PlayCardDTO.AdditionalInfo)
-            {
-                handCard.AdditionalInfo.TryAdd(pair.Key, pair.Value);
-            }
-
+            // Update card from dto params
+            var cardinfo = handCard.CardInfo;
+            request.PlayCardDTO.CardInfo.UpdateCardInfo(cardinfo);
+            _unitOfWork.CardInfoRepository.Update(cardinfo);
+            
             // Save updates
             _unitOfWork.PlayerRepository.Update(player);
             _unitOfWork.HandCardRepository.Update(handCard);
-            await _unitOfWork.Save();
 
             // Get command associated with card
-            var command = _serviceProvider.GetCommand(handCard.CardType.GetClass());
+            var command = _serviceProvider.GetCommand(handCard.CardInfo.CardType.GetClass());
             if (command == null) throw new EntityNotFoundException(nameof(command));
 
             await command.OnPlayCard(handCard);
@@ -142,17 +140,35 @@ namespace game.bll.Infrastructure
             }
             else
             {
+                // Load selected cards to players
+                var players = _unitOfWork.PlayerRepository.Get(
+                    transform: x => x.AsNoTracking(),
+                    filter: x => x.GameId == player.GameId
+                );
+                var playerMap = players.ToDictionary(p => p.HandId);
+
+                // Get selected cards
+                var selectedCards = _unitOfWork.HandCardRepository.Get(
+                    transform: x => x.AsNoTracking(),
+                    filter: x => x.GameId == player.GameId && x.IsSelected,
+                    includeProperties: nameof(HandCard.CardInfo)
+                ).ToList();
+
+                foreach (var card in selectedCards)
+                {
+                    playerMap[card.HandId].SelectedCardInfo = card.CardInfo;
+                    _unitOfWork.PlayerRepository.Update(playerMap[card.HandId]);
+                }
+
                 // Get boards with after turn action
                 var afterBoards = _unitOfWork.BoardCardRepository.Get(
                     transform: x => x.AsNoTracking(),
-                    filter: x => x.GameId == player.GameId
-                ).Where(a => a.CardType.HasAfterTurn()).Select(a => a.BoardId).ToList();
+                    filter: x => x.GameId == player.GameId,
+                    includeProperties: nameof(BoardCard.CardInfo)
+                ).Where(a => a.CardInfo.CardType.HasAfterTurn()).Select(a => a.BoardId).ToList();
 
                 // Get player ids who can play after the turn
-                var afterPlayers = _unitOfWork.PlayerRepository.Get(
-                    transform: x => x.AsNoTracking(),
-                    filter: x => x.GameId == game.Id
-                ).Where(x => afterBoards.Contains(x.BoardId) || x.SelectedCardType.HasAfterTurnInHand() == true).Select(a => a.Id).ToList();
+                var afterPlayers = players.Where(x => afterBoards.Contains(x.BoardId) || x.SelectedCardInfo?.CardType.HasAfterTurnInHand() == true).Select(a => a.Id).ToList();
                 
                 // Change phase if there is any player who can still play
                 if (afterPlayers.Any())
@@ -169,15 +185,8 @@ namespace game.bll.Infrastructure
             _unitOfWork.GameRepository.Update(game);
             await _unitOfWork.Save();
 
-            // Get game entity for cache
-            var gameForCache = _unitOfWork.GameRepository.Get(
-                    transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == player.GameId,
-                    includeProperties: "Players.Board.Cards" // for cache
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
-
             // Send refresh to users and cache
-            await _mediator.Publish(new RefreshGameEvent { GameViewModel = _mapper.Map<GameViewModel>(gameForCache) }, cancellationToken);
+            await _mediator.Publish(new RefreshGameByIdEvent { GameId = game.Id }, cancellationToken);
 
             // If the turn is over send end turn event
             if (game.Phase == Phase.EndTurn)
@@ -193,8 +202,7 @@ namespace game.bll.Infrastructure
             // Get game entity
             var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == request.User.GetGameIdFromJwt(),
-                    includeProperties: "Players.Board.Cards" // for cache
+                    filter: x => x.Id == request.User.GetGameIdFromJwt()
                 ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
 
             // Validate if actual player played and after the turn
@@ -214,7 +222,7 @@ namespace game.bll.Infrastructure
             await _unitOfWork.Save();
 
             // Send refresh to users and cache
-            await _mediator.Publish(new RefreshGameEvent { GameViewModel = _mapper.Map<GameViewModel>(game) }, cancellationToken);
+            await _mediator.Publish(new RefreshGameByIdEvent { GameId = game.Id }, cancellationToken);
         }
 
         public async Task Handle(PlayAfterTurnCommand request, CancellationToken cancellationToken)
@@ -238,27 +246,29 @@ namespace game.bll.Infrastructure
             }
 
             CardType cardType;
-            // Card was played from board
-            if (request.PlayAfterTurnDTO.BoardCardId != null)
-            {
-                // Search card entity used
-                var boardCard = _unitOfWork.BoardCardRepository.Get(
-                        transform: x => x.AsNoTracking(),
-                        filter: x => x.Id == request.PlayAfterTurnDTO.BoardCardId
-                    ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(BoardCard));
-
-                cardType = boardCard.CardType;
-            }
             // Card was played from hand
-            else
+            if (request.PlayAfterTurnDTO.IsHandCard)
             {
                 // Search card entity used
                 var handCard = _unitOfWork.HandCardRepository.Get(
                         transform: x => x.AsNoTracking(),
-                        filter: x => x.Id == request.PlayAfterTurnDTO.HandCardId
+                        filter: x => x.Id == request.PlayAfterTurnDTO.HandOrBoardCardId,
+                        includeProperties: nameof(HandCard.CardInfo)
                     ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(HandCard));
 
-                cardType = handCard.CardType;
+                cardType = handCard.CardInfo.CardType;
+            }
+            // Card was played from board
+            else
+            {
+                // Search card entity used
+                var boardCard = _unitOfWork.BoardCardRepository.Get(
+                        transform: x => x.AsNoTracking(),
+                        filter: x => x.Id == request.PlayAfterTurnDTO.HandOrBoardCardId,
+                        includeProperties: nameof(BoardCard.CardInfo)
+                    ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(BoardCard));
+
+                cardType = boardCard.CardInfo.CardType;
             }
 
             // Get command associated with card
@@ -280,15 +290,8 @@ namespace game.bll.Infrastructure
             _unitOfWork.GameRepository.Update(game);
             await _unitOfWork.Save();
 
-            // Get game entity for cache
-            var gameForCache = _unitOfWork.GameRepository.Get(
-                    transform: x => x.AsNoTracking(),
-                    filter: x => x.Id == player.GameId,
-                    includeProperties: "Players.Board.Cards" // for cache
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
-
             // Send refresh to users and cache
-            await _mediator.Publish(new RefreshGameEvent { GameViewModel = _mapper.Map<GameViewModel>(gameForCache) }, cancellationToken);
+            await _mediator.Publish(new RefreshGameByIdEvent { GameId = game.Id }, cancellationToken);
         }
     }
 }

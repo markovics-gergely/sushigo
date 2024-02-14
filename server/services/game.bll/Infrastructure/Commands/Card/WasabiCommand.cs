@@ -1,39 +1,22 @@
 ﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.dal.Domain;
-using game.dal.UnitOfWork.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using shared.dal.Models;
-using System.Security.Claims;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
     public class WasabiCommand : ICardCommand<Wasabi>
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly ISimpleAddToBoard _simpleAddToBoard;
-        public ClaimsPrincipal? User { get; set; }
-        public WasabiCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard)
+        private readonly INoModification _noModification;
+        public WasabiCommand(ISimpleAddToBoard simpleAddToBoard, INoModification noModification)
         {
-            _unitOfWork = unitOfWork;
             _simpleAddToBoard = simpleAddToBoard;
+            _noModification = noModification;
         }
 
-        public async Task OnEndRound(BoardCard boardCard)
+        public Task<List<Guid>> OnEndRound(BoardCard boardCard)
         {
-            // Get wasabi card entities in the game
-            var cards = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.GameId == boardCard.GameId && x.CardType == CardType.Wasabi && !x.IsCalculated,
-                    transform: x => x.AsNoTracking()
-                );
-            if (!cards.Any()) return;
-
-            // Set calculated flag for every wasabi card
-            foreach (var card in cards)
-            {
-                card.IsCalculated = true;
-                _unitOfWork.BoardCardRepository.Update(card);
-            }
-            await _unitOfWork.Save();
+            return Task.FromResult(_noModification.OnEndRound(boardCard));
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)

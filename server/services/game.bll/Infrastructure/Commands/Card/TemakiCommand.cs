@@ -1,20 +1,17 @@
 ﻿using game.bll.Infrastructure.Commands.Card.Utils;
-using game.bll.Infrastructure.DataTransferObjects;
 using game.dal.Domain;
-using game.dal.Types;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using shared.bll.Exceptions;
 using shared.dal.Models;
-using System.Security.Claims;
+using shared.dal.Models.Types;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
     public class TemakiCommand : ICardCommand<Temaki>
     {
+        private static readonly int POINT = 4;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISimpleAddToBoard _simpleAddToBoard;
-        public ClaimsPrincipal? User { get; set; }
 
         public TemakiCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard)
         {
@@ -22,57 +19,56 @@ namespace game.bll.Infrastructure.Commands.Card
             _simpleAddToBoard = simpleAddToBoard;
         }
 
-        public async Task OnEndRound(BoardCard boardCard)
+        public async Task<List<Guid>> OnEndRound(BoardCard boardCard)
         {
             // Get temaki card entities in the game
             var cards = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.GameId == boardCard.GameId && x.CardType == CardType.Temaki && !x.IsCalculated,
-                    transform: x => x.AsNoTracking()
+                    filter: x => x.GameId == boardCard.GameId && x.CardInfo.CardType == CardType.Temaki,
+                    transform: x => x.AsNoTracking(),
+                    includeProperties: nameof(BoardCard.CardInfo)
                 );
-            if (!cards.Any()) return;
+            if (!cards.Any()) return new() { boardCard.Id };
 
             // Group cards by board and evaluate points
             var boards = cards
                 .GroupBy(c => c.BoardId)
-                .Select(c => new { c.Key, Value = c.Count() });
+                .Select(c => new { BoardId = c.Key, Count = c.Count() });
 
             // Get top points
-            var maxCount = boards.MaxBy(b => b.Value)?.Value;
+            var maxCount = boards.MaxBy(b => b.Count)?.Count;
+
             // Find player entities with the top points
-            var maxBoards = boards.Where(b => b.Value == maxCount).Select(b => b.Key).ToList();
+            var maxBoards = boards.Where(b => b.Count == maxCount).Select(b => b.BoardId).ToList();
             var maxPlayers = _unitOfWork.PlayerRepository.Get(
                         filter: x => maxBoards.Contains(x.BoardId),
                         transform: x => x.AsNoTracking()
                         ).ToList();
-            // Add points for each top earner
+
+            // Add points to each top earner
             foreach (var player in maxPlayers)
             {
-                player.Points += 4;
+                player.Points += POINT;
                 _unitOfWork.PlayerRepository.Update(player);
             }
 
             // Get bottom points
-            var minCount = boards.MinBy(b => b.Value)?.Value;
+            var minCount = boards.MinBy(b => b.Count)?.Count;
             // Find player entities with the bottom points
-            var minBoards = boards.Where(b => b.Value == minCount).Select(b => b.Key).ToList();
+            var minBoards = boards.Where(b => b.Count == minCount).Select(b => b.BoardId).ToList();
             var minPlayers = _unitOfWork.PlayerRepository.Get(
                         filter: x => minBoards.Contains(x.BoardId),
                         transform: x => x.AsNoTracking()
                         ).ToList();
-            // Add points for each bottom earner
+
+            // Remove points for each bottom earner
             foreach (var player in minPlayers)
             {
-                player.Points -= 4;
+                player.Points -= POINT;
                 _unitOfWork.PlayerRepository.Update(player);
             }
 
-            // Set calculated flag for every temaki card
-            foreach (var card in cards)
-            {
-                card.IsCalculated = true;
-                _unitOfWork.BoardCardRepository.Update(card);
-            }
             await _unitOfWork.Save();
+            return cards.Select(c => c.Id).ToList();
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)

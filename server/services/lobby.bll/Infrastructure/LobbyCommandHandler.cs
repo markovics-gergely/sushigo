@@ -13,6 +13,7 @@ using shared.bll.Extensions;
 using shared.bll.Validators.Implementations;
 using shared.bll.Validators.Interfaces;
 using shared.dal.Models;
+using shared.dal.Models.Types;
 
 namespace lobby.bll.Infrastructure
 {
@@ -70,7 +71,6 @@ namespace lobby.bll.Infrastructure
 
             // Save the creator player
             _unitOfWork.PlayerRepository.Insert(playerEntity);
-            lobbyEntity.Players.Add(playerEntity);
             await _unitOfWork.Save();
 
             // Send the lobby to SignalR and cache

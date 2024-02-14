@@ -1,9 +1,9 @@
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DeckType, DeckTypeUtil, IDeckViewModel } from 'src/shared/deck.models';
+import { DeckType, DeckTypeUtil, IDeckViewModel } from 'src/shared/models/deck.models';
 import { ShopService } from 'src/app/services/shop.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AclService } from 'src/app/services/acl.service';
+import { AclService } from 'src/shared/services/acl.service';
 
 @Component({
   selector: 'app-edit-lobby',

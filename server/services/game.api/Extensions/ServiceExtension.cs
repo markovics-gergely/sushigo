@@ -62,6 +62,7 @@ namespace game.api.Extensions
             services.AddTransient(typeof(ISimpleAddPoint), typeof(SimpleAddPoint));
             services.AddTransient(typeof(ISimpleAddToBoard), typeof(SimpleAddToBoard));
             services.AddTransient(typeof(IAddPointByDelegate), typeof(AddPointByDelegate));
+            services.AddTransient(typeof(INoModification), typeof(NoModification));
 
             // Card Commands
             services.AddTransient<IRequestHandler<PlayCardCommand>, CardCommandHandler>();
@@ -85,6 +86,8 @@ namespace game.api.Extensions
             services.AddTransient<INotificationHandler<RemoveGameEvent>, GameNotificationHandler>();
             services.AddTransient<INotificationHandler<EndRoundEvent>, GameNotificationHandler>();
             services.AddTransient<INotificationHandler<EndTurnEvent>, GameNotificationHandler>();
+            services.AddTransient<INotificationHandler<RefreshGameByIdEvent>, GameNotificationHandler>();
+            services.AddTransient<INotificationHandler<RefreshGameEvent>, GameNotificationHandler>();
 
             // Providers
             services.AddTransient(typeof(IDbContextProvider), typeof(DbContextProvider<GameDbContext>));

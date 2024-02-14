@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { GameService } from 'src/app/services/game.service';
-import { IGameViewModel, IPlayerViewModel, Phase, PhaseUtil } from 'src/shared/game.models';
+import { GameService } from 'src/app/game/services/game.service';
+import { IGameViewModel, IPlayerViewModel, Phase, PhaseUtil } from 'src/shared/models/game.models';
 
 @Component({
   selector: 'app-game-result',

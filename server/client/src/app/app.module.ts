@@ -3,10 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './components/pages/login/login.component';
-import { RegisterComponent } from './components/pages/register/register.component';
 import { CookieService } from 'ngx-cookie-service';
-import { CanDirective } from './directives/can.directive';
+import { CanDirective } from '../shared/directives/can.directive';
 import { LoadingComponent } from './components/overlay/loading/loading.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -22,9 +20,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule, registerLocaleData } from '@angular/common';
-import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { AuthInterceptor } from '../shared/interceptors/auth.interceptor';
 import { HomeComponent } from './components/pages/home/home.component';
-import { FriendComponent } from './components/overlay/friend/friend.component';
+import { FriendComponent } from './overlay/components/friend/friend.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { FriendAddDialogComponent } from './components/dialog/friend-add-dialog/friend-add-dialog.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -33,8 +31,8 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TokenService } from './services/token.service';
-import { LanguageComponent } from './components/overlay/language/language.component';
-import { RespMatGridTileDirective } from './directives/resp-mat-grid-tile.directive';
+import { LanguageComponent } from './overlay/components/language/language.component';
+import { RespMatGridTileDirective } from '../shared/directives/resp-mat-grid-tile.directive';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { UserComponent } from './components/pages/home/user/user.component';
@@ -45,11 +43,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { StoreComponent } from './components/pages/store/store.component';
 import { ConfirmComponent } from './components/dialog/confirm/confirm.component';
 import { EditUserComponent } from './components/dialog/edit-user/edit-user.component';
-import { ThemeComponent } from './components/overlay/theme/theme.component';
+import { ThemeComponent } from './overlay/components/theme/theme.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { LobbyComponent } from './components/pages/lobby/lobby.component';
 import { RefreshComponent } from './components/dialog/refresh/refresh.component';
-import { ImgPathPipe } from './pipes/img-path.pipe';
+import { ImgPathPipe } from '../shared/pipes/img-path.pipe';
 import { ChatComponent } from './components/pages/lobby/chat/chat.component';
 import { LobbyListComponent } from './components/pages/lobby-list/lobby-list.component';
 import { CreateLobbyComponent } from './components/dialog/create-lobby/create-lobby.component';
@@ -57,17 +55,17 @@ import { JoinLobbyComponent } from './components/dialog/join-lobby/join-lobby.co
 import localeHu from '@angular/common/locales/hu';
 import { EditLobbyComponent } from './components/dialog/edit-lobby/edit-lobby.component';
 import { MatRadioModule } from '@angular/material/radio';
-import { SettingsComponent } from './components/overlay/settings/settings.component';
-import { CardBaseComponent } from './components/pages/game/card/card-base/card-base.component';
-import { CardWrapperComponent } from './components/pages/game/card/card-wrapper/card-wrapper.component';
-import { PointCardComponent } from './components/pages/game/card/point-card/point-card.component';
-import { GameComponent } from './components/pages/game/game.component';
-import { HandComponent } from './components/pages/game/hand/hand.component';
+import { SettingsComponent } from './overlay/components/settings/settings.component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import {MatListModule, MatNavList} from '@angular/material/list';
+import { MatListModule } from '@angular/material/list';
 import { CardTypeSelectComponent } from './components/dialog/card-type-select/card-type-select.component';
 import { GameResultComponent } from './components/overlay/game-result/game-result.component';
 import { MenuCardSelectComponent } from './components/overlay/menu-card-select/menu-card-select.component';
+import { LoginPageComponent } from './login/login-page/login-page.component';
+import { RegisterPageComponent } from './register/register-page/register-page.component';
+import { GamePageComponent } from './game/game-page/game-page.component';
+import { HandSectorComponent } from './game/components/hand-sector/hand-sector.component';
+import { GameCardComponent } from './game/components/game-card/game-card.component';
 
 export function jwtOptionsFactory(tokenService: TokenService) {
   return {
@@ -80,8 +78,6 @@ registerLocaleData(localeHu);
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    RegisterComponent,
     CanDirective,
     LoadingComponent,
     HomeComponent,
@@ -104,14 +100,14 @@ registerLocaleData(localeHu);
     JoinLobbyComponent,
     EditLobbyComponent,
     SettingsComponent,
-    CardBaseComponent,
-    CardWrapperComponent,
-    PointCardComponent,
-    GameComponent,
-    HandComponent,
     CardTypeSelectComponent,
     GameResultComponent,
     MenuCardSelectComponent,
+    LoginPageComponent,
+    RegisterPageComponent,
+    GamePageComponent,
+    HandSectorComponent,
+    GameCardComponent,
   ],
   imports: [
     BrowserModule,

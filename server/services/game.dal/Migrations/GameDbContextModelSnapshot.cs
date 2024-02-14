@@ -42,27 +42,52 @@ namespace game.dal.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AdditionalInfo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("BoardId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CardType")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CardInfoId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("GameId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsCalculated")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BoardId");
 
+                    b.HasIndex("CardInfoId");
+
                     b.ToTable("BoardCards");
+                });
+
+            modelBuilder.Entity("game.dal.Domain.CardInfo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CardIds")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CardType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomTag")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomTagString")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("Point")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CardInfos");
                 });
 
             modelBuilder.Entity("game.dal.Domain.Deck", b =>
@@ -70,10 +95,6 @@ namespace game.dal.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AdditionalInfo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Cards")
                         .IsRequired()
@@ -96,10 +117,6 @@ namespace game.dal.Migrations
                     b.Property<Guid>("ActualPlayerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AdditionalInfo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("DeckId")
                         .HasColumnType("uniqueidentifier");
 
@@ -121,6 +138,9 @@ namespace game.dal.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Round")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UramakiCalculatedCount")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -148,12 +168,8 @@ namespace game.dal.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AdditionalInfo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CardType")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CardInfoId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("GameId")
                         .HasColumnType("uniqueidentifier");
@@ -165,6 +181,8 @@ namespace game.dal.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CardInfoId");
 
                     b.HasIndex("HandId");
 
@@ -198,11 +216,8 @@ namespace game.dal.Migrations
                     b.Property<int>("Points")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("SelectedCardId")
+                    b.Property<Guid?>("SelectedCardInfoId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("SelectedCardType")
-                        .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -220,6 +235,8 @@ namespace game.dal.Migrations
 
                     b.HasIndex("HandId");
 
+                    b.HasIndex("SelectedCardInfoId");
+
                     b.ToTable("Players");
                 });
 
@@ -231,7 +248,15 @@ namespace game.dal.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("game.dal.Domain.CardInfo", "CardInfo")
+                        .WithMany()
+                        .HasForeignKey("CardInfoId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("Board");
+
+                    b.Navigation("CardInfo");
                 });
 
             modelBuilder.Entity("game.dal.Domain.Game", b =>
@@ -247,11 +272,19 @@ namespace game.dal.Migrations
 
             modelBuilder.Entity("game.dal.Domain.HandCard", b =>
                 {
+                    b.HasOne("game.dal.Domain.CardInfo", "CardInfo")
+                        .WithMany()
+                        .HasForeignKey("CardInfoId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("game.dal.Domain.Hand", "Hand")
                         .WithMany("Cards")
                         .HasForeignKey("HandId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("CardInfo");
 
                     b.Navigation("Hand");
                 });
@@ -276,11 +309,18 @@ namespace game.dal.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("game.dal.Domain.CardInfo", "SelectedCardInfo")
+                        .WithMany()
+                        .HasForeignKey("SelectedCardInfoId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.Navigation("Board");
 
                     b.Navigation("Game");
 
                     b.Navigation("Hand");
+
+                    b.Navigation("SelectedCardInfo");
                 });
 
             modelBuilder.Entity("game.dal.Domain.Board", b =>

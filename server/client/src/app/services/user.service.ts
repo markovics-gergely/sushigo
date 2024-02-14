@@ -9,10 +9,10 @@ import {
   IRegisterUserDTO,
   IUser,
   IUserViewModel,
-} from 'src/shared/user.models';
+} from 'src/shared/models/user.models';
 import { EditUserComponent } from '../components/dialog/edit-user/edit-user.component';
-import { LoadingService } from './loading.service';
-import { BaseServiceService } from './abstract/base-service.service';
+import { LoadingService } from '../../shared/services/loading.service';
+import { BaseServiceService } from '../../shared/services/abstract/base-service.service';
 import { Subscription } from 'cypress/types/net-stubbing';
 
 @Injectable({

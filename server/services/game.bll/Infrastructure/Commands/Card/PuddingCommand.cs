@@ -3,7 +3,7 @@ using game.dal.Domain;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using shared.dal.Models;
-using System.Security.Claims;
+using shared.dal.Models.Types;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
@@ -11,40 +11,29 @@ namespace game.bll.Infrastructure.Commands.Card
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISimpleAddToBoard _simpleAddToBoard;
-        public ClaimsPrincipal? User { get; set; }
+        private readonly INoModification _noModification;
 
-        public PuddingCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard)
+        public PuddingCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard, INoModification noModification)
         {
             _unitOfWork = unitOfWork;
             _simpleAddToBoard = simpleAddToBoard;
+            _noModification = noModification;
         }
 
-        public async Task OnEndRound(BoardCard boardCard)
+        public Task<List<Guid>> OnEndRound(BoardCard boardCard)
+        {
+            return Task.FromResult(_noModification.OnEndRound(boardCard));
+        }
+
+        public async Task<List<Guid>> OnEndGame(BoardCard boardCard)
         {
             // Get pudding card entities in the game
             var cards = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.GameId == boardCard.GameId && x.CardType == CardType.Pudding && !x.IsCalculated,
-                    transform: x => x.AsNoTracking()
+                    filter: x => x.GameId == boardCard.GameId && x.CardInfo.CardType == CardType.Pudding,
+                    transform: x => x.AsNoTracking(),
+                    includeProperties: nameof(BoardCard.CardInfo)
                 );
-            if (!cards.Any()) return;
-
-            // Set calculated flag for every pudding card
-            foreach (var card in cards)
-            {
-                card.IsCalculated = true;
-                _unitOfWork.BoardCardRepository.Update(card);
-            }
-            await _unitOfWork.Save();
-        }
-
-        public async Task OnEndGame(BoardCard boardCard)
-        {
-            // Get pudding card entities in the game
-            var cards = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.GameId == boardCard.GameId && x.CardType == CardType.Pudding && !x.IsCalculated,
-                    transform: x => x.AsNoTracking()
-                );
-            if (!cards.Any()) return;
+            if (!cards.Any()) return new() { boardCard.Id };
 
             // Get count of players
             var playerCount = _unitOfWork.GameRepository.Get(
@@ -90,14 +79,8 @@ namespace game.bll.Infrastructure.Commands.Card
                     _unitOfWork.PlayerRepository.Update(player);
                 }
             }
-            
-            // Set calculated flag for every pudding card
-            foreach (var card in cards)
-            {
-                card.IsCalculated = true;
-                _unitOfWork.BoardCardRepository.Update(card);
-            }
             await _unitOfWork.Save();
+            return cards.Select(c => c.Id).ToList();
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)

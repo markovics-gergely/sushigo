@@ -9,6 +9,12 @@ namespace game.bll.Infrastructure.Commands.Card.Utils
     /// </summary>
     public interface IAddPointByDelegate
     {
-        public Task CalculateEndRound(BoardCard boardCard, CalculatePoint calculatePoint);
+        /// <summary>
+        /// Calculate the points of the cards at the end of the round
+        /// </summary>
+        /// <param name="boardCard"></param>
+        /// <param name="calculatePoint"></param>
+        /// <returns>List of the ids of the cards that were calculated</returns>
+        public Task<List<Guid>> CalculateEndRound(BoardCard boardCard, CalculatePoint calculatePoint);
     }
 }

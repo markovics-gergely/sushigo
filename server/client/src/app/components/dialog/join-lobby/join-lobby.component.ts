@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ILobbyItemViewModel } from 'src/shared/lobby.models';
+import { ILobbyItemViewModel } from 'src/shared/models/lobby.models';
 
 @Component({
   selector: 'app-join-lobby',

@@ -1,14 +1,17 @@
 ﻿using game.dal.Domain;
 using game.dal.Types;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using shared.dal.Comparers;
 using shared.dal.Converters;
 using shared.dal.Models;
+using shared.dal.Models.Types;
 
 namespace game.dal
 {
     public class GameDbContext : DbContext
     {
+        public DbSet<CardInfo> CardInfos => Set<CardInfo>();
         public DbSet<Board> Boards => Set<Board>();
         public DbSet<BoardCard> BoardCards => Set<BoardCard>();
         public DbSet<Deck> Decks => Set<Deck>();
@@ -36,6 +39,14 @@ namespace game.dal
                 .WithMany(g => g.Players)
                 .HasForeignKey(p => p.GameId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Player>()
+                .HasOne(p => p.SelectedCardInfo)
+                .WithMany()
+                .HasForeignKey(p => p.SelectedCardInfoId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+
             builder.Entity<Game>()
                 .HasOne(g => g.Deck)
                 .WithOne(d => d.Game)
@@ -52,18 +63,18 @@ namespace game.dal
                 .HasForeignKey(hc => hc.HandId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<BoardCard>()
-                .Property(bc => bc.AdditionalInfo)
-                .HasConversion<DictionaryEnumValueConverter<Additional, string>>()
-                .Metadata.SetValueComparer(new DictionaryEnumValueComparer<Additional, string>());
             builder.Entity<HandCard>()
-                .Property(hc => hc.AdditionalInfo)
-                .HasConversion<DictionaryEnumValueConverter<Additional, string>>()
-                .Metadata.SetValueComparer(new DictionaryEnumValueComparer<Additional, string>());
-            builder.Entity<Game>()
-                .Property(g => g.AdditionalInfo)
-                .HasConversion<DictionaryEnumValueConverter<CardType, string>>()
-                .Metadata.SetValueComparer(new DictionaryEnumValueComparer<CardType, string>());
+                .HasOne(hc => hc.CardInfo)
+                .WithMany()
+                .HasForeignKey(hc => hc.CardInfoId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<BoardCard>()
+                .HasOne(bc => bc.CardInfo)
+                .WithMany()
+                .HasForeignKey(bc => bc.CardInfoId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             builder.Entity<Game>()
                 .Property(g => g.PlayerIds)
                 .HasConversion<CollectionJsonValueConverter<Guid>>()
@@ -72,6 +83,19 @@ namespace game.dal
                 .Property(d => d.Cards)
                 .HasConversion<QueueJsonValueConverter<CardTypePoint>>()
                 .Metadata.SetValueComparer(new QueueValueComparer<CardTypePoint>());
+
+            builder.Entity<CardInfo>()
+                .Property(ci => ci.CardType)
+                .HasConversion(new EnumToStringConverter<CardType>());
+
+            builder.Entity<CardInfo>()
+                .Property(ci => ci.CustomTag)
+                .HasConversion(new EnumToStringConverter<CardTagType>());
+
+            builder.Entity<CardInfo>()
+                .Property(ci => ci.CardIds)
+                .HasConversion<CollectionJsonValueConverter<Guid>>()
+                .Metadata.SetValueComparer(new CollectionValueComparer<Guid>());
         }
     }
 }

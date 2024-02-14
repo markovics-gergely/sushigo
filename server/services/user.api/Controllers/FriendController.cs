@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using shared.dal.Models;
+using shared.dal.Models.Types;
 using user.bll.Infrastructure.Commands;
 using user.bll.Infrastructure.Queries;
 using user.bll.Infrastructure.ViewModels;

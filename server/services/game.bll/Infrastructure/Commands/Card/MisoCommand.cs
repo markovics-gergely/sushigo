@@ -3,7 +3,7 @@ using game.dal.Domain;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using shared.dal.Models;
-using System.Security.Claims;
+using shared.dal.Models.Types;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
@@ -13,8 +13,6 @@ namespace game.bll.Infrastructure.Commands.Card
         private readonly ISimpleAddToBoard _simpleAddToBoard;
         private readonly ISimpleAddPoint _simpleAddPoint;
 
-        public ClaimsPrincipal? User { get; set; }
-
         public MisoCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard, ISimpleAddPoint simpleAddPoint)
         {
             _unitOfWork = unitOfWork;
@@ -22,24 +20,29 @@ namespace game.bll.Infrastructure.Commands.Card
             _simpleAddPoint = simpleAddPoint;
         }
 
-        public async Task OnEndRound(BoardCard boardCard)
+        public async Task<List<Guid>> OnEndRound(BoardCard boardCard)
         {
             await _simpleAddPoint.CalculateEndRound(boardCard, 3);
+            return new() { boardCard.Id };
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)
         {
-            // Get count of miso cards played this turn
-            var misoCount = _unitOfWork.HandCardRepository.Get(
-                    filter: x => x.GameId == player.GameId && x.IsSelected && x.CardType == CardType.MisoSoup,
-                    transform: x => x.AsNoTracking()
-                ).Count();
+            // Get miso cards played this turn
+            var misoList = _unitOfWork.HandCardRepository.Get(
+                    filter: x => x.GameId == player.GameId && x.IsSelected && x.CardInfo.CardType == CardType.MisoSoup,
+                    transform: x => x.AsNoTracking(),
+                    includeProperties: nameof(HandCard.CardInfo)
+                );
 
             // Remove card if there is more than 1 player who played miso this turn
-            if (misoCount > 1)
+            if (misoList.Count() > 1)
             {
-                _unitOfWork.HandCardRepository.Delete(handCard);
-                await _unitOfWork.Save();
+                foreach(var miso in misoList)
+                {
+                    _unitOfWork.HandCardRepository.Delete(handCard);
+                    await _unitOfWork.Save();
+                }
             }
             // Add to board otherwise
             else

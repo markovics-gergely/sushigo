@@ -7,6 +7,7 @@ namespace game.dal.UnitOfWork.Implementations
     public class UnitOfWork : IUnitOfWork
     {
         private readonly GameDbContext context;
+        private readonly IGenericRepository<CardInfo> cardInfoRepository;
         private readonly IGenericRepository<Board> boardRepository;
         private readonly IGenericRepository<BoardCard> boardCardRepository;
         private readonly IGenericRepository<Deck> deckRepository;
@@ -15,6 +16,7 @@ namespace game.dal.UnitOfWork.Implementations
         private readonly IGenericRepository<HandCard> handCardRepository;
         private readonly IGenericRepository<Player> playerRepository;
 
+        public IGenericRepository<CardInfo> CardInfoRepository => cardInfoRepository;
         public IGenericRepository<Board> BoardRepository => boardRepository;
         public IGenericRepository<BoardCard> BoardCardRepository => boardCardRepository;
         public IGenericRepository<Deck> DeckRepository => deckRepository;
@@ -24,6 +26,7 @@ namespace game.dal.UnitOfWork.Implementations
         public IGenericRepository<Player> PlayerRepository => playerRepository;
 
         public UnitOfWork(GameDbContext context,
+            IGenericRepository<CardInfo> cardInfoRepository,
             IGenericRepository<Board> boardRepository,
             IGenericRepository<BoardCard> boardCardRepository,
             IGenericRepository<Deck> deckRepository,
@@ -33,6 +36,7 @@ namespace game.dal.UnitOfWork.Implementations
             IGenericRepository<Player> playerRepository)
         {
             this.context = context;
+            this.cardInfoRepository = cardInfoRepository;
             this.boardCardRepository = boardCardRepository;
             this.boardRepository = boardRepository;
             this.deckRepository = deckRepository;

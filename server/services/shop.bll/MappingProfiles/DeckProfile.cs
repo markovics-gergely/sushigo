@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using shared.dal.Models;
+using shared.dal.Models.Types;
 using shop.bll.Infrastructure.ViewModels;
 using shop.bll.ValueConverters;
 using shop.dal.Domain;

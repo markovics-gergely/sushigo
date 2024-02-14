@@ -1,8 +1,6 @@
 ﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.dal.Domain;
-using game.dal.Types;
 using shared.dal.Models;
-using System.Security.Claims;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
@@ -10,8 +8,6 @@ namespace game.bll.Infrastructure.Commands.Card
     {
         private readonly ISimpleAddToBoard _simpleAddToBoard;
         private readonly IAddPointByDelegate _addPointByDelegate;
-        public ClaimsPrincipal? User { get; set; }
-
         public OnigiriCommand(ISimpleAddToBoard simpleAddToBoard, IAddPointByDelegate addPointByDelegate)
         {
             _simpleAddToBoard = simpleAddToBoard;
@@ -24,7 +20,7 @@ namespace game.bll.Infrastructure.Commands.Card
         /// <param name="cards"></param>
         /// <returns></returns>
         private static int CalculateAddPoint(IEnumerable<BoardCard> cards) => cards
-            .Select(c => c.AdditionalInfo[Additional.Points])
+            .Select(c => c.CardInfo.Point)
             .Distinct()
             .Count()
             switch
@@ -36,9 +32,9 @@ namespace game.bll.Infrastructure.Commands.Card
                 _ => 16,
             };
 
-        public async Task OnEndRound(BoardCard boardCard)
+        public async Task<List<Guid>> OnEndRound(BoardCard boardCard)
         {
-            await _addPointByDelegate.CalculateEndRound(boardCard, CalculateAddPoint);
+            return await _addPointByDelegate.CalculateEndRound(boardCard, CalculateAddPoint);
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)

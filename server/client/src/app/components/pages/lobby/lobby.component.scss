@@ -1,4 +1,4 @@
-@import "src/mixins";
+@use "src/styles/mixins.scss" as mixins;
 
 @keyframes lobby-shrink {
   0% {
@@ -61,7 +61,7 @@
           $alpha: 0.9
         ) !important;
       }
-      @include media-style-below(sm) {
+      @include mixins.media('lt-sm') {
         width: calc(100% - 300px) !important;
         min-width: 80px;
         margin-right: 0;
@@ -72,7 +72,7 @@
     .lobby-nav-button {
       &.true,
       &.false {
-        @include media-style-below(sm) {
+        @include mixins.media('lt-sm') {
           width: calc(100% - 100px) !important;
           margin-right: 0;
         }
@@ -105,12 +105,12 @@
     overflow-x: hidden;
     text-overflow: clip;
     text-align: start;
-    @include media-style-below(xs) {
+    @include mixins.media('lt-xs') {
       font-size: 40px;
     }
   }
   &.hideable {
-    @include media-style-below(sm) {
+    @include mixins.media('lt-sm') {
       display: none !important;
     }
     width: calc(100% - 200px) !important;
@@ -124,12 +124,12 @@
   width: 100%;
   height: calc(100% - 20px);
 
-  @include media-style-above(md) {
+  @include mixins.media('gt-md') {
     margin: 10px 10%;
     width: 80%;
   }
 
-  @include media-style-below(sm) {
+  @include mixins.media('lt-sm') {
     margin: 10px;
     width: calc(100% - 20px);
   }
@@ -208,7 +208,7 @@
     background-color: none !important;
     display: flex;
     flex-direction: row;
-    @include media-style-below(xs) {
+    @include mixins.media('lt-xs') {
       flex-direction: column;
     }
     .detail {
@@ -218,11 +218,11 @@
       flex-direction: column;
       align-items: flex-start;
       margin: 0;
-      @include media-style-below(sm) {
+      @include mixins.media('lt-sm') {
         width: calc(100% - 10px);
         margin: 0;
       }
-      @include media-style-below(xs) {
+      @include mixins.media('lt-xs') {
         width: 100%;
       }
       .detail-item {
@@ -279,7 +279,7 @@
       height: 100%;
       width: 244px;
       margin-left: 5px;
-      @include media-style-below(xs) {
+      @include mixins.media('lt-xs') {
         width: 100%;
         height: auto;
         margin: 5px 0 0 0;
@@ -313,7 +313,7 @@
         img {
           object-fit: contain;
         }
-        @include media-style-below(xs) {
+        @include mixins.media('lt-xs') {
           margin-right: 5px;
         }
       }

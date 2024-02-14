@@ -33,10 +33,7 @@ builder.Services.Configure<shared.dal.Settings.CacheSettings>(configuration.GetS
 builder.Services.AddSwaggerExtension(configuration);
 
 builder.Services.AddSignalR();
-builder.Services.AddControllers().AddJsonOptions(opt =>
-{
-    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
+builder.Services.AddControllers();
 
 builder.Services.AddMemoryCache();
 builder.Services.AddStackExchangeRedisCache(options => {

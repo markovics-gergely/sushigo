@@ -1,8 +1,8 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingService } from 'src/app/services/loading.service';
+import { LoadingService } from 'src/shared/services/loading.service';
 import { LobbyService } from 'src/app/services/lobby.service';
-import { ILobbyItemViewModel, ILobbyViewModel } from 'src/shared/lobby.models';
+import { ILobbyItemViewModel, ILobbyViewModel } from 'src/shared/models/lobby.models';
 
 @Component({
   selector: 'app-lobby-list',

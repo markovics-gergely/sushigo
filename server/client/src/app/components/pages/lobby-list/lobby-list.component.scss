@@ -1,4 +1,4 @@
-@import "src/mixins";
+@use "src/styles/mixins.scss" as mixins;
 
 @keyframes lobby-list-banner-pulsate {
   0% {
@@ -57,7 +57,7 @@
     object-fit: contain;
     border-radius: 10px;
     margin: 10px 20px;
-    @include media-style-below(xs) {
+    @include mixins.media('lt-xs') {
       margin: 10px 5px;
     }
   }
@@ -69,7 +69,7 @@
     overflow-x: hidden;
     text-overflow: clip;
     text-align: start;
-    @include media-style-below(xs) {
+    @include mixins.media('lt-xs') {
       padding-left: 0;
       font-size: 40px;
     }
@@ -123,7 +123,7 @@
       white-space: nowrap;
       overflow-x: hidden;
       text-overflow: clip;
-      @include media-style-below(xs) {
+      @include mixins.media('lt-xs') {
         display: none;
         &.lobby-add {
           display: block;
@@ -145,7 +145,7 @@
   width: calc(100% - 10px);
   height: 100%;
   margin: 5px;
-  @include media-style-above(md) {
+  @include mixins.media('gt-md') {
     margin: 10px 10%;
     width: 80%;
   }

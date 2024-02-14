@@ -1,4 +1,6 @@
-﻿namespace shared.dal.Models
+﻿using shared.dal.Models.Types;
+
+namespace shared.dal.Models
 {
     public abstract class CardTypeWrapper
     {

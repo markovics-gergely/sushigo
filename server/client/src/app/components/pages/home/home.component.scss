@@ -1,4 +1,4 @@
-@import "src/mixins";
+@use "src/styles/mixins.scss" as mixins;
 
 @keyframes home-banner-pulsate {
   0%   { box-shadow: inset 0 0 10px var(--color-primary-dark); }
@@ -26,7 +26,7 @@
     object-fit: contain;
     border-radius: 10px;
     margin: 10px 20px;
-    @include media-style-below(xs) {
+    @include mixins.media('lt-xs') {
       margin: 10px 5px;
     }
   }
@@ -38,7 +38,7 @@
     overflow-x: hidden;
     text-overflow: clip;
     text-align: start;
-    @include media-style-below(xs) {
+    @include mixins.media('lt-xs') {
       padding-left: 0;
       font-size: 40px;
     }
@@ -50,7 +50,7 @@
   height: 100%;
   margin-top: 10px !important;
   margin-bottom: 10px !important;
-  @include media-style-above(md) {
+  @include mixins.media('gt-md') {
     margin: 0 10%;
     width: 80%;
   }

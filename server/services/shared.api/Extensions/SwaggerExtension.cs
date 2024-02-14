@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-
+using shared.api.Extensions;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace shared.Api.Extensions
@@ -23,6 +23,7 @@ namespace shared.Api.Extensions
         {
             services.AddSwaggerGen(options =>
             {
+                options.SchemaFilter<EnumSchemaFilter>();
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = configuration.GetValue<string>("Api:Description"), Version = "v1" });
 
                 options.AddSecurityDefinition(configuration.GetValue<string>("IdentityServer:SecurityScheme"), new OpenApiSecurityScheme
@@ -43,6 +44,7 @@ namespace shared.Api.Extensions
                     Name = "Authorization",
                     Scheme = "Bearer"
                 });
+
                 options.OperationFilter<AuthorizeSwaggerOperationFilter>(new OpenApiSecurityRequirement()
                 {
                     {

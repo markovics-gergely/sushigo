@@ -1,11 +1,9 @@
 ﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.dal.Domain;
-using game.dal.Types;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using shared.bll.Exceptions;
 using shared.dal.Models;
-using System.Security.Claims;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
@@ -13,37 +11,25 @@ namespace game.bll.Infrastructure.Commands.Card
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISimpleAddPoint _simpleAddPoint;
+        private readonly INoModification _noModification;
 
-        public ClaimsPrincipal? User { get; set; }
-
-        public SpecialOrderCommand(IUnitOfWork unitOfWork, ISimpleAddPoint simpleAddPoint)
+        public SpecialOrderCommand(IUnitOfWork unitOfWork, ISimpleAddPoint simpleAddPoint, INoModification noModification)
         {
             _unitOfWork = unitOfWork;
             _simpleAddPoint = simpleAddPoint;
+            _noModification = noModification;
         }
 
-        public async Task OnEndRound(BoardCard boardCard)
+        public Task<List<Guid>> OnEndRound(BoardCard boardCard)
         {
-            // Get special order card entities in the game
-            var cards = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.GameId == boardCard.GameId && x.CardType == CardType.SpecialOrder && !x.IsCalculated,
-                    transform: x => x.AsNoTracking()
-                );
-            if (!cards.Any()) return;
-
-            // Set calculated flag for every special order card
-            foreach (var card in cards)
-            {
-                card.IsCalculated = true;
-                _unitOfWork.BoardCardRepository.Update(card);
-            }
-            await _unitOfWork.Save();
+            return Task.FromResult(_noModification.OnEndRound(boardCard));
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)
         {
             // Get card identity to copy
-            var cardId = Guid.Parse(handCard.AdditionalInfo[Additional.CardIds]);
+            var cardId = handCard.CardInfo.CardIds?.FirstOrDefault()
+                ?? throw new EntityNotFoundException(nameof(SpecialOrder));
 
             // Get card entity to copy
             var card = _unitOfWork.BoardCardRepository.Get(
@@ -54,12 +40,15 @@ namespace game.bll.Infrastructure.Commands.Card
             if (card != null)
             {
                 // Create the copied card
+                var cardInfoCopy = (CardInfo) card.CardInfo.Clone();
+                _unitOfWork.CardInfoRepository.Insert(cardInfoCopy);
+
+                // Create the board card with the copied card
                 var boardCard = new BoardCard
                 {
-                    CardType = card.CardType,
                     BoardId = card.BoardId,
                     GameId = card.GameId,
-                    AdditionalInfo = card.AdditionalInfo,
+                    CardInfo = cardInfoCopy,
                 };
                 _unitOfWork.BoardCardRepository.Insert(boardCard);
             }

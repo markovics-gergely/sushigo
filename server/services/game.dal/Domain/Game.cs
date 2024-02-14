@@ -1,5 +1,5 @@
 ﻿using game.dal.Types;
-using shared.dal.Models;
+using shared.dal.Models.Types;
 
 namespace game.dal.Domain
 {
@@ -17,7 +17,8 @@ namespace game.dal.Domain
 
         public ICollection<Player> Players { get; set; } = new List<Player>();
         public ICollection<Guid> PlayerIds { get; set; } = new List<Guid>();
-        public Dictionary<CardType, string> AdditionalInfo { get; set; } = new Dictionary<CardType, string>();
+
+        public int UramakiCalculatedCount { get; set; } = 0;
 
         public bool IsOver() { return Round >= 2; }
         public static int GetHandCount(int playerCount)

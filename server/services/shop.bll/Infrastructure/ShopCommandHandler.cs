@@ -7,6 +7,7 @@ using shared.bll.Validators.Interfaces;
 using shop.bll.Validators;
 using shared.bll.Exceptions;
 using shared.bll.Extensions;
+using shared.dal.Models.Types;
 
 namespace shop.bll.Infrastructure
 {

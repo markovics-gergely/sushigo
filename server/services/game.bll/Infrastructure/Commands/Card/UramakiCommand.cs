@@ -1,19 +1,19 @@
 ﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.dal.Domain;
-using game.dal.Types;
 using game.dal.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using shared.bll.Exceptions;
 using shared.dal.Models;
-using System.Security.Claims;
+using shared.dal.Models.Types;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
     public class UramakiCommand : ICardCommand<Uramaki>
     {
+        private static readonly int MAX_CALC_COUNT = 3;
+        private static readonly int TURN_GOAL = 10;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISimpleAddToBoard _simpleAddToBoard;
-        public ClaimsPrincipal? User { get; set; }
 
         public UramakiCommand(IUnitOfWork unitOfWork, ISimpleAddToBoard simpleAddToBoard)
         {
@@ -35,46 +35,45 @@ namespace game.bll.Infrastructure.Commands.Card
                 _ => 0,
             };
 
-    public async Task OnEndRound(BoardCard boardCard)
+        public async Task<List<Guid>> OnEndRound(BoardCard boardCard)
         {
             // Get uramaki card entities of the game
             var cards = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.GameId == boardCard.GameId && x.CardType == CardType.Uramaki && !x.IsCalculated,
-                    transform: x => x.AsNoTracking()
+                    filter: x => x.GameId == boardCard.GameId && x.CardInfo.CardType == CardType.Uramaki,
+                    transform: x => x.AsNoTracking(),
+                    includeProperties: nameof(BoardCard.CardInfo)
                 );
-            if (!cards.Any()) return;
+            if (!cards.Any()) return new() { boardCard.Id };
 
             // Get game entity
             var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == boardCard.GameId
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(UramakiCommand));
-            if (game == null) throw new EntityNotFoundException(nameof(game));
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
 
             // Get how much player reached the uramaki goal before
-            game.AdditionalInfo.TryGetValue(CardType.Uramaki, out string? uramakiCount);
-            var uramaki = int.Parse(uramakiCount ?? "0");
+            var uramaki = game.UramakiCalculatedCount;
 
             // If it needs to be calculated
-            if (uramaki < 3)
+            if (uramaki < MAX_CALC_COUNT)
             {
                 // Goup cards by the boards of the players and their points
                 var boards = cards
                     .GroupBy(c => c.BoardId)
-                    .Select(c => new { c.Key, Value = c.Select(cc => int.Parse(cc.AdditionalInfo[Additional.Points])).Sum() })
-                    .Where(c => c.Value > 0);
+                    .Select(c => new { BoardId = c.Key, Sum = c.Select(cc => cc.CardInfo.Point ?? 0).Sum() })
+                    .Where(c => c.Sum > 0);
 
                 // Get the top winner points
-                var topPoints = boards.Select(x => x.Value).Distinct().OrderByDescending(x => x).Take(3 - uramaki);
+                var topPoints = boards.Select(x => x.Sum).Distinct().OrderByDescending(x => x).Take(MAX_CALC_COUNT - uramaki);
 
                 // Group winning boards by their points by inversing the groupping
                 var topBoards = boards
-                    .Where(x => topPoints.Contains(x.Value))
-                    .GroupBy(x => x.Value)
-                    .ToDictionary(x => x.Key, x => x.Select(xx => xx.Key).ToList());
+                    .Where(x => topPoints.Contains(x.Sum))
+                    .GroupBy(x => x.Sum)
+                    .ToDictionary(x => x.Key, x => x.Select(xx => xx.BoardId).ToList());
 
                 // Iterate over each placement
-                int placement = 0;
+                int placement = uramaki;
                 foreach (var point in topPoints)
                 {
                     // Get list of boards of the placement
@@ -95,45 +94,44 @@ namespace game.bll.Infrastructure.Commands.Card
                         player.Points += playerPoint;
                         _unitOfWork.PlayerRepository.Update(player);
                     }
+                    placement++;
                 }
             }
 
-            // Set calculated flag for every uramaki card
-            foreach (var card in cards)
-            {
-                card.IsCalculated = true;
-                _unitOfWork.BoardCardRepository.Update(card);
-            }
+            // Reset the count of the calculated uramaki
+            game.UramakiCalculatedCount = 0;
+            _unitOfWork.GameRepository.Update(game);
+
             await _unitOfWork.Save();
+            return cards.Select(c => c.Id).ToList();
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)
         {
-            // Get uramaki card entities of the player
+            // Get uramaki card entities of the game
             var cards = _unitOfWork.BoardCardRepository.Get(
-                    filter: x => x.BoardId == player.BoardId && x.CardType == CardType.Uramaki,
-                    transform: x => x.AsNoTracking()
+                    filter: x => x.GameId == player.GameId && x.CardInfo.CardType == CardType.Uramaki,
+                    transform: x => x.AsNoTracking(),
+                    includeProperties: nameof(BoardCard.CardInfo)
                 );
 
             // Add uramaki card points from the board and played card
-            var points = cards.Select(c => int.Parse(c.AdditionalInfo[Additional.Points])).Sum() + int.Parse(handCard.AdditionalInfo[Additional.Points]);
+            var points = cards.Select(c => c.CardInfo.Point).Sum() + handCard.CardInfo.Point;
             
             // If the player reached the goal points
-            if (points >= 10)
+            if (points >= TURN_GOAL)
             {
                 // Get game entity
                 var game = _unitOfWork.GameRepository.Get(
                     transform: x => x.AsNoTracking(),
                     filter: x => x.Id == player.GameId
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(UramakiCommand));
-                if (game == null) throw new EntityNotFoundException(nameof(game));
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Game));
 
                 // Get how much player reached the uramaki goal before
-                game.AdditionalInfo.TryGetValue(CardType.Uramaki, out string? uramakiCount);
-                var uramaki = int.Parse(uramakiCount ?? "0");
+                var uramaki = game.UramakiCalculatedCount;
 
                 // Evaluate how much point to add
-                var point = int.Parse(uramakiCount ?? "0") switch
+                var point = uramaki switch
                 {
                     0 => 8,
                     1 => 5,
@@ -153,7 +151,7 @@ namespace game.bll.Infrastructure.Commands.Card
                 _unitOfWork.HandCardRepository.Delete(handCard);
 
                 // Increment the count of the players who reached the uramaki goal
-                game.AdditionalInfo[CardType.Uramaki] = (uramaki + 1).ToString();
+                game.UramakiCalculatedCount++;
                 _unitOfWork.GameRepository.Update(game);
                 await _unitOfWork.Save();
             }

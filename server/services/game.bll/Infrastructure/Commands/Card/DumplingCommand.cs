@@ -1,15 +1,16 @@
 ﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.dal.Domain;
 using shared.dal.Models;
-using System.Security.Claims;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
+    /// <summary>
+    /// Command class to execute dumpling card functions
+    /// </summary>
     public class DumplingCommand : ICardCommand<Dumpling>
     {
         private readonly ISimpleAddToBoard _simpleAddToBoard;
         private readonly IAddPointByDelegate _addPointByDelegate;
-        public ClaimsPrincipal? User { get; set; }
 
         public DumplingCommand(ISimpleAddToBoard simpleAddToBoard, IAddPointByDelegate addPointByDelegate)
         {
@@ -32,9 +33,9 @@ namespace game.bll.Infrastructure.Commands.Card
                 _ => 15
             };
 
-        public async Task OnEndRound(BoardCard boardCard)
+        public async Task<List<Guid>> OnEndRound(BoardCard boardCard)
         {
-            await _addPointByDelegate.CalculateEndRound(boardCard, CalculateAddPoint);
+            return await _addPointByDelegate.CalculateEndRound(boardCard, CalculateAddPoint);
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)

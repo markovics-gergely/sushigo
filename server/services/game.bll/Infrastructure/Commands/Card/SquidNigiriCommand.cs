@@ -1,7 +1,7 @@
 ﻿using game.bll.Infrastructure.Commands.Card.Utils;
 using game.dal.Domain;
 using shared.dal.Models;
-using System.Security.Claims;
+using shared.dal.Models.Types;
 
 namespace game.bll.Infrastructure.Commands.Card
 {
@@ -10,17 +10,17 @@ namespace game.bll.Infrastructure.Commands.Card
         private static readonly int POINT = 3;
         private readonly ISimpleAddPoint _simpleAddPoint;
         private readonly ISimpleAddToBoard _simpleAddToBoard;
-        public ClaimsPrincipal? User { get; set; }
         public SquidNigiriCommand(ISimpleAddPoint simpleAddPoint, ISimpleAddToBoard simpleAddToBoard)
         {
             _simpleAddPoint = simpleAddPoint;
             _simpleAddToBoard = simpleAddToBoard;
         }
 
-        public async Task OnEndRound(BoardCard boardCard)
+        public async Task<List<Guid>> OnEndRound(BoardCard boardCard)
         {
-            var wasabi = boardCard.AdditionalInfo.ContainsKey(dal.Types.Additional.Tagged);
-            await _simpleAddPoint.CalculateEndRound(boardCard, wasabi ? POINT * 2 : POINT);
+            var wasabiUsed = boardCard.CardInfo.CustomTag == CardTagType.WASABI;
+            await _simpleAddPoint.CalculateEndRound(boardCard, wasabiUsed ? POINT * 2 : POINT);
+            return new() { boardCard.Id };
         }
 
         public async Task OnEndTurn(Player player, HandCard handCard)

@@ -1,10 +1,10 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LoadingService } from 'src/app/services/loading.service';
+import { LoadingService } from 'src/shared/services/loading.service';
 import { LobbyService } from 'src/app/services/lobby.service';
 import { MessageService } from 'src/app/services/message.service';
 import { TokenService } from 'src/app/services/token.service';
-import { IMessageDTO, IMessageViewModel } from 'src/shared/message.models';
+import { IMessageDTO, IMessageViewModel } from 'src/shared/models/message.models';
 
 @Component({
   selector: 'app-chat',

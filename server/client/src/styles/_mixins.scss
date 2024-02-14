@@ -1,0 +1,93 @@
+@use "sass:map";
+
+$mediaConditions: (
+  lt-xs: "(max-width: 599px)",
+  lt-sm: "(max-width: 959px)",
+  lt-md: "(max-width: 1279px)",
+  lt-lg: "(max-width: 1919px)",
+  lt-xl: "(max-width: 5000px)",
+  gt-xs: "(min-width: 0px)",
+  gt-sm: "(min-width: 600px)",
+  gt-md: "(min-width: 960px)",
+  gt-lg: "(min-width: 1280px)",
+  gt-xl: "(min-width: 1920px)",
+  xs: "(min-width: 0px) and (max-width: 599px)",
+  sm: "(min-width: 600px) and (max-width: 959px)",
+  md: "(min-width: 960px) and (max-width: 1279px)",
+  lg: "(min-width: 1280px) and (max-width: 1919px)",
+  xl: "(min-width: 1920px) and (max-width: 5000px)",
+  handset:
+    "(max-width: 599px) and (orientation: portrait), (max-width: 959px) and (orientation: landscape)",
+  tablet:
+    "(min-width: 600px) and (max-width: 839px) and (orientation: portrait), (min-width: 960px) and (max-width: 1279px) and (orientation: landscape)",
+  web:
+    "(min-width: 840px) and (orientation: portrait), (min-width: 1280px) and (orientation: landscape)",
+  handset-portrait: "(max-width: 599px) and (orientation: portrait)",
+  handset-landscape: "(max-width: 959px) and (orientation: landscape)",
+  tablet-portrait:
+    "(min-width: 600px) and (max-width: 839px) and (orientation: portrait)",
+  tablet-landscape:
+    "(min-width: 960px) and (max-width: 1279px) and (orientation: landscape)",
+);
+
+@mixin media($breakpoint, $notReverse: true) {
+  @if map.has-key($mediaConditions, $breakpoint) {
+    $condition: map.get($mediaConditions, $breakpoint);
+
+    @if $notReverse {
+      @media screen and #{$condition} {
+        @content;
+      }
+    } @else {
+      @media not screen and #{$condition} {
+        @content;
+      }
+    }
+  } @else {
+    @error "Unknown breakpoint: `#{$breakpoint}`.";
+  }
+}
+
+$sizes: (
+  xs: (
+    min: 0,
+    max: 599px,
+  ),
+  sm: (
+    min: 600px,
+    max: 959px,
+  ),
+  md: (
+    min: 960px,
+    max: 1279px,
+  ),
+  lg: (
+    min: 1280px,
+    max: 1919px,
+  ),
+  xl: (
+    min: 1920px,
+    max: 5000px,
+  ),
+);
+
+@mixin media-style($style) {
+  $width: map.get($sizes, $style);
+  @media screen and (min-width: map.get($width, min)) and (max-width: map.get($width, max)) {
+    @content;
+  }
+}
+
+@mixin media-style-below($style) {
+  $width: map.get($sizes, $style);
+  @media screen and (max-width: map.get($width, max)) {
+    @content;
+  }
+}
+
+@mixin media-style-above($style) {
+  $width: map.get($sizes, $style);
+  @media screen and (min-width: map.get($width, min)) {
+    @content;
+  }
+}

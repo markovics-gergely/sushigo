@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ConfirmService } from 'src/app/services/confirm.service';
-import { LoadingService } from 'src/app/services/loading.service';
+import { ConfirmService } from 'src/shared/services/confirm.service';
+import { LoadingService } from 'src/shared/services/loading.service';
 import { ShopService } from 'src/app/services/shop.service';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
-import { IUserViewModel } from 'src/shared/user.models';
+import { IUserViewModel } from 'src/shared/models/user.models';
 
 @Component({
   selector: 'app-user',

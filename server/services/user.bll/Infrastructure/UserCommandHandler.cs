@@ -11,10 +11,10 @@ using shared.bll.Validators.Interfaces;
 using shared.dal.Configurations.Interfaces;
 using shared.dal.Repository.Interfaces;
 using shared.bll.Exceptions;
-using shared.dal.Models;
 using shared.bll.Extensions;
 using shared.bll.Validators.Implementations;
 using Microsoft.EntityFrameworkCore;
+using shared.dal.Models.Types;
 
 namespace user.bll.Infrastructure
 {

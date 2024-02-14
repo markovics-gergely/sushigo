@@ -15,15 +15,16 @@ namespace game.bll.Infrastructure.Commands.Card.Utils.Implementations
 
         public async Task CalculateEndRound(BoardCard boardCard, int point)
         {
+            // Get player entity of the board
             var player = _unitOfWork.PlayerRepository.Get(
                     transform: x => x.AsNoTrackingWithIdentityResolution(),
                     filter: x => x.BoardId == boardCard.BoardId
-                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(SimpleAddPoint));
-            if (player == null) return;
+                ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Player));
+
+            // Add points to the player
             player.Points += point;
             _unitOfWork.PlayerRepository.Update(player);
-            boardCard.IsCalculated = true;
-            _unitOfWork.BoardCardRepository.Update(boardCard);
+
             await _unitOfWork.Save();
         }
     }

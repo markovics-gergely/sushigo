@@ -1,4 +1,4 @@
-@import "src/mixins";
+@use "src/styles/mixins.scss" as mixins;
 
 @keyframes history-banner-pulsate {
   0%   { box-shadow: inset 0 0 10px var(--color-accent-dark); }
@@ -28,7 +28,7 @@
     overflow-x: hidden;
     text-overflow: clip;
     text-align: start;
-    @include media-style-below(xs) {
+    @include mixins.media('lt-xs') {
       font-size: 40px;
     }
   }

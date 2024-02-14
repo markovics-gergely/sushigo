@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IHistoryViewModel } from 'src/shared/history.models';
-import { BaseServiceService } from './abstract/base-service.service';
+import { IHistoryViewModel } from 'src/shared/models/history.models';
+import { BaseServiceService } from '../../shared/services/abstract/base-service.service';
 
 @Injectable({
   providedIn: 'root'

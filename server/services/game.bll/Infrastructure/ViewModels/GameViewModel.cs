@@ -1,5 +1,5 @@
 ﻿using game.dal.Types;
-using shared.dal.Models;
+using shared.dal.Models.Types;
 
 namespace game.bll.Infrastructure.ViewModels
 {

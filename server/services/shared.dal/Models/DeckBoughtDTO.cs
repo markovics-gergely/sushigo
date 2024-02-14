@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using shared.dal.Models.Types;
 
 namespace shared.dal.Models
 {

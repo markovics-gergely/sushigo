@@ -1,0 +1,41 @@
+.settings-buttons {
+  position: fixed;
+  bottom: 130px;
+  right: 0px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border-radius: 0;
+  transition: all 0.3s ease-in-out;
+  z-index: 1001;
+}
+
+.setting-button {
+  width: 50px !important;
+  min-width: unset !important;
+  height: 50px !important;
+  min-height: unset !important;
+  border-radius: 0 !important;
+  i {
+    font-size: 18px !important;
+  }
+
+  &:hover:not(.mat-button-toggle-checked) {
+    color: var(--color-primary) !important;
+  }
+}
+
+.open-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  margin: 1px 0;
+  padding-right: 5px;
+  color: var(--color-text-light);
+  background-color: rgba(var(--color-primary-rgb), 0.4);
+  border-radius: 10px 0 0 10px;
+  transition: all 0.3s ease-in-out;
+  border: none;
+  cursor: pointer;
+}

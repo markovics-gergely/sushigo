@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using shared.dal.Models;
+using shared.dal.Models.Types;
 using shop.bll.Infrastructure.ViewModels;
 
 namespace shop.bll.Infrastructure.Queries

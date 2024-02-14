@@ -1,4 +1,4 @@
-﻿using shared.dal.Models;
+﻿using shared.dal.Models.Types;
 
 namespace lobby.dal.Domain
 {

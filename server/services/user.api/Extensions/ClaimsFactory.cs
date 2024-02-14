@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using shared.dal.Models;
+using shared.dal.Models.Types;
 using System.Security.Claims;
 using user.bll.Infrastructure.Queries;
 using user.dal.Domain;

@@ -5,6 +5,7 @@ namespace game.dal.UnitOfWork.Interfaces
 {
     public interface IUnitOfWork
     {
+        IGenericRepository<CardInfo> CardInfoRepository { get; }
         IGenericRepository<Board> BoardRepository { get; }
         IGenericRepository<BoardCard> BoardCardRepository { get; }
         IGenericRepository<Deck> DeckRepository { get; }

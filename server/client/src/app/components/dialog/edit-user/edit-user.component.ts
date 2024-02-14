@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { IEditUserDTO } from 'src/shared/user.models';
+import { IEditUserDTO } from 'src/shared/models/user.models';
 
 @Component({
   selector: 'app-edit-user',

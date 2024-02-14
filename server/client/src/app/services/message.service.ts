@@ -1,7 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { IMessageDTO, IMessageViewModel } from 'src/shared/message.models';
-import { BaseServiceService } from './abstract/base-service.service';
+import { IMessageDTO, IMessageViewModel } from 'src/shared/models/message.models';
+import { BaseServiceService } from '../../shared/services/abstract/base-service.service';
 
 @Injectable({
   providedIn: 'root'

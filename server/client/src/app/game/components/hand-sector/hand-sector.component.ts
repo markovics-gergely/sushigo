@@ -3,7 +3,8 @@ import { Component } from '@angular/core';
 import { HandService } from '../../services/hand.service';
 import { GameService } from '../../services/game.service';
 import { GamePermissionService } from '../../services/game-permission.service';
-import { IBoardViewModel, IHandViewModel } from '../../models/game.models';
+import { IBoardViewModel, IHandViewModel, ISelectedCardInfo } from '../../models/game.models';
+import { isEqual } from 'lodash';
 
 @Component({
   selector: 'app-hand-sector',
@@ -30,7 +31,14 @@ export class HandSectorComponent {
 
   constructor(private gameService: GameService, private handService: HandService, private gamePermissionService: GamePermissionService) {
     this.handService.handEventEmitter.subscribe((hand: IHandViewModel | undefined) => {
-      this.hand = hand;
+      if (!isEqual(this.hand, hand)) {
+        this.hand = hand;
+      }
+    });
+    this.handService.selectedCardEventEmitter.subscribe((info: ISelectedCardInfo | undefined) => {
+      if (info?.switchTo) {
+        this.showMode = [info.switchTo];
+      }
     });
     this.gameService.gameEventEmitter.subscribe(() => {
       this.board = this.gameService.board;

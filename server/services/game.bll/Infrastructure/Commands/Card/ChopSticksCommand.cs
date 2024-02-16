@@ -48,19 +48,21 @@ namespace game.bll.Infrastructure.Commands.Card
             {
                 BoardId = player.BoardId,
                 GameId = player.GameId,
-                CardInfo = replace.CardInfo,
+                CardInfoId = replace.CardInfoId,
             };
             _unitOfWork.BoardCardRepository.Insert(boardCard);
 
             // Delete the card from the hand
-            _unitOfWork.HandCardRepository.Delete(replace.Id);
+            _unitOfWork.HandCardRepository.Delete(replace);
 
-            // Get chopsticks card entity from the hand
-            var chopsticks = _unitOfWork.HandCardRepository.Get(
+            await _unitOfWork.Save();
+
+            // Get chopsticks card entity from the board
+            var chopsticks = _unitOfWork.BoardCardRepository.Get(
                 filter: x => x.Id == playAfterTurnDTO.HandOrBoardCardId,
                 transform: x => x.AsNoTracking(),
-                includeProperties: nameof(HandCard.CardInfo)
-            ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(HandCard));
+                includeProperties: nameof(BoardCard.CardInfo)
+            ).FirstOrDefault() ?? throw new EntityNotFoundException(nameof(BoardCard));
 
             // Get chopsticks card back to the players hand
             var handCard = new HandCard

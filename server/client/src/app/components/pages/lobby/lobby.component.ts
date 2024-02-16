@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from 'src/shared/services/loading.service';
 import { LobbyService } from 'src/app/services/lobby.service';
 import { ILobbyViewModel, IPlayerViewModel } from 'src/shared/models/lobby.models';
-import { IDeckItemViewModel } from 'src/shared/models/deck.models';
+import { DeckType, IDeckItemViewModel } from 'src/shared/models/deck.models';
 import { ShopService } from 'src/app/services/shop.service';
 import { TokenService } from 'src/app/services/token.service';
 import { isEqual } from 'lodash';
@@ -178,5 +178,9 @@ export class LobbyComponent {
 
   protected get timezone(): string {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }
+
+  protected get deckType(): string {
+    return this.deck ? DeckType[this.deck?.deckType] : '';
   }
 }

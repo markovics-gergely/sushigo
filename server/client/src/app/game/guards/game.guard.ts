@@ -11,10 +11,11 @@ export const gameGuard: CanActivateFn = () => {
   if (!tokenService.game) {
     return router.parseUrl('/home');
   }
-  return gameService.getGame().pipe(map((game) => {
+  return true;
+  /*return gameService.getGame().pipe(map((game) => {
     if (game) {
       return true;
     }
     return router.parseUrl('/home');
-  }));
+  }));*/
 };

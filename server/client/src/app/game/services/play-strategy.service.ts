@@ -119,14 +119,14 @@ export class SpoonStrategy extends PlayStrategy {
 })
 export class ChopsticksStrategy extends PlayStrategy {
   override onSelectFromBoardAfterTurn(card: ICardViewModel, ...args: any): Observable<void> {
-    this.handService.selectCard({ card, fromHand: false, selectType: SelectType.Hand });
+    this.handService.selectCard({ card, fromHand: false, selectType: SelectType.Hand, switchTo: 'hand' });
     return of();
   }
   override onSelectFromHandAfterTurn(card: ICardViewModel, ...args: any): Observable<void> {
     if (!this.handService.selectedCard) return of();
     const selectedCard = this.handService.selectedCard.card;
     return this.handService.playAfterTurn({
-      isHandCard: true,
+      isHandCard: false,
       handOrBoardCardId: selectedCard.id,
       targetCardId: card.id,
     });
@@ -144,11 +144,15 @@ const PlayStrategyMap = new Map<CardType, ProviderToken<PlayStrategy>>([
   providedIn: 'root',
 })
 export class PlayStrategyService {
-  constructor(private injector: Injector, private gameService: GameService) {}
+  constructor(private injector: Injector, private gameService: GameService, private handService: HandService) {}
 
   public getStrategy(card: ICardViewModel): PlayStrategy {
+    let cardType = card.cardInfo.cardType;
+    if (this.handService.selectedCard) {
+      cardType = this.handService.selectedCard.card.cardInfo.cardType;
+    }
     return this.injector.get(
-      PlayStrategyMap.get(card.cardInfo.cardType) ?? PlayStrategy
+      PlayStrategyMap.get(cardType) ?? PlayStrategy
     );
   }
 

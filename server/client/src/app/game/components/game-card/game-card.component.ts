@@ -27,6 +27,7 @@ export class GameCardComponent {
 
   protected onSelect() {
     if (this.inHand) {
+    console.log(this.card);
       this.playStrategyService.onSelectFromHand(this.card as IHandCardViewModel).subscribe({});
     } else {
       this.playStrategyService.onSelectFromBoard(this.card as IBoardCardViewModel).subscribe({});

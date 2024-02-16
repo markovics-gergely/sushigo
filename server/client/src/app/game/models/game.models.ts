@@ -105,4 +105,5 @@ export interface ISelectedCardInfo {
   card: ICardViewModel;
   fromHand: boolean;
   selectType?: SelectType;
+  switchTo?: string;
 }

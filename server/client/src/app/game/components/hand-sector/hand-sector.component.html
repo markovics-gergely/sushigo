@@ -39,7 +39,7 @@
         *ngFor="let card of hand?.cards; index as i"
         [inHand]="true"
         [card]="card"
-        [@slideInOut]="{ value: ':enter', params: { delay: i * 100 } }"
+        [@slideInOut]="{ value: card, params: { delay: i * 100 } }"
       ></app-game-card>
     </div>
   </ng-scrollbar>

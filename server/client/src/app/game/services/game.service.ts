@@ -38,8 +38,6 @@ export class GameService extends BaseServiceService {
     this.client
       .get<IGameViewModel>(this.baseUrl)
       .subscribe((game: IGameViewModel) => {
-        console.log(game);
-        
         this._gameEventEmitter.next(game);
         this._gameCountEventEmitter.next(-1);
       }).add(() => {
